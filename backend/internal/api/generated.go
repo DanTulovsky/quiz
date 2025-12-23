@@ -2051,6 +2051,9 @@ type UserLearningPreferences struct {
 	// DailyReminderEnabled Whether to receive daily reminder emails
 	DailyReminderEnabled bool `json:"daily_reminder_enabled"`
 
+	// DailyReminderIosNotifyEnabled Whether to receive daily reminder iOS push notifications
+	DailyReminderIosNotifyEnabled *bool `json:"daily_reminder_ios_notify_enabled,omitempty"`
+
 	// FocusOnWeakAreas Whether to focus on weak areas
 	FocusOnWeakAreas bool `json:"focus_on_weak_areas"`
 
@@ -2068,6 +2071,9 @@ type UserLearningPreferences struct {
 
 	// WeakAreaBoost Multiplier for weak area questions
 	WeakAreaBoost float32 `json:"weak_area_boost"`
+
+	// WordOfDayIosNotifyEnabled Whether to receive Word of the Day iOS push notifications
+	WordOfDayIosNotifyEnabled *bool `json:"word_of_day_ios_notify_enabled,omitempty"`
 }
 
 // UserPerformanceAnalytics defines model for UserPerformanceAnalytics.
@@ -2758,6 +2764,18 @@ type PostV1DailyQuestionsDateAnswerQuestionIdJSONBody struct {
 	UserAnswerIndex int `json:"user_answer_index"`
 }
 
+// DeleteV1IosDeviceTokenJSONBody defines parameters for DeleteV1IosDeviceToken.
+type DeleteV1IosDeviceTokenJSONBody struct {
+	// DeviceToken APNS device token to remove
+	DeviceToken string `json:"device_token"`
+}
+
+// PostV1IosRegisterDeviceJSONBody defines parameters for PostV1IosRegisterDevice.
+type PostV1IosRegisterDeviceJSONBody struct {
+	// DeviceToken APNS device token
+	DeviceToken string `json:"device_token"`
+}
+
 // GetV1QuizAiTokenUsageParams defines parameters for GetV1QuizAiTokenUsage.
 type GetV1QuizAiTokenUsageParams struct {
 	// StartDate Start date in YYYY-MM-DD format
@@ -2961,6 +2979,12 @@ type PostV1DailyQuestionsDateAnswerQuestionIdJSONRequestBody PostV1DailyQuestion
 
 // PostV1FeedbackJSONRequestBody defines body for PostV1Feedback for application/json ContentType.
 type PostV1FeedbackJSONRequestBody = FeedbackSubmissionRequest
+
+// DeleteV1IosDeviceTokenJSONRequestBody defines body for DeleteV1IosDeviceToken for application/json ContentType.
+type DeleteV1IosDeviceTokenJSONRequestBody DeleteV1IosDeviceTokenJSONBody
+
+// PostV1IosRegisterDeviceJSONRequestBody defines body for PostV1IosRegisterDevice for application/json ContentType.
+type PostV1IosRegisterDeviceJSONRequestBody PostV1IosRegisterDeviceJSONBody
 
 // PutV1PreferencesLearningJSONRequestBody defines body for PutV1PreferencesLearning for application/json ContentType.
 type PutV1PreferencesLearningJSONRequestBody = UserLearningPreferences

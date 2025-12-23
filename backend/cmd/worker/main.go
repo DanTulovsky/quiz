@@ -88,8 +88,17 @@ func main() {
 	// Create translation cache repository
 	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
 
+	// Create APNS service
+	apnsService, err := services.NewAPNSService(cfg, logger)
+	if err != nil {
+		logger.Warn(ctx, "Failed to initialize APNS service, iOS notifications will be disabled", map[string]interface{}{
+			"error": err.Error(),
+		})
+		apnsService = nil
+	}
+
 	// Initialize worker with the observability logger
-	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, translationCacheRepo, "default", cfg, logger)
+	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, apnsService, generationHintService, translationCacheRepo, "default", cfg, logger)
 	go workerInstance.Start(ctx)
 
 	// Initialize admin handler for worker UI

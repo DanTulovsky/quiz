@@ -238,6 +238,25 @@ email:
     from_name: "Quiz App"
   # Note: SERVER_APP_BASE_URL should be set via environment variable for the frontend URL in production
 
+# APNS Configuration
+#
+# Apple Push Notification Service settings for iOS push notifications
+# APNS settings are configured via environment variables:
+# - APNS_KEY_PATH: Path to APNS key file (.p8)
+# - APNS_KEY_ID: APNS key ID
+# - APNS_TEAM_ID: Apple Team ID
+# - APNS_BUNDLE_ID: App bundle ID (e.g., com.wetsnow.quiz)
+# - APNS_PRODUCTION: Use production APNS (true/false, default: false for sandbox)
+# - APNS_ENABLED: Whether APNS is enabled (true/false)
+
+apns:
+  enabled: false
+  key_path: "" # Path to .p8 key file
+  key_id: "" # APNS key ID
+  team_id: "" # Apple Team ID
+  bundle_id: "com.wetsnow.quiz"
+  production: false # Use production APNS (false for sandbox)
+
 # Language-specific levels and descriptions
 language_levels:
   english:

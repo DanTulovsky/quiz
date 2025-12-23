@@ -1346,6 +1346,64 @@ const SettingsPage: React.FC = () => {
                   <Group justify='space-between' align='flex-start'>
                     <Box style={{ flex: 1 }}>
                       <Text fw={500} size='lg' mb='xs'>
+                        Daily Reminder iOS Notifications
+                      </Text>
+                      <Text size='sm' c='dimmed'>
+                        Receive push notifications on your iOS device for daily
+                        reminders.
+                      </Text>
+                    </Box>
+                    <Switch
+                      checked={
+                        learningPrefs?.daily_reminder_ios_notify_enabled ||
+                        false
+                      }
+                      onChange={async e => {
+                        const next = e.currentTarget.checked;
+                        if (learningPrefs) {
+                          const updatedPrefs = {
+                            ...learningPrefs,
+                            daily_reminder_ios_notify_enabled: next,
+                          };
+                          try {
+                            await prefsMutation.mutateAsync({
+                              data: updatedPrefs,
+                            });
+                            showNotificationWithClean({
+                              title: 'Saved',
+                              message:
+                                'Daily reminder iOS notification setting updated',
+                              color: 'green',
+                            });
+                          } catch {
+                            showNotificationWithClean({
+                              title: 'Error',
+                              message: 'Failed to update setting',
+                              color: 'red',
+                            });
+                          }
+                        }
+                      }}
+                      size='lg'
+                      role='switch'
+                      aria-checked={
+                        learningPrefs?.daily_reminder_ios_notify_enabled ||
+                        false
+                      }
+                      data-testid='daily-reminder-ios-switch'
+                    />
+                  </Group>
+                </Stack>
+              </Card>
+
+              <Card
+                withBorder
+                style={{ background: 'var(--mantine-color-body)' }}
+              >
+                <Stack gap='md'>
+                  <Group justify='space-between' align='flex-start'>
+                    <Box style={{ flex: 1 }}>
+                      <Text fw={500} size='lg' mb='xs'>
                         Word of the Day Emails
                       </Text>
                       <Text size='sm' c='dimmed'>
@@ -1401,6 +1459,62 @@ const SettingsPage: React.FC = () => {
                       </Button>
                     </Group>
                   )}
+                </Stack>
+              </Card>
+
+              <Card
+                withBorder
+                style={{ background: 'var(--mantine-color-body)' }}
+              >
+                <Stack gap='md'>
+                  <Group justify='space-between' align='flex-start'>
+                    <Box style={{ flex: 1 }}>
+                      <Text fw={500} size='lg' mb='xs'>
+                        Word of the Day iOS Notifications
+                      </Text>
+                      <Text size='sm' c='dimmed'>
+                        Receive push notifications on your iOS device with your
+                        Word of the Day.
+                      </Text>
+                    </Box>
+                    <Switch
+                      checked={
+                        learningPrefs?.word_of_day_ios_notify_enabled || false
+                      }
+                      onChange={async e => {
+                        const next = e.currentTarget.checked;
+                        if (learningPrefs) {
+                          const updatedPrefs = {
+                            ...learningPrefs,
+                            word_of_day_ios_notify_enabled: next,
+                          };
+                          try {
+                            await prefsMutation.mutateAsync({
+                              data: updatedPrefs,
+                            });
+                            showNotificationWithClean({
+                              title: 'Saved',
+                              message:
+                                'Word of the Day iOS notification setting updated',
+                              color: 'green',
+                            });
+                          } catch {
+                            showNotificationWithClean({
+                              title: 'Error',
+                              message: 'Failed to update setting',
+                              color: 'red',
+                            });
+                          }
+                        }
+                      }}
+                      size='lg'
+                      role='switch'
+                      aria-checked={
+                        learningPrefs?.word_of_day_ios_notify_enabled || false
+                      }
+                      data-testid='wotd-ios-switch'
+                    />
+                  </Group>
                 </Stack>
               </Card>
             </Stack>

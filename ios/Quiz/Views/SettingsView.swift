@@ -38,6 +38,8 @@ struct SettingsView: View {
     // Notifications State
     @State private var wordOfDayEmailEnabled = false
     @State private var dailyReminderEnabled = true
+    @State private var wordOfDayIOSNotifyEnabled = false
+    @State private var dailyReminderIOSNotifyEnabled = false
 
     // Theme State
     @AppStorage("app_theme") private var appTheme: String = "system"
@@ -351,6 +353,32 @@ struct SettingsView: View {
             }
         }
 
+        settingsSection(title: "Daily Reminder iOS Notifications", icon: "bell.badge", id: "daily-reminder-ios") {
+            VStack(alignment: .leading, spacing: 15) {
+                Toggle(isOn: $dailyReminderIOSNotifyEnabled) {
+                    Label("Daily Reminder iOS Notifications", systemImage: "bell.badge.fill")
+                }
+                .onChange(of: dailyReminderIOSNotifyEnabled) { _, newValue in
+                    updateIOSNotificationPreference(field: "daily_reminder_ios_notify_enabled", value: newValue)
+                }
+                Text("Receive push notifications on your iOS device for daily reminders.").font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+
+        settingsSection(title: "Word of the Day iOS Notifications", icon: "bell.badge", id: "wotd-ios") {
+            VStack(alignment: .leading, spacing: 15) {
+                Toggle(isOn: $wordOfDayIOSNotifyEnabled) {
+                    Label("Word of the Day iOS Notifications", systemImage: "bell.badge.fill")
+                }
+                .onChange(of: wordOfDayIOSNotifyEnabled) { _, newValue in
+                    updateIOSNotificationPreference(field: "word_of_day_ios_notify_enabled", value: newValue)
+                }
+                Text("Receive push notifications on your iOS device with your Word of the Day.").font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+
         settingsSection(title: "AI Settings", icon: "cpu", id: "ai") {
             VStack(alignment: .leading, spacing: 20) {
                 Toggle(isOn: $aiEnabled) {
@@ -529,6 +557,8 @@ struct SettingsView: View {
         }
         if let prefs = viewModel.learningPrefs {
             ttsVoice = prefs.ttsVoice ?? ""
+            wordOfDayIOSNotifyEnabled = prefs.wordOfDayIosNotifyEnabled ?? false
+            dailyReminderIOSNotifyEnabled = prefs.dailyReminderIosNotifyEnabled ?? false
         }
     }
 
@@ -541,6 +571,29 @@ struct SettingsView: View {
         case "russian", "ru": return "Это тест выбранного голоса."
         default: return "This is a test of the selected voice."
         }
+    }
+
+    private func updateIOSNotificationPreference(field: String, value: Bool) {
+        guard var currentPrefs = viewModel.learningPrefs else { return }
+
+        if field == "daily_reminder_ios_notify_enabled" {
+            currentPrefs.dailyReminderIosNotifyEnabled = value
+        } else if field == "word_of_day_ios_notify_enabled" {
+            currentPrefs.wordOfDayIosNotifyEnabled = value
+        }
+
+        viewModel.apiService.updateLearningPreferences(prefs: currentPrefs)
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        print("❌ Failed to update iOS notification preference: \(error.localizedDescription)")
+                    }
+                },
+                receiveValue: { [weak viewModel] updatedPrefs in
+                    viewModel?.learningPrefs = updatedPrefs
+                }
+            )
+            .store(in: &viewModel.cancellables)
     }
 
     private func saveChanges() {
@@ -563,6 +616,8 @@ struct SettingsView: View {
             reviewIntervalDays: reviewIntervalDays,
             weakAreaBoost: weakAreaBoost,
             dailyReminderEnabled: dailyReminderEnabled,
+            wordOfDayIosNotifyEnabled: wordOfDayIOSNotifyEnabled,
+            dailyReminderIosNotifyEnabled: dailyReminderIOSNotifyEnabled,
             ttsVoice: ttsVoice,
             dailyGoal: dailyGoal
         )
@@ -758,6 +813,8 @@ struct SettingsView: View {
                         weakAreaBoost = prefs.weakAreaBoost
                         reviewIntervalDays = prefs.reviewIntervalDays
                         dailyGoal = prefs.dailyGoal ?? 10
+                        wordOfDayIOSNotifyEnabled = prefs.wordOfDayIosNotifyEnabled ?? false
+                        dailyReminderIOSNotifyEnabled = prefs.dailyReminderIosNotifyEnabled ?? false
                     }
                 }
         }

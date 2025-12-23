@@ -230,8 +230,18 @@ func main() {
 	// Create translation cache repository
 	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
 
+	// Create generation hint service
+	generationHintService := services.NewGenerationHintService(db, logger)
+
 	// Create a minimal worker instance for question generation
-	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, nil, translationCacheRepo, "cli", cfg, logger)
+	apnsService, err := services.NewAPNSService(cfg, logger)
+	if err != nil {
+		logger.Warn(ctx, "Failed to initialize APNS service, iOS notifications will be disabled", map[string]interface{}{
+			"error": err.Error(),
+		})
+		apnsService = nil
+	}
+	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, apnsService, generationHintService, translationCacheRepo, "cli", cfg, logger)
 
 	// Create context with timeout
 	ctx, cancel := context.WithTimeout(ctx, config.CLIWorkerTimeout)

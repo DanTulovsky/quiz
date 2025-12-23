@@ -191,6 +191,7 @@ func NewRouter(
 	userAdminHandler := NewUserAdminHandler(userService, cfg, logger)
 	verbConjugationHandler := NewVerbConjugationHandler(logger)
 	feedbackService := services.NewFeedbackService(userService.GetDB(), logger)
+	iosHandler := NewIOSHandler(userService, logger)
 
 	// Initialize Linear service if enabled
 	var linearService *services.LinearService
@@ -395,6 +396,15 @@ func NewRouter(
 		{
 			preferences.GET("/learning", settingsHandler.GetLearningPreferences)
 			preferences.PUT("/learning", settingsHandler.UpdateLearningPreferences)
+		}
+
+		// iOS endpoints
+		ios := v1.Group("/ios")
+		ios.Use(middleware.RequireAuthWithAPIKey(authAPIKeyService, userService))
+		ios.Use(middleware.RequestValidationMiddleware(logger))
+		{
+			ios.POST("/register-device", iosHandler.RegisterDeviceToken)
+			ios.DELETE("/device-token", iosHandler.RemoveDeviceToken)
 		}
 
 		// User management endpoints (non-admin)

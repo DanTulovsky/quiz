@@ -1289,12 +1289,14 @@ func (h *QuizHandler) getPriorityDistributionForUser(ctx context.Context, userID
 
 func convertLearningPreferencesToAPI(prefs *models.UserLearningPreferences) *api.UserLearningPreferences {
 	out := &api.UserLearningPreferences{
-		FocusOnWeakAreas:     prefs.FocusOnWeakAreas,
-		FreshQuestionRatio:   float32(prefs.FreshQuestionRatio),
-		KnownQuestionPenalty: float32(prefs.KnownQuestionPenalty),
-		ReviewIntervalDays:   prefs.ReviewIntervalDays,
-		WeakAreaBoost:        float32(prefs.WeakAreaBoost),
-		DailyReminderEnabled: prefs.DailyReminderEnabled,
+		FocusOnWeakAreas:              prefs.FocusOnWeakAreas,
+		FreshQuestionRatio:            float32(prefs.FreshQuestionRatio),
+		KnownQuestionPenalty:          float32(prefs.KnownQuestionPenalty),
+		ReviewIntervalDays:            prefs.ReviewIntervalDays,
+		WeakAreaBoost:                 float32(prefs.WeakAreaBoost),
+		DailyReminderEnabled:          prefs.DailyReminderEnabled,
+		WordOfDayIosNotifyEnabled:     &prefs.WordOfDayIOSNotifyEnabled,
+		DailyReminderIosNotifyEnabled: &prefs.DailyReminderIOSNotifyEnabled,
 	}
 	if prefs.TTSVoice != "" {
 		v := prefs.TTSVoice

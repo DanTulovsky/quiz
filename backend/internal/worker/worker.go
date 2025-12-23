@@ -83,6 +83,7 @@ type Worker struct {
 	wordOfTheDayService    services.WordOfTheDayServiceInterface
 	storyService           services.StoryServiceInterface
 	emailService           mailer.Mailer
+	apnsService            services.APNSServiceInterface
 	hintService            services.GenerationHintServiceInterface
 	translationCacheRepo   services.TranslationCacheRepository
 	instance               string
@@ -228,6 +229,8 @@ func (w *Worker) checkForDailyReminders(ctx context.Context) error {
 
 	remindersSent := 0
 	failedReminders := 0
+	iosNotificationsSent := 0
+	iosNotificationsFailed := 0
 
 	for _, user := range users {
 		// Record the sent notification
@@ -254,6 +257,52 @@ func (w *Worker) checkForDailyReminders(ctx context.Context) error {
 			})
 		}
 
+		// Send iOS notification if enabled
+		if w.apnsService != nil && w.apnsService.IsEnabled() {
+			prefs, err := w.learningService.GetUserLearningPreferences(ctx, user.ID)
+			if err == nil && prefs != nil && prefs.DailyReminderIOSNotifyEnabled {
+				deviceTokens, err := w.userService.GetUserDeviceTokens(ctx, user.ID)
+				if err != nil {
+					w.logger.Warn(ctx, "Failed to get device tokens for iOS notification", map[string]interface{}{
+						"user_id": user.ID,
+						"error":   err.Error(),
+					})
+				} else if len(deviceTokens) > 0 {
+					// Send iOS notification to all device tokens
+					for _, token := range deviceTokens {
+						payload := map[string]interface{}{
+							"aps": map[string]interface{}{
+								"alert": "Time for your daily quiz! 🧠",
+								"sound": "default",
+							},
+							"deep_link": "daily",
+						}
+						if err := w.apnsService.SendNotification(ctx, token, payload); err != nil {
+							iosNotificationsFailed++
+							w.logger.Error(ctx, "Failed to send iOS daily reminder notification", err, map[string]interface{}{
+								"user_id": user.ID,
+							})
+						} else {
+							iosNotificationsSent++
+						}
+					}
+					// Record iOS notification
+					if len(deviceTokens) > 0 {
+						iosStatus := "sent"
+						if iosNotificationsFailed > 0 {
+							iosStatus = "partial"
+						}
+						if err := w.emailService.RecordSentNotification(ctx, user.ID, "daily_reminder_ios", subject, "daily_reminder_ios", iosStatus, ""); err != nil {
+							w.logger.Warn(ctx, "Failed to record iOS notification", map[string]interface{}{
+								"user_id": user.ID,
+								"error":   err.Error(),
+							})
+						}
+					}
+				}
+			}
+		}
+
 		// Update the last reminder sent timestamp for this user
 		if err := w.learningService.UpdateLastDailyReminderSent(ctx, user.ID); err != nil {
 			w.logger.Error(ctx, "Failed to update last daily reminder sent timestamp", err, map[string]interface{}{
@@ -267,6 +316,8 @@ func (w *Worker) checkForDailyReminders(ctx context.Context) error {
 		attribute.Int("users.eligible", len(users)),
 		attribute.Int("reminders.sent", remindersSent),
 		attribute.Int("reminders.failed", failedReminders),
+		attribute.Int("ios_notifications.sent", iosNotificationsSent),
+		attribute.Int("ios_notifications.failed", iosNotificationsFailed),
 		attribute.Float64("reminders.success_rate", float64(remindersSent)/float64(len(users))),
 	)
 
@@ -658,6 +709,8 @@ func (w *Worker) checkForWordOfTheDayEmails(ctx context.Context) error {
 
 	emailsSent := 0
 	failedEmails := 0
+	iosNotificationsSent := 0
+	iosNotificationsFailed := 0
 
 	for _, user := range users {
 		// Get user's timezone
@@ -696,37 +749,89 @@ func (w *Worker) checkForWordOfTheDayEmails(ctx context.Context) error {
 			w.logger.Warn(ctx, "Email service does not support word of the day emails", map[string]interface{}{
 				"user_id": user.ID,
 			})
-			continue
-		}
-
-		alreadySent, err := emailSvc.HasSentWordOfTheDayEmail(ctx, user.ID, today)
-		if err != nil {
-			failedEmails++
-			w.logger.Error(ctx, "Failed to check word of the day email history", err, map[string]interface{}{
-				"user_id":  user.ID,
-				"username": user.Username,
-			})
-			continue
-		}
-
-		if alreadySent {
-			continue
-		}
-
-		if err := emailSvc.SendWordOfTheDayEmail(ctx, user.ID, today, word); err != nil {
-			failedEmails++
-			w.logger.Error(ctx, "Failed to send word of the day email", err, map[string]interface{}{
-				"user_id":  user.ID,
-				"username": user.Username,
-			})
 		} else {
-			emailsSent++
+			alreadySent, err := emailSvc.HasSentWordOfTheDayEmail(ctx, user.ID, today)
+			if err != nil {
+				failedEmails++
+				w.logger.Error(ctx, "Failed to check word of the day email history", err, map[string]interface{}{
+					"user_id":  user.ID,
+					"username": user.Username,
+				})
+			} else if !alreadySent {
+				if err := emailSvc.SendWordOfTheDayEmail(ctx, user.ID, today, word); err != nil {
+					failedEmails++
+					w.logger.Error(ctx, "Failed to send word of the day email", err, map[string]interface{}{
+						"user_id":  user.ID,
+						"username": user.Username,
+					})
+				} else {
+					emailsSent++
+				}
+			}
+		}
+
+		// Send iOS notification if enabled
+		if w.apnsService != nil && w.apnsService.IsEnabled() {
+			prefs, err := w.learningService.GetUserLearningPreferences(ctx, user.ID)
+			if err == nil && prefs != nil && prefs.WordOfDayIOSNotifyEnabled {
+				// Check if we've already sent iOS notification today
+				alreadySentIOS := w.hasSentIOSNotificationToday(ctx, user.ID, "word_of_the_day_ios", today)
+				if !alreadySentIOS {
+					deviceTokens, err := w.userService.GetUserDeviceTokens(ctx, user.ID)
+					if err != nil {
+						w.logger.Warn(ctx, "Failed to get device tokens for iOS notification", map[string]interface{}{
+							"user_id": user.ID,
+							"error":   err.Error(),
+						})
+					} else if len(deviceTokens) > 0 {
+						// Send iOS notification to all device tokens
+						subject := fmt.Sprintf("Word of the Day: %s", word.Word)
+						tokenFailures := 0
+						for _, token := range deviceTokens {
+							payload := map[string]interface{}{
+								"aps": map[string]interface{}{
+									"alert": map[string]interface{}{
+										"title": fmt.Sprintf("Word of the Day: %s", word.Word),
+										"body":  word.Translation,
+									},
+									"sound": "default",
+								},
+								"deep_link":   "word-of-day",
+								"word":        word.Word,
+								"translation": word.Translation,
+							}
+							if err := w.apnsService.SendNotification(ctx, token, payload); err != nil {
+								tokenFailures++
+								iosNotificationsFailed++
+								w.logger.Error(ctx, "Failed to send iOS word of the day notification", err, map[string]interface{}{
+									"user_id": user.ID,
+								})
+							} else {
+								iosNotificationsSent++
+							}
+						}
+						// Record iOS notification
+						iosStatus := "sent"
+						if tokenFailures > 0 {
+							iosStatus = "partial"
+						}
+						if err := w.emailService.RecordSentNotification(ctx, user.ID, "word_of_the_day_ios", subject, "word_of_the_day_ios", iosStatus, ""); err != nil {
+							w.logger.Warn(ctx, "Failed to record iOS notification", map[string]interface{}{
+								"user_id": user.ID,
+								"error":   err.Error(),
+							})
+						}
+					}
+				}
+			}
 		}
 	}
 
 	span.SetAttributes(
 		attribute.Int("emails.sent", emailsSent),
 		attribute.Int("emails.failed", failedEmails),
+		attribute.Int("ios_notifications.sent", iosNotificationsSent),
+		attribute.Int("ios_notifications.failed", iosNotificationsFailed),
 	)
 
 	return nil
@@ -769,7 +874,7 @@ func (w *Worker) getUsersNeedingWordOfTheDayEmails(ctx context.Context) ([]model
 }
 
 // NewWorker creates a new Worker instance
-func NewWorker(userService services.UserServiceInterface, questionService services.QuestionServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, workerService services.WorkerServiceInterface, dailyQuestionService services.DailyQuestionServiceInterface, wordOfTheDayService services.WordOfTheDayServiceInterface, storyService services.StoryServiceInterface, emailService mailer.Mailer, hintService services.GenerationHintServiceInterface, translationCacheRepo services.TranslationCacheRepository, instance string, cfg *config.Config, logger *observability.Logger) *Worker {
+func NewWorker(userService services.UserServiceInterface, questionService services.QuestionServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, workerService services.WorkerServiceInterface, dailyQuestionService services.DailyQuestionServiceInterface, wordOfTheDayService services.WordOfTheDayServiceInterface, storyService services.StoryServiceInterface, emailService mailer.Mailer, apnsService services.APNSServiceInterface, hintService services.GenerationHintServiceInterface, translationCacheRepo services.TranslationCacheRepository, instance string, cfg *config.Config, logger *observability.Logger) *Worker {
 	if instance == "" {
 		instance = "default"
 	}
@@ -792,6 +897,7 @@ func NewWorker(userService services.UserServiceInterface, questionService servic
 		wordOfTheDayService:  wordOfTheDayService,
 		storyService:         storyService,
 		emailService:         emailService,
+		apnsService:          apnsService,
 		hintService:          hintService,
 		translationCacheRepo: translationCacheRepo,
 		instance:             instance,
@@ -2314,6 +2420,47 @@ func (w *Worker) getGenerationReasoning(priorityData *PriorityGenerationData, va
 	}
 
 	return strings.Join(reasons, "; ")
+}
+
+// hasSentIOSNotificationToday checks if an iOS notification of the given type was already sent today
+func (w *Worker) hasSentIOSNotificationToday(ctx context.Context, userID int, notificationType string, date time.Time) bool {
+	if w.userService == nil {
+		return false
+	}
+
+	db := w.userService.GetDB()
+	if db == nil {
+		return false
+	}
+
+	// Normalize the provided date to the start/end of day
+	start := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
+	end := start.Add(24 * time.Hour)
+
+	var exists bool
+	query := `
+		SELECT EXISTS(
+			SELECT 1
+			FROM sent_notifications
+			WHERE user_id = $1
+			  AND notification_type = $2
+			  AND status = 'sent'
+			  AND sent_at >= $3
+			  AND sent_at < $4
+		)
+	`
+
+	err := db.QueryRowContext(ctx, query, userID, notificationType, start.UTC(), end.UTC()).Scan(&exists)
+	if err != nil {
+		w.logger.Warn(ctx, "Failed to check iOS notification history", map[string]interface{}{
+			"user_id":           userID,
+			"notification_type": notificationType,
+			"error":             err.Error(),
+		})
+		return false
+	}
+
+	return exists
 }
 
 // getPriorityGenerationData gathers priority data for AI question generation

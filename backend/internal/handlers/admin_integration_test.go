@@ -145,7 +145,8 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 	// --- Background Worker ---
 	emailService := services.NewEmailService(suite.cfg, logger)
 	wordOfTheDayService := services.NewWordOfTheDayService(suite.db, logger)
-	bgWorker := worker.NewWorker(userService, questionService, suite.mockAIService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, translationCacheRepo, "default", suite.cfg, logger)
+	apnsService, _ := services.NewAPNSService(suite.cfg, logger)
+	bgWorker := worker.NewWorker(userService, questionService, suite.mockAIService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, apnsService, generationHintService, translationCacheRepo, "default", suite.cfg, logger)
 	suite.worker = bgWorker
 	go bgWorker.Start(context.Background())
 

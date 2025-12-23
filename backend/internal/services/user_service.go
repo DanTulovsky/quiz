@@ -56,6 +56,10 @@ type UserServiceInterface interface {
 	IsAdmin(ctx context.Context, userID int) (bool, error)
 	GetDB() *sql.DB
 	UpdateWordOfDayEmailEnabled(ctx context.Context, userID int, enabled bool) error
+	// Device token management methods
+	RegisterDeviceToken(ctx context.Context, userID int, deviceToken string) error
+	GetUserDeviceTokens(ctx context.Context, userID int) ([]string, error)
+	RemoveDeviceToken(ctx context.Context, userID int, deviceToken string) error
 }
 
 // UserService provides methods for user management.
@@ -1619,4 +1623,93 @@ func isDuplicateKeyError(err error) bool {
 	}
 
 	return false
+}
+
+// RegisterDeviceToken registers or updates a device token for a user
+func (s *UserService) RegisterDeviceToken(ctx context.Context, userID int, deviceToken string) (err error) {
+	ctx, span := observability.TraceUserFunction(ctx, "register_device_token",
+		attribute.Int("user.id", userID),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	if deviceToken == "" {
+		return contextutils.WrapError(contextutils.ErrInvalidInput, "device token cannot be empty")
+	}
+
+	query := `
+		INSERT INTO ios_device_tokens (user_id, device_token, device_type, created_at, updated_at)
+		VALUES ($1, $2, 'ios', NOW(), NOW())
+		ON CONFLICT (user_id, device_token)
+		DO UPDATE SET updated_at = NOW()
+	`
+
+	_, err = s.db.ExecContext(ctx, query, userID, deviceToken)
+	if err != nil {
+		return contextutils.WrapError(err, "failed to register device token")
+	}
+
+	return nil
+}
+
+// GetUserDeviceTokens returns all device tokens for a user
+func (s *UserService) GetUserDeviceTokens(ctx context.Context, userID int) (result0 []string, err error) {
+	ctx, span := observability.TraceUserFunction(ctx, "get_user_device_tokens",
+		attribute.Int("user.id", userID),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	query := `SELECT device_token FROM ios_device_tokens WHERE user_id = $1`
+
+	rows, err := s.db.QueryContext(ctx, query, userID)
+	if err != nil {
+		return nil, contextutils.WrapError(err, "failed to get device tokens")
+	}
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			s.logger.Warn(ctx, "Failed to close rows", map[string]interface{}{
+				"error": closeErr.Error(),
+			})
+		}
+	}()
+
+	var tokens []string
+	for rows.Next() {
+		var token string
+		if err := rows.Scan(&token); err != nil {
+			return nil, contextutils.WrapError(err, "failed to scan device token")
+		}
+		tokens = append(tokens, token)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, contextutils.WrapError(err, "error iterating device tokens")
+	}
+
+	return tokens, nil
+}
+
+// RemoveDeviceToken removes a device token for a user
+func (s *UserService) RemoveDeviceToken(ctx context.Context, userID int, deviceToken string) (err error) {
+	ctx, span := observability.TraceUserFunction(ctx, "remove_device_token",
+		attribute.Int("user.id", userID),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	query := `DELETE FROM ios_device_tokens WHERE user_id = $1 AND device_token = $2`
+
+	result, err := s.db.ExecContext(ctx, query, userID, deviceToken)
+	if err != nil {
+		return contextutils.WrapError(err, "failed to remove device token")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return contextutils.WrapError(err, "failed to get rows affected")
+	}
+
+	if rowsAffected == 0 {
+		return contextutils.WrapError(contextutils.ErrRecordNotFound, "device token not found")
+	}
+
+	return nil
 }

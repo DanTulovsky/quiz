@@ -26,6 +26,7 @@ require (
 	github.com/jung-kurt/gofpdf v1.16.2
 	github.com/neurosnap/sentences v1.1.2
 	github.com/oapi-codegen/runtime v1.1.2
+	github.com/sideshow/apns2 v0.25.0
 	github.com/spf13/cobra v1.10.1
 	go.opentelemetry.io/auto/sdk v1.2.1
 	go.opentelemetry.io/contrib/bridges/otelzap v0.13.0
@@ -61,6 +62,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/goccy/go-yaml v1.18.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
 	github.com/gorilla/context v1.1.2 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/gorilla/sessions v1.4.0 // indirect

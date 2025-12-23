@@ -52,4 +52,20 @@ extension APIService {
     func resetAccount() -> AnyPublisher<SuccessResponse, APIError> {
         return postVoid(path: "settings/reset-account")
     }
+
+    func registerDeviceToken(deviceToken: String) -> AnyPublisher<SuccessResponse, APIError> {
+        return postJSON(
+            path: "ios/register-device",
+            body: ["device_token": deviceToken],
+            responseType: SuccessResponse.self
+        )
+    }
+
+    func removeDeviceToken(deviceToken: String) -> AnyPublisher<SuccessResponse, APIError> {
+        return deleteJSON(
+            path: "ios/device-token",
+            body: ["device_token": deviceToken],
+            responseType: SuccessResponse.self
+        )
+    }
 }

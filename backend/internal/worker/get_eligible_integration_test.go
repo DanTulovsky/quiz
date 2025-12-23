@@ -35,7 +35,8 @@ func TestGetEligibleQuestionCount_Integration(t *testing.T) {
 
 	// Build worker using existing constructor
 	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
-	w := NewWorker(userService, questionService, nil, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, nil, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	apnsService, _ := services.NewAPNSService(cfg, logger)
+	w := NewWorker(userService, questionService, nil, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, nil, apnsService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Create a user
 	user, err := userService.CreateUserWithPassword(context.Background(), "integ_worker_user", "password123", "italian", "A1")

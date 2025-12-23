@@ -320,31 +320,33 @@ type UserSettings struct {
 
 // UserLearningPreferences represents user learning preferences and settings
 type UserLearningPreferences struct {
-	ID                        int      `json:"id" db:"id"`
-	UserID                    int      `json:"user_id" db:"user_id"`
-	PreferredLanguage         string   `json:"preferred_language" db:"preferred_language"`
-	CurrentLevel              string   `json:"current_level" db:"current_level"`
-	AIProvider                string   `json:"ai_provider" db:"ai_provider"`
-	AIModel                   string   `json:"ai_model" db:"ai_model"`
-	AIEnabled                 bool     `json:"ai_enabled" db:"ai_enabled"`
-	AIAPIKey                  string   `json:"-" db:"ai_api_key"` // Omit from JSON for security
-	DailyGoal                 int      `json:"daily_goal" db:"daily_goal"`
-	WeeklyGoal                int      `json:"weekly_goal" db:"weekly_goal"`
-	PreferredQuestionType     string   `json:"preferred_question_type" db:"preferred_question_type"`
-	PreferredQuestionTypes    []string `json:"preferred_question_types" db:"preferred_question_types"`
-	PreferredDifficultyLevel  string   `json:"preferred_difficulty_level" db:"preferred_difficulty_level"`
-	PreferredTopics           []string `json:"preferred_topics" db:"preferred_topics"`
-	PreferredQuestionCount    int      `json:"preferred_question_count" db:"preferred_question_count"`
-	SpacedRepetitionEnabled   bool     `json:"spaced_repetition_enabled" db:"spaced_repetition_enabled"`
-	AdaptiveDifficultyEnabled bool     `json:"adaptive_difficulty_enabled" db:"adaptive_difficulty_enabled"`
-	FocusOnWeakAreas          bool     `json:"focus_on_weak_areas" db:"focus_on_weak_areas"`
-	IncludeReviewQuestions    bool     `json:"include_review_questions" db:"include_review_questions"`
-	FreshQuestionRatio        float64  `json:"fresh_question_ratio" db:"fresh_question_ratio"`
-	KnownQuestionPenalty      float64  `json:"known_question_penalty" db:"known_question_penalty"`
-	ReviewIntervalDays        int      `json:"review_interval_days" db:"review_interval_days"`
-	WeakAreaBoost             float64  `json:"weak_area_boost" db:"weak_area_boost"`
-	StudyTime                 string   `json:"study_time" db:"study_time"`
-	DailyReminderEnabled      bool     `json:"daily_reminder_enabled" db:"daily_reminder_enabled"`
+	ID                            int      `json:"id" db:"id"`
+	UserID                        int      `json:"user_id" db:"user_id"`
+	PreferredLanguage             string   `json:"preferred_language" db:"preferred_language"`
+	CurrentLevel                  string   `json:"current_level" db:"current_level"`
+	AIProvider                    string   `json:"ai_provider" db:"ai_provider"`
+	AIModel                       string   `json:"ai_model" db:"ai_model"`
+	AIEnabled                     bool     `json:"ai_enabled" db:"ai_enabled"`
+	AIAPIKey                      string   `json:"-" db:"ai_api_key"` // Omit from JSON for security
+	DailyGoal                     int      `json:"daily_goal" db:"daily_goal"`
+	WeeklyGoal                    int      `json:"weekly_goal" db:"weekly_goal"`
+	PreferredQuestionType         string   `json:"preferred_question_type" db:"preferred_question_type"`
+	PreferredQuestionTypes        []string `json:"preferred_question_types" db:"preferred_question_types"`
+	PreferredDifficultyLevel      string   `json:"preferred_difficulty_level" db:"preferred_difficulty_level"`
+	PreferredTopics               []string `json:"preferred_topics" db:"preferred_topics"`
+	PreferredQuestionCount        int      `json:"preferred_question_count" db:"preferred_question_count"`
+	SpacedRepetitionEnabled       bool     `json:"spaced_repetition_enabled" db:"spaced_repetition_enabled"`
+	AdaptiveDifficultyEnabled     bool     `json:"adaptive_difficulty_enabled" db:"adaptive_difficulty_enabled"`
+	FocusOnWeakAreas              bool     `json:"focus_on_weak_areas" db:"focus_on_weak_areas"`
+	IncludeReviewQuestions        bool     `json:"include_review_questions" db:"include_review_questions"`
+	FreshQuestionRatio            float64  `json:"fresh_question_ratio" db:"fresh_question_ratio"`
+	KnownQuestionPenalty          float64  `json:"known_question_penalty" db:"known_question_penalty"`
+	ReviewIntervalDays            int      `json:"review_interval_days" db:"review_interval_days"`
+	WeakAreaBoost                 float64  `json:"weak_area_boost" db:"weak_area_boost"`
+	StudyTime                     string   `json:"study_time" db:"study_time"`
+	DailyReminderEnabled          bool     `json:"daily_reminder_enabled" db:"daily_reminder_enabled"`
+	WordOfDayIOSNotifyEnabled     bool     `json:"word_of_day_ios_notify_enabled" db:"word_of_day_ios_notify_enabled"`
+	DailyReminderIOSNotifyEnabled bool     `json:"daily_reminder_ios_notify_enabled" db:"daily_reminder_ios_notify_enabled"`
 	// Preferred TTS voice (e.g., it-IT-IsabellaNeural)
 	TTSVoice              string     `json:"tts_voice" db:"tts_voice"`
 	LastDailyReminderSent *time.Time `json:"last_daily_reminder_sent" db:"last_daily_reminder_sent"`

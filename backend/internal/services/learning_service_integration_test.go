@@ -1987,3 +1987,67 @@ func TestLearningService_LastDailyReminderSent_Field_Integration(t *testing.T) {
 	assert.NotNil(t, updatedPrefs.LastDailyReminderSent)                             // Should still be populated
 	assert.Equal(t, prefs.LastDailyReminderSent, updatedPrefs.LastDailyReminderSent) // Should be the same
 }
+
+func TestLearningService_IOSNotificationPreferences_Integration(t *testing.T) {
+	db := setupTestDBForLearning(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	learningService := NewLearningServiceWithLogger(db, cfg, logger)
+
+	// Create test user
+	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+	user, err := userService.CreateUser(context.Background(), username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Get initial preferences (should have defaults)
+	prefs, err := learningService.GetUserLearningPreferences(context.Background(), user.ID)
+	require.NoError(t, err)
+	require.NotNil(t, prefs)
+
+	// Verify default values for iOS notification preferences
+	assert.False(t, prefs.WordOfDayIOSNotifyEnabled)
+	assert.False(t, prefs.DailyReminderIOSNotifyEnabled)
+
+	// Update iOS notification preferences
+	prefs.WordOfDayIOSNotifyEnabled = true
+	prefs.DailyReminderIOSNotifyEnabled = true
+	updatedPrefs, err := learningService.UpdateUserLearningPreferences(context.Background(), user.ID, prefs)
+	require.NoError(t, err)
+	require.NotNil(t, updatedPrefs)
+
+	// Verify preferences were updated
+	assert.True(t, updatedPrefs.WordOfDayIOSNotifyEnabled)
+	assert.True(t, updatedPrefs.DailyReminderIOSNotifyEnabled)
+
+	// Retrieve preferences again to verify persistence
+	retrievedPrefs, err := learningService.GetUserLearningPreferences(context.Background(), user.ID)
+	require.NoError(t, err)
+	require.NotNil(t, retrievedPrefs)
+
+	assert.True(t, retrievedPrefs.WordOfDayIOSNotifyEnabled)
+	assert.True(t, retrievedPrefs.DailyReminderIOSNotifyEnabled)
+
+	// Update to disable one preference
+	retrievedPrefs.DailyReminderIOSNotifyEnabled = false
+	updatedPrefs, err = learningService.UpdateUserLearningPreferences(context.Background(), user.ID, retrievedPrefs)
+	require.NoError(t, err)
+	require.NotNil(t, updatedPrefs)
+
+	// Verify one is enabled, one is disabled
+	assert.True(t, updatedPrefs.WordOfDayIOSNotifyEnabled)
+	assert.False(t, updatedPrefs.DailyReminderIOSNotifyEnabled)
+
+	// Verify both can be disabled
+	updatedPrefs.WordOfDayIOSNotifyEnabled = false
+	updatedPrefs.DailyReminderIOSNotifyEnabled = false
+	finalPrefs, err := learningService.UpdateUserLearningPreferences(context.Background(), user.ID, updatedPrefs)
+	require.NoError(t, err)
+	require.NotNil(t, finalPrefs)
+
+	assert.False(t, finalPrefs.WordOfDayIOSNotifyEnabled)
+	assert.False(t, finalPrefs.DailyReminderIOSNotifyEnabled)
+}

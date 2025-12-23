@@ -110,6 +110,9 @@ type Config struct {
 	// Linear Configuration
 	Linear LinearConfig `json:"linear" yaml:"linear"`
 
+	// APNS Configuration
+	APNS APNSConfig `json:"apns" yaml:"apns"`
+
 	// Internal fields
 	IsTest bool `json:"is_test" yaml:"is_test"`
 }
@@ -458,6 +461,16 @@ type LinearConfig struct {
 	DefaultLabels []string `json:"default_labels" yaml:"default_labels"` // Optional default labels
 	DefaultState  string   `json:"default_state" yaml:"default_state"`   // Optional default state (e.g., "Todo")
 	Enabled       bool     `json:"enabled" yaml:"enabled"`               // Feature flag
+}
+
+// APNSConfig represents Apple Push Notification Service configuration
+type APNSConfig struct {
+	KeyPath    string `json:"key_path" yaml:"key_path"`     // Path to APNS key file (.p8)
+	KeyID      string `json:"key_id" yaml:"key_id"`         // APNS key ID
+	TeamID     string `json:"team_id" yaml:"team_id"`       // Apple Team ID
+	BundleID   string `json:"bundle_id" yaml:"bundle_id"`   // App bundle ID (com.wetsnow.quiz)
+	Production bool   `json:"production" yaml:"production"` // Use production APNS (false for sandbox)
+	Enabled    bool   `json:"enabled" yaml:"enabled"`       // Feature flag
 }
 
 // NewConfig loads configuration from YAML file first, then overrides with environment variables

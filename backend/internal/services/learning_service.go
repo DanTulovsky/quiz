@@ -831,6 +831,7 @@ func (s *LearningService) GetUserLearningPreferences(ctx context.Context, userID
 	err = s.db.QueryRowContext(ctx, `
         SELECT id, user_id, focus_on_weak_areas, include_review_questions, fresh_question_ratio,
                known_question_penalty, review_interval_days, weak_area_boost, daily_reminder_enabled,
+               word_of_day_ios_notify_enabled, daily_reminder_ios_notify_enabled,
                tts_voice, last_daily_reminder_sent, daily_goal, created_at, updated_at
         FROM user_learning_preferences
         WHERE user_id = $1
@@ -838,6 +839,7 @@ func (s *LearningService) GetUserLearningPreferences(ctx context.Context, userID
 		&prefs.ID, &prefs.UserID, &prefs.FocusOnWeakAreas, &prefs.IncludeReviewQuestions,
 		&prefs.FreshQuestionRatio, &prefs.KnownQuestionPenalty, &prefs.ReviewIntervalDays,
 		&prefs.WeakAreaBoost, &prefs.DailyReminderEnabled,
+		&prefs.WordOfDayIOSNotifyEnabled, &prefs.DailyReminderIOSNotifyEnabled,
 		&prefs.TTSVoice,
 		&prefs.LastDailyReminderSent,
 		&prefs.DailyGoal,
@@ -911,16 +913,21 @@ func (s *LearningService) UpdateUserLearningPreferences(ctx context.Context, use
         UPDATE user_learning_preferences
         SET focus_on_weak_areas = $2, include_review_questions = $3, fresh_question_ratio = $4,
             known_question_penalty = $5, review_interval_days = $6, weak_area_boost = $7,
-            daily_reminder_enabled = $8, tts_voice = $9, daily_goal = COALESCE(NULLIF($10, 0), daily_goal), updated_at = NOW()
+            daily_reminder_enabled = $8, word_of_day_ios_notify_enabled = $9, daily_reminder_ios_notify_enabled = $10,
+            tts_voice = $11, daily_goal = COALESCE(NULLIF($12, 0), daily_goal), updated_at = NOW()
         WHERE user_id = $1
         RETURNING id, user_id, focus_on_weak_areas, include_review_questions, fresh_question_ratio,
                   known_question_penalty, review_interval_days, weak_area_boost, daily_reminder_enabled,
+                  word_of_day_ios_notify_enabled, daily_reminder_ios_notify_enabled,
                   tts_voice, last_daily_reminder_sent, daily_goal, created_at, updated_at
     `, userID, prefs.FocusOnWeakAreas, prefs.IncludeReviewQuestions, prefs.FreshQuestionRatio,
-		prefs.KnownQuestionPenalty, prefs.ReviewIntervalDays, prefs.WeakAreaBoost, prefs.DailyReminderEnabled, prefs.TTSVoice, prefs.DailyGoal).Scan(
+		prefs.KnownQuestionPenalty, prefs.ReviewIntervalDays, prefs.WeakAreaBoost, prefs.DailyReminderEnabled,
+		prefs.WordOfDayIOSNotifyEnabled, prefs.DailyReminderIOSNotifyEnabled, prefs.TTSVoice, prefs.DailyGoal).Scan(
 		&updatedPrefs.ID, &updatedPrefs.UserID, &updatedPrefs.FocusOnWeakAreas, &updatedPrefs.IncludeReviewQuestions,
 		&updatedPrefs.FreshQuestionRatio, &updatedPrefs.KnownQuestionPenalty, &updatedPrefs.ReviewIntervalDays,
-		&updatedPrefs.WeakAreaBoost, &updatedPrefs.DailyReminderEnabled, &updatedPrefs.TTSVoice, &updatedPrefs.LastDailyReminderSent,
+		&updatedPrefs.WeakAreaBoost, &updatedPrefs.DailyReminderEnabled,
+		&updatedPrefs.WordOfDayIOSNotifyEnabled, &updatedPrefs.DailyReminderIOSNotifyEnabled,
+		&updatedPrefs.TTSVoice, &updatedPrefs.LastDailyReminderSent,
 		&updatedPrefs.DailyGoal, &updatedPrefs.CreatedAt, &updatedPrefs.UpdatedAt,
 	)
 
@@ -981,12 +988,14 @@ func (s *LearningService) createPreferencesWithValues(ctx context.Context, userI
         INSERT INTO user_learning_preferences (user_id, focus_on_weak_areas, include_review_questions,
                                                fresh_question_ratio, known_question_penalty,
                                                review_interval_days, weak_area_boost, daily_reminder_enabled,
+                                               word_of_day_ios_notify_enabled, daily_reminder_ios_notify_enabled,
                                                tts_voice, daily_goal, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW())
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW(), NOW())
         ON CONFLICT (user_id) DO NOTHING
     `, userID, prefs.FocusOnWeakAreas, prefs.IncludeReviewQuestions,
 		prefs.FreshQuestionRatio, prefs.KnownQuestionPenalty,
-		prefs.ReviewIntervalDays, prefs.WeakAreaBoost, prefs.DailyReminderEnabled, prefs.TTSVoice, prefs.DailyGoal)
+		prefs.ReviewIntervalDays, prefs.WeakAreaBoost, prefs.DailyReminderEnabled,
+		prefs.WordOfDayIOSNotifyEnabled, prefs.DailyReminderIOSNotifyEnabled, prefs.TTSVoice, prefs.DailyGoal)
 	if err != nil {
 		return nil, contextutils.WrapError(err, "failed to create preferences with values")
 	}
@@ -995,13 +1004,16 @@ func (s *LearningService) createPreferencesWithValues(ctx context.Context, userI
 	err = s.db.QueryRowContext(ctx, `
         SELECT id, user_id, focus_on_weak_areas, include_review_questions, fresh_question_ratio,
                known_question_penalty, review_interval_days, weak_area_boost, daily_reminder_enabled,
+               word_of_day_ios_notify_enabled, daily_reminder_ios_notify_enabled,
                tts_voice, last_daily_reminder_sent, daily_goal, created_at, updated_at
         FROM user_learning_preferences
         WHERE user_id = $1
     `, userID).Scan(
 		&prefs.ID, &prefs.UserID, &prefs.FocusOnWeakAreas, &prefs.IncludeReviewQuestions,
 		&prefs.FreshQuestionRatio, &prefs.KnownQuestionPenalty, &prefs.ReviewIntervalDays,
-		&prefs.WeakAreaBoost, &prefs.DailyReminderEnabled, &prefs.TTSVoice, &prefs.LastDailyReminderSent,
+		&prefs.WeakAreaBoost, &prefs.DailyReminderEnabled,
+		&prefs.WordOfDayIOSNotifyEnabled, &prefs.DailyReminderIOSNotifyEnabled,
+		&prefs.TTSVoice, &prefs.LastDailyReminderSent,
 		&prefs.DailyGoal, &prefs.CreatedAt, &prefs.UpdatedAt,
 	)
 	if err != nil {
@@ -1032,12 +1044,14 @@ func (s *LearningService) createDefaultPreferences(ctx context.Context, userID i
         INSERT INTO user_learning_preferences (user_id, focus_on_weak_areas, include_review_questions,
                                                fresh_question_ratio, known_question_penalty,
                                                review_interval_days, weak_area_boost, daily_reminder_enabled,
+                                               word_of_day_ios_notify_enabled, daily_reminder_ios_notify_enabled,
                                                tts_voice, daily_goal, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW())
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW(), NOW())
         ON CONFLICT (user_id) DO NOTHING
     `, userID, defaultPrefs.FocusOnWeakAreas, defaultPrefs.IncludeReviewQuestions,
 		defaultPrefs.FreshQuestionRatio, defaultPrefs.KnownQuestionPenalty,
-		defaultPrefs.ReviewIntervalDays, defaultPrefs.WeakAreaBoost, defaultPrefs.DailyReminderEnabled, defaultPrefs.TTSVoice, defaultPrefs.DailyGoal)
+		defaultPrefs.ReviewIntervalDays, defaultPrefs.WeakAreaBoost, defaultPrefs.DailyReminderEnabled,
+		defaultPrefs.WordOfDayIOSNotifyEnabled, defaultPrefs.DailyReminderIOSNotifyEnabled, defaultPrefs.TTSVoice, defaultPrefs.DailyGoal)
 	if err != nil {
 		return nil, contextutils.WrapError(err, "failed to create default preferences")
 	}
@@ -1046,13 +1060,16 @@ func (s *LearningService) createDefaultPreferences(ctx context.Context, userID i
 	err = s.db.QueryRowContext(ctx, `
         SELECT id, user_id, focus_on_weak_areas, include_review_questions, fresh_question_ratio,
                known_question_penalty, review_interval_days, weak_area_boost, daily_reminder_enabled,
+               word_of_day_ios_notify_enabled, daily_reminder_ios_notify_enabled,
                tts_voice, last_daily_reminder_sent, daily_goal, created_at, updated_at
         FROM user_learning_preferences
         WHERE user_id = $1
     `, userID).Scan(
 		&defaultPrefs.ID, &defaultPrefs.UserID, &defaultPrefs.FocusOnWeakAreas, &defaultPrefs.IncludeReviewQuestions,
 		&defaultPrefs.FreshQuestionRatio, &defaultPrefs.KnownQuestionPenalty, &defaultPrefs.ReviewIntervalDays,
-		&defaultPrefs.WeakAreaBoost, &defaultPrefs.DailyReminderEnabled, &defaultPrefs.TTSVoice, &defaultPrefs.LastDailyReminderSent,
+		&defaultPrefs.WeakAreaBoost, &defaultPrefs.DailyReminderEnabled,
+		&defaultPrefs.WordOfDayIOSNotifyEnabled, &defaultPrefs.DailyReminderIOSNotifyEnabled,
+		&defaultPrefs.TTSVoice, &defaultPrefs.LastDailyReminderSent,
 		&defaultPrefs.DailyGoal, &defaultPrefs.CreatedAt, &defaultPrefs.UpdatedAt,
 	)
 	if err != nil {

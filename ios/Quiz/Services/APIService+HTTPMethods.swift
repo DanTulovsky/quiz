@@ -130,6 +130,14 @@ extension APIService {
         return jsonRequest(path: path, method: "PUT", body: body, responseType: responseType)
     }
 
+    func deleteJSON<T: Decodable>(
+        path: String,
+        body: [String: Any],
+        responseType: T.Type
+    ) -> AnyPublisher<T, APIError> {
+        return jsonRequest(path: path, method: "DELETE", body: body, responseType: responseType)
+    }
+
     func postVoid(path: String) -> AnyPublisher<SuccessResponse, APIError> {
         guard case .success(let url) = buildURL(path: path) else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()

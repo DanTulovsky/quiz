@@ -1505,3 +1505,118 @@ func TestUserService_RoleAssignment_AdminToOtherUser_Integration(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, isRegularUserAdmin)
 }
+
+func TestUserService_RegisterDeviceToken_Integration(t *testing.T) {
+	db := setupTestDBForUser(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	service := NewUserServiceWithLogger(db, cfg, logger)
+
+	// Create a test user
+	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+	user, err := service.CreateUser(context.Background(), username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Register a device token
+	deviceToken := "test_device_token_12345"
+	err = service.RegisterDeviceToken(context.Background(), user.ID, deviceToken)
+	require.NoError(t, err)
+
+	// Verify the token was registered
+	tokens, err := service.GetUserDeviceTokens(context.Background(), user.ID)
+	require.NoError(t, err)
+	require.Len(t, tokens, 1)
+	assert.Equal(t, deviceToken, tokens[0])
+
+	// Register the same token again (should update, not duplicate)
+	err = service.RegisterDeviceToken(context.Background(), user.ID, deviceToken)
+	require.NoError(t, err)
+
+	// Should still have only one token
+	tokens, err = service.GetUserDeviceTokens(context.Background(), user.ID)
+	require.NoError(t, err)
+	require.Len(t, tokens, 1)
+	assert.Equal(t, deviceToken, tokens[0])
+
+	// Register a second token
+	deviceToken2 := "test_device_token_67890"
+	err = service.RegisterDeviceToken(context.Background(), user.ID, deviceToken2)
+	require.NoError(t, err)
+
+	// Should now have two tokens
+	tokens, err = service.GetUserDeviceTokens(context.Background(), user.ID)
+	require.NoError(t, err)
+	require.Len(t, tokens, 2)
+	assert.Contains(t, tokens, deviceToken)
+	assert.Contains(t, tokens, deviceToken2)
+}
+
+func TestUserService_RemoveDeviceToken_Integration(t *testing.T) {
+	db := setupTestDBForUser(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	service := NewUserServiceWithLogger(db, cfg, logger)
+
+	// Create a test user
+	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+	user, err := service.CreateUser(context.Background(), username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Register two device tokens
+	deviceToken1 := "test_device_token_111"
+	deviceToken2 := "test_device_token_222"
+	err = service.RegisterDeviceToken(context.Background(), user.ID, deviceToken1)
+	require.NoError(t, err)
+	err = service.RegisterDeviceToken(context.Background(), user.ID, deviceToken2)
+	require.NoError(t, err)
+
+	// Verify both tokens are registered
+	tokens, err := service.GetUserDeviceTokens(context.Background(), user.ID)
+	require.NoError(t, err)
+	require.Len(t, tokens, 2)
+
+	// Remove one token
+	err = service.RemoveDeviceToken(context.Background(), user.ID, deviceToken1)
+	require.NoError(t, err)
+
+	// Verify only one token remains
+	tokens, err = service.GetUserDeviceTokens(context.Background(), user.ID)
+	require.NoError(t, err)
+	require.Len(t, tokens, 1)
+	assert.Equal(t, deviceToken2, tokens[0])
+
+	// Try to remove a non-existent token
+	err = service.RemoveDeviceToken(context.Background(), user.ID, "non_existent_token")
+	assert.Error(t, err)
+
+	// Verify token list is unchanged
+	tokens, err = service.GetUserDeviceTokens(context.Background(), user.ID)
+	require.NoError(t, err)
+	require.Len(t, tokens, 1)
+}
+
+func TestUserService_GetUserDeviceTokens_Empty_Integration(t *testing.T) {
+	db := setupTestDBForUser(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	service := NewUserServiceWithLogger(db, cfg, logger)
+
+	// Create a test user
+	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+	user, err := service.CreateUser(context.Background(), username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Get tokens for user with no tokens
+	tokens, err := service.GetUserDeviceTokens(context.Background(), user.ID)
+	require.NoError(t, err)
+	assert.Empty(t, tokens)
+}

@@ -129,9 +129,21 @@ CREATE TABLE IF NOT EXISTS user_learning_preferences (
     -- Preferred TTS voice (e.g., it-IT-IsabellaNeural)
     tts_voice TEXT DEFAULT '',
     daily_reminder_enabled BOOLEAN DEFAULT FALSE,
+    word_of_day_ios_notify_enabled BOOLEAN DEFAULT FALSE,
+    daily_reminder_ios_notify_enabled BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(user_id)
+);
+-- iOS device tokens table - stores device tokens for push notifications
+CREATE TABLE IF NOT EXISTS ios_device_tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    device_token TEXT NOT NULL,
+    device_type VARCHAR(20) DEFAULT 'ios',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, device_token)
 );
 -- Performance metrics table - tracks user performance across categories
 CREATE TABLE IF NOT EXISTS performance_metrics (

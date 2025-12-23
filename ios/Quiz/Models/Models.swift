@@ -683,6 +683,8 @@ struct UserLearningPreferences: Codable, Equatable {
     var reviewIntervalDays: Int
     var weakAreaBoost: Float
     var dailyReminderEnabled: Bool
+    var wordOfDayIosNotifyEnabled: Bool?
+    var dailyReminderIosNotifyEnabled: Bool?
     var ttsVoice: String?
     var dailyGoal: Int?
 
@@ -693,6 +695,8 @@ struct UserLearningPreferences: Codable, Equatable {
         case reviewIntervalDays = "review_interval_days"
         case weakAreaBoost = "weak_area_boost"
         case dailyReminderEnabled = "daily_reminder_enabled"
+        case wordOfDayIosNotifyEnabled = "word_of_day_ios_notify_enabled"
+        case dailyReminderIosNotifyEnabled = "daily_reminder_ios_notify_enabled"
         case ttsVoice = "tts_voice"
         case dailyGoal = "daily_goal"
     }

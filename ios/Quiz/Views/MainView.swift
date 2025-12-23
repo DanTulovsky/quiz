@@ -55,6 +55,9 @@ struct MainView: View {
     @AppStorage("app_font_size") private var appFontSize: String = "M"
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject private var ttsInitManager = TTSInitializationManager()
+    @State private var selectedTab: Int = 0
+    @State private var navigateToDaily = false
+    @State private var navigateToWordOfDay = false
 
     private var colorScheme: ColorScheme? {
         switch appTheme {
@@ -81,7 +84,7 @@ struct MainView: View {
     var body: some View {
         Group {
             if authViewModel.isAuthenticated {
-                TabView {
+                TabView(selection: $selectedTab) {
                     // Section 1: Menu
                     NavigationView {
                         List {
@@ -102,6 +105,7 @@ struct MainView: View {
                         }
                         .navigationTitle("Quiz")
                     }
+                    .tag(0)
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
@@ -111,10 +115,10 @@ struct MainView: View {
                     NavigationView {
                         List {
                             Section("Practice") {
-                                NavigationLink(destination: DailyView()) {
+                                NavigationLink(destination: DailyView(), isActive: $navigateToDaily) {
                                     Label("Daily", systemImage: "calendar")
                                 }
-                                NavigationLink(destination: WordOfTheDayView()) {
+                                NavigationLink(destination: WordOfTheDayView(), isActive: $navigateToWordOfDay) {
                                     Label("Word of the Day", systemImage: "sparkles")
                                 }
                                 NavigationLink(destination: TranslationPracticeView()) {
@@ -124,6 +128,7 @@ struct MainView: View {
                         }
                         .navigationTitle("Practice")
                     }
+                    .tag(1)
                     .tabItem {
                         Image(systemName: "checkmark.circle")
                         Text("Practice")
@@ -146,6 +151,7 @@ struct MainView: View {
                         }
                         .navigationTitle("History")
                     }
+                    .tag(2)
                     .tabItem {
                         Image(systemName: "clock.arrow.circlepath")
                         Text("History")
@@ -165,6 +171,7 @@ struct MainView: View {
                         }
                         .navigationTitle("Reference")
                     }
+                    .tag(3)
                     .tabItem {
                         Image(systemName: "info.circle")
                         Text("Reference")
@@ -175,6 +182,7 @@ struct MainView: View {
                         SettingsView()
                             .navigationTitle("Profile")
                     }
+                    .tag(4)
                     .tabItem {
                         Image(systemName: "person")
                         Text("Profile")
@@ -204,6 +212,37 @@ struct MainView: View {
                     userLanguage: authViewModel.user?.preferredLanguage
                 )
             }
+
+            // Listen for deep link notifications
+            NotificationCenter.default.addObserver(
+                forName: NSNotification.Name("HandleDeepLink"),
+                object: nil,
+                queue: .main
+            ) { notification in
+                if let deepLink = notification.userInfo?["deep_link"] as? String {
+                    handleDeepLink(deepLink)
+                }
+            }
+        }
+        .onDisappear {
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name("HandleDeepLink"), object: nil)
+        }
+    }
+
+    private func handleDeepLink(_ deepLink: String) {
+        switch deepLink {
+        case "daily":
+            selectedTab = 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                navigateToDaily = true
+            }
+        case "word-of-day":
+            selectedTab = 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                navigateToWordOfDay = true
+            }
+        default:
+            break
         }
     }
 }

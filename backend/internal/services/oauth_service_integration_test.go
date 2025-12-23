@@ -117,6 +117,18 @@ func (m *mockUserService) GetAllRoles(_ context.Context) (result0 []models.Role,
 	return []models.Role{}, nil
 }
 
+func (m *mockUserService) RegisterDeviceToken(_ context.Context, _ int, _ string) error {
+	return nil
+}
+
+func (m *mockUserService) GetUserDeviceTokens(_ context.Context, _ int) ([]string, error) {
+	return []string{}, nil
+}
+
+func (m *mockUserService) RemoveDeviceToken(_ context.Context, _ int, _ string) error {
+	return nil
+}
+
 func (m *mockUserService) GetUsersPaginated(_ context.Context, _, _ int, _, _, _, _, _, _, _ string) (result0 []models.User, result1 int, err error) {
 	return nil, 0, nil
 }

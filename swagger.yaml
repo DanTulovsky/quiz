@@ -5054,6 +5054,92 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/ios/register-device:
+    post:
+      tags:
+        - iOS
+      summary: Register iOS device token
+      description: Register or update a device token for push notifications
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - device_token
+              properties:
+                device_token:
+                  type: string
+                  description: APNS device token
+      responses:
+        "200":
+          description: Device token registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid request format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/ios/device-token:
+    delete:
+      tags:
+        - iOS
+      summary: Remove iOS device token
+      description: Remove a device token for push notifications
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - device_token
+              properties:
+                device_token:
+                  type: string
+                  description: APNS device token to remove
+      responses:
+        "200":
+          description: Device token removed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid request format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Device token not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/version:
     get:
       tags:
@@ -7320,6 +7406,12 @@ components:
         daily_reminder_enabled:
           type: boolean
           description: Whether to receive daily reminder emails
+        word_of_day_ios_notify_enabled:
+          type: boolean
+          description: Whether to receive Word of the Day iOS push notifications
+        daily_reminder_ios_notify_enabled:
+          type: boolean
+          description: Whether to receive daily reminder iOS push notifications
         tts_voice:
           type: string
           description: Preferred TTS voice (e.g., it-IT-IsabellaNeural)

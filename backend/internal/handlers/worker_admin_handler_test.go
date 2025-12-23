@@ -745,6 +745,24 @@ func (m *MockUserServiceForHandler) UpdateWordOfDayEmailEnabled(ctx context.Cont
 	return args.Error(0)
 }
 
+func (m *MockUserServiceForHandler) RegisterDeviceToken(ctx context.Context, userID int, deviceToken string) error {
+	args := m.Called(ctx, userID, deviceToken)
+	return args.Error(0)
+}
+
+func (m *MockUserServiceForHandler) GetUserDeviceTokens(ctx context.Context, userID int) ([]string, error) {
+	args := m.Called(ctx, userID)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).([]string), args.Error(1)
+}
+
+func (m *MockUserServiceForHandler) RemoveDeviceToken(ctx context.Context, userID int, deviceToken string) error {
+	args := m.Called(ctx, userID, deviceToken)
+	return args.Error(0)
+}
+
 func (m *MockUserServiceForHandler) ClearUserData(ctx context.Context) error {
 	args := m.Called(ctx)
 	return args.Error(0)

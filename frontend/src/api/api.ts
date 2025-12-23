@@ -1226,6 +1226,10 @@ export interface UserLearningPreferences {
   weak_area_boost: number;
   /** Whether to receive daily reminder emails */
   daily_reminder_enabled: boolean;
+  /** Whether to receive Word of the Day iOS push notifications */
+  word_of_day_ios_notify_enabled?: boolean;
+  /** Whether to receive daily reminder iOS push notifications */
+  daily_reminder_ios_notify_enabled?: boolean;
   /** Preferred TTS voice (e.g., it-IT-IsabellaNeural) */
   tts_voice?: string;
   /**
@@ -3382,6 +3386,16 @@ export type GetV1StoryParams = {
  * Include archived stories in the response
  */
 include_archived?: boolean;
+};
+
+export type PostV1IosRegisterDeviceBody = {
+  /** APNS device token */
+  device_token: string;
+};
+
+export type DeleteV1IosDeviceTokenBody = {
+  /** APNS device token to remove */
+  device_token: string;
 };
 
 export type GetV1AdminBackendFeedbackParams = {
@@ -13868,6 +13882,137 @@ export const usePutV1PreferencesLearning = <TError = ErrorResponse,
     }
     
 /**
+ * Register or update a device token for push notifications
+ * @summary Register iOS device token
+ */
+export const postV1IosRegisterDevice = (
+    postV1IosRegisterDeviceBody: PostV1IosRegisterDeviceBody,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<SuccessResponse>(
+      {url: `/v1/ios/register-device`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: postV1IosRegisterDeviceBody, signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1IosRegisterDeviceMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1IosRegisterDevice>>, TError,{data: PostV1IosRegisterDeviceBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1IosRegisterDevice>>, TError,{data: PostV1IosRegisterDeviceBody}, TContext> => {
+
+const mutationKey = ['postV1IosRegisterDevice'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1IosRegisterDevice>>, {data: PostV1IosRegisterDeviceBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postV1IosRegisterDevice(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1IosRegisterDeviceMutationResult = NonNullable<Awaited<ReturnType<typeof postV1IosRegisterDevice>>>
+    export type PostV1IosRegisterDeviceMutationBody = PostV1IosRegisterDeviceBody
+    export type PostV1IosRegisterDeviceMutationError = ErrorResponse
+
+    /**
+ * @summary Register iOS device token
+ */
+export const usePostV1IosRegisterDevice = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1IosRegisterDevice>>, TError,{data: PostV1IosRegisterDeviceBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1IosRegisterDevice>>,
+        TError,
+        {data: PostV1IosRegisterDeviceBody},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1IosRegisterDeviceMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
+/**
+ * Remove a device token for push notifications
+ * @summary Remove iOS device token
+ */
+export const deleteV1IosDeviceToken = (
+    deleteV1IosDeviceTokenBody: DeleteV1IosDeviceTokenBody,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<SuccessResponse>(
+      {url: `/v1/ios/device-token`, method: 'DELETE',
+      headers: {'Content-Type': 'application/json', },
+      data: deleteV1IosDeviceTokenBody
+    },
+      options);
+    }
+  
+
+
+export const getDeleteV1IosDeviceTokenMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1IosDeviceToken>>, TError,{data: DeleteV1IosDeviceTokenBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteV1IosDeviceToken>>, TError,{data: DeleteV1IosDeviceTokenBody}, TContext> => {
+
+const mutationKey = ['deleteV1IosDeviceToken'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1IosDeviceToken>>, {data: DeleteV1IosDeviceTokenBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  deleteV1IosDeviceToken(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteV1IosDeviceTokenMutationResult = NonNullable<Awaited<ReturnType<typeof deleteV1IosDeviceToken>>>
+    export type DeleteV1IosDeviceTokenMutationBody = DeleteV1IosDeviceTokenBody
+    export type DeleteV1IosDeviceTokenMutationError = ErrorResponse
+
+    /**
+ * @summary Remove iOS device token
+ */
+export const useDeleteV1IosDeviceToken = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1IosDeviceToken>>, TError,{data: DeleteV1IosDeviceTokenBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteV1IosDeviceToken>>,
+        TError,
+        {data: DeleteV1IosDeviceTokenBody},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteV1IosDeviceTokenMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
+/**
  * Returns aggregated version information for backend and worker services
  * @summary Get service version info
  */
@@ -15773,7 +15918,7 @@ export const getPostV1QuizAnswerResponseMock = (overrideResponse: Partial< Answe
 
 export const getGetV1QuizProgressResponseMock = (overrideResponse: Partial< UserProgress > = {}): UserProgress => ({current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), suggested_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), accuracy_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), correct_answers: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), performance_by_topic: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: {correct_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), average_response_time_ms: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined]), last_updated: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}
-      }, undefined]), weak_areas: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), recent_activity: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 100 }) }, (_, i) => i + 1).map(() => ({question_id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), worker_status: faker.helpers.arrayElement([{status: faker.helpers.arrayElement([faker.helpers.arrayElement(['idle','busy','error'] as const), undefined]), last_heartbeat: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])}, undefined]), learning_preferences: faker.helpers.arrayElement([{focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined])}, undefined]), priority_insights: faker.helpers.arrayElement([{total_questions_in_queue: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), high_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), medium_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), low_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])}, undefined]), generation_focus: faker.helpers.arrayElement([{current_generation_model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), last_generation_time: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), generation_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined])}, undefined]), high_priority_topics: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), gap_analysis: faker.helpers.arrayElement([{}, undefined]), priority_distribution: faker.helpers.arrayElement([{
+      }, undefined]), weak_areas: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), recent_activity: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 100 }) }, (_, i) => i + 1).map(() => ({question_id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), worker_status: faker.helpers.arrayElement([{status: faker.helpers.arrayElement([faker.helpers.arrayElement(['idle','busy','error'] as const), undefined]), last_heartbeat: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])}, undefined]), learning_preferences: faker.helpers.arrayElement([{focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), word_of_day_ios_notify_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), daily_reminder_ios_notify_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined])}, undefined]), priority_insights: faker.helpers.arrayElement([{total_questions_in_queue: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), high_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), medium_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), low_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])}, undefined]), generation_focus: faker.helpers.arrayElement([{current_generation_model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), last_generation_time: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), generation_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined])}, undefined]), high_priority_topics: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), gap_analysis: faker.helpers.arrayElement([{}, undefined]), priority_distribution: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: 0, max: undefined})
       }, undefined]), ...overrideResponse})
 
@@ -15859,7 +16004,7 @@ export const getPostV1SettingsClearTranslationPracticeHistoryResponseMock = (ove
 
 export const getGetV1AdminBackendUserzPaginatedResponseMock = (overrideResponse: Partial< AdminUsersPaginatedResponse > = {}): AdminUsersPaginatedResponse => ({users: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), progress: faker.helpers.arrayElement([{current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), suggested_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), accuracy_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), correct_answers: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), performance_by_topic: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: {correct_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), average_response_time_ms: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined]), last_updated: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}
-      }, undefined]), weak_areas: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), recent_activity: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 100 }) }, (_, i) => i + 1).map(() => ({question_id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), worker_status: faker.helpers.arrayElement([{status: faker.helpers.arrayElement([faker.helpers.arrayElement(['idle','busy','error'] as const), undefined]), last_heartbeat: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])}, undefined]), learning_preferences: faker.helpers.arrayElement([{focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined])}, undefined]), priority_insights: faker.helpers.arrayElement([{total_questions_in_queue: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), high_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), medium_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), low_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])}, undefined]), generation_focus: faker.helpers.arrayElement([{current_generation_model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), last_generation_time: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), generation_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined])}, undefined]), high_priority_topics: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), gap_analysis: faker.helpers.arrayElement([{}, undefined]), priority_distribution: faker.helpers.arrayElement([{
+      }, undefined]), weak_areas: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), recent_activity: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 100 }) }, (_, i) => i + 1).map(() => ({question_id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), worker_status: faker.helpers.arrayElement([{status: faker.helpers.arrayElement([faker.helpers.arrayElement(['idle','busy','error'] as const), undefined]), last_heartbeat: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])}, undefined]), learning_preferences: faker.helpers.arrayElement([{focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), word_of_day_ios_notify_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), daily_reminder_ios_notify_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined])}, undefined]), priority_insights: faker.helpers.arrayElement([{total_questions_in_queue: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), high_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), medium_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), low_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])}, undefined]), generation_focus: faker.helpers.arrayElement([{current_generation_model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), last_generation_time: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), generation_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined])}, undefined]), high_priority_topics: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), gap_analysis: faker.helpers.arrayElement([{}, undefined]), priority_distribution: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: 0, max: undefined})
       }, undefined])}, undefined]), question_stats: faker.helpers.arrayElement([{user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_answered: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), answered_by_type: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
@@ -15891,7 +16036,7 @@ export const getDeleteV1AdminBackendUserzIdRolesRoleIdResponseMock = (overrideRe
 
 export const getGetV1AdminBackendDashboardResponseMock = (overrideResponse: Partial< DashboardResponse > = {}): DashboardResponse => ({users: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), progress: faker.helpers.arrayElement([{current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), suggested_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), accuracy_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), correct_answers: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), performance_by_topic: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: {correct_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), average_response_time_ms: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined]), last_updated: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}
-      }, undefined]), weak_areas: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), recent_activity: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 100 }) }, (_, i) => i + 1).map(() => ({question_id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), worker_status: faker.helpers.arrayElement([{status: faker.helpers.arrayElement([faker.helpers.arrayElement(['idle','busy','error'] as const), undefined]), last_heartbeat: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])}, undefined]), learning_preferences: faker.helpers.arrayElement([{focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined])}, undefined]), priority_insights: faker.helpers.arrayElement([{total_questions_in_queue: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), high_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), medium_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), low_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])}, undefined]), generation_focus: faker.helpers.arrayElement([{current_generation_model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), last_generation_time: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), generation_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined])}, undefined]), high_priority_topics: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), gap_analysis: faker.helpers.arrayElement([{}, undefined]), priority_distribution: faker.helpers.arrayElement([{
+      }, undefined]), weak_areas: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), recent_activity: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 100 }) }, (_, i) => i + 1).map(() => ({question_id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), worker_status: faker.helpers.arrayElement([{status: faker.helpers.arrayElement([faker.helpers.arrayElement(['idle','busy','error'] as const), undefined]), last_heartbeat: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])}, undefined]), learning_preferences: faker.helpers.arrayElement([{focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), word_of_day_ios_notify_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), daily_reminder_ios_notify_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined])}, undefined]), priority_insights: faker.helpers.arrayElement([{total_questions_in_queue: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), high_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), medium_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), low_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])}, undefined]), generation_focus: faker.helpers.arrayElement([{current_generation_model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), last_generation_time: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), generation_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined])}, undefined]), high_priority_topics: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), gap_analysis: faker.helpers.arrayElement([{}, undefined]), priority_distribution: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: 0, max: undefined})
       }, undefined])}, undefined]), question_stats: faker.helpers.arrayElement([{user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_answered: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), answered_by_type: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
@@ -16069,9 +16214,13 @@ export const getGetV1StorySectionIdResponseMock = (): StorySectionWithQuestions 
 
 export const getGetV1StoryIdExportResponseMock = (): Blob => (new Blob(faker.helpers.arrayElements(faker.word.words(10).split(' '))))
 
-export const getGetV1PreferencesLearningResponseMock = (overrideResponse: Partial< UserLearningPreferences > = {}): UserLearningPreferences => ({focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), ...overrideResponse})
+export const getGetV1PreferencesLearningResponseMock = (overrideResponse: Partial< UserLearningPreferences > = {}): UserLearningPreferences => ({focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), word_of_day_ios_notify_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), daily_reminder_ios_notify_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), ...overrideResponse})
 
-export const getPutV1PreferencesLearningResponseMock = (overrideResponse: Partial< UserLearningPreferences > = {}): UserLearningPreferences => ({focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), ...overrideResponse})
+export const getPutV1PreferencesLearningResponseMock = (overrideResponse: Partial< UserLearningPreferences > = {}): UserLearningPreferences => ({focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), word_of_day_ios_notify_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), daily_reminder_ios_notify_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), ...overrideResponse})
+
+export const getPostV1IosRegisterDeviceResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), ...overrideResponse})
+
+export const getDeleteV1IosDeviceTokenResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), ...overrideResponse})
 
 export const getGetV1VersionResponseServiceVersionMock = (overrideResponse: Partial<ServiceVersion> = {}): ServiceVersion => ({...{service: faker.string.alpha({length: {min: 10, max: 50}}), version: faker.string.alpha({length: {min: 10, max: 100}}), commit: faker.string.alpha({length: {min: 10, max: 50}}), buildTime: faker.string.alpha({length: {min: 10, max: 100}})}, ...overrideResponse});
 
@@ -17642,6 +17791,30 @@ export const getPutV1PreferencesLearningMockHandler = (overrideResponse?: UserLe
   }, options)
 }
 
+export const getPostV1IosRegisterDeviceMockHandler = (overrideResponse?: SuccessResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<SuccessResponse> | SuccessResponse), options?: RequestHandlerOptions) => {
+  return http.post('*/v1/ios/register-device', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1IosRegisterDeviceResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
+}
+
+export const getDeleteV1IosDeviceTokenMockHandler = (overrideResponse?: SuccessResponse | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<SuccessResponse> | SuccessResponse), options?: RequestHandlerOptions) => {
+  return http.delete('*/v1/ios/device-token', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getDeleteV1IosDeviceTokenResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
+}
+
 export const getGetV1VersionMockHandler = (overrideResponse?: AggregatedVersion | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<AggregatedVersion> | AggregatedVersion), options?: RequestHandlerOptions) => {
   return http.get('*/v1/version', async (info) => {await delay(1000);
   
@@ -18056,6 +18229,8 @@ export const getQuizApplicationAPIMock = () => [
   getGetV1StoryIdExportMockHandler(),
   getGetV1PreferencesLearningMockHandler(),
   getPutV1PreferencesLearningMockHandler(),
+  getPostV1IosRegisterDeviceMockHandler(),
+  getDeleteV1IosDeviceTokenMockHandler(),
   getGetV1VersionMockHandler(),
   getGetHealthMockHandler(),
   getGetV1AdminWorkerDailyUsersUserIdQuestionsDateMockHandler(),

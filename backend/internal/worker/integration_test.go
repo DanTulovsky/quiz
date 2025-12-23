@@ -39,7 +39,8 @@ func TestCheckForDailyQuestionAssignments_CreatesTwoDayHorizonAssignments(t *tes
 
 	// Create worker with defaults (DailyHorizonDays defaults to 2)
 	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
-	w := NewWorker(userService, questionService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, nil, generationHintService, services.NewTranslationCacheRepository(db, logger), "test", cfg, logger)
+	apnsService, _ := services.NewAPNSService(cfg, logger)
+	w := NewWorker(userService, questionService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, nil, apnsService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test", cfg, logger)
 	// Ensure horizon is explicitly 2 for the test
 	w.workerCfg.DailyHorizonDays = 2
 
@@ -121,8 +122,10 @@ func TestCheckForDailyQuestionAssignments_RespectsUserTimezone(t *testing.T) {
 	generationHintService := services.NewGenerationHintService(db, logger)
 	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
 
+	// Create APNS service
+	apnsService, _ := services.NewAPNSService(cfg, logger)
 	// Create worker
-	w := NewWorker(userService, questionService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, nil, generationHintService, services.NewTranslationCacheRepository(db, logger), "test", cfg, logger)
+	w := NewWorker(userService, questionService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, nil, apnsService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test", cfg, logger)
 	w.workerCfg.DailyHorizonDays = 2
 
 	// Create a user with America/New_York timezone (UTC-5 in winter, UTC-4 in summer)
@@ -260,8 +263,10 @@ func TestCheckForWordOfTheDayAssignments_RespectsUserTimezone(t *testing.T) {
 	generationHintService := services.NewGenerationHintService(db, logger)
 	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
 
+	// Create APNS service
+	apnsService, _ := services.NewAPNSService(cfg, logger)
 	// Create worker
-	w := NewWorker(userService, questionService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, nil, generationHintService, services.NewTranslationCacheRepository(db, logger), "test", cfg, logger)
+	w := NewWorker(userService, questionService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, nil, apnsService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test", cfg, logger)
 
 	// Create a user with America/New_York timezone
 	userTimezone := "America/New_York"
