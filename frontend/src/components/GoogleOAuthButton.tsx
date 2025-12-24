@@ -3,8 +3,12 @@ import { Button } from '@mantine/core';
 import * as TablerIcons from '@tabler/icons-react';
 
 // Use dynamic import pattern for IconBrandGoogle
+const tablerIconMap = TablerIcons as unknown as Record<
+  string,
+  React.ComponentType<{ size?: number }>
+>;
 const IconBrandGoogle =
-  (TablerIcons as any).IconBrandGoogle ||
+  tablerIconMap.IconBrandGoogle ||
   (((props: { size?: number }) => (
     <svg
       width={props.size || 16}
