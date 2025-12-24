@@ -12,7 +12,7 @@ class StoryViewModel: BaseViewModel, SnippetLoading, Refreshable, ListFetching, 
         set { stories = newValue }
     }
     @Published var selectedStory: StoryContent?
-    @Published var currentSection: StorySectionWithQuestions?
+    @Published var currentSectionDetail: StorySectionWithQuestions?
     @Published var currentSectionIndex = 0
     @Published var snippets = [Snippet]()
     @Published var mode: StoryMode = .section
@@ -24,6 +24,13 @@ class StoryViewModel: BaseViewModel, SnippetLoading, Refreshable, ListFetching, 
 
     var sections: [StorySection] {
         selectedStory?.sections ?? []
+    }
+
+    var currentSectionSummary: StorySection? {
+        guard currentSectionIndex >= 0 && currentSectionIndex < sections.count else {
+            return nil
+        }
+        return sections[currentSectionIndex]
     }
 
     override init(apiService: APIServiceProtocol = APIService.shared) {
@@ -41,6 +48,7 @@ class StoryViewModel: BaseViewModel, SnippetLoading, Refreshable, ListFetching, 
                 guard let self = self else { return }
                 self.selectedStory = storyContent
                 self.loadSnippets(storyId: id)
+                self.currentSectionDetail = nil
                 if !storyContent.sections.isEmpty {
                     self.currentSectionIndex = 0
                     self.fetchSection(at: 0)
@@ -53,6 +61,7 @@ class StoryViewModel: BaseViewModel, SnippetLoading, Refreshable, ListFetching, 
 
     func fetchSection(at index: Int) {
         guard let story = selectedStory, index >= 0 && index < story.sections.count else { return }
+        currentSectionDetail = nil
         fetchSection(id: story.sections[index].id)
     }
 
@@ -60,7 +69,7 @@ class StoryViewModel: BaseViewModel, SnippetLoading, Refreshable, ListFetching, 
         apiService.getStorySection(id: id)
             .handleLoadingAndError(on: self)
             .sinkValue(on: self) { [weak self] section in
-                self?.currentSection = section
+                self?.currentSectionDetail = section
             }
             .store(in: &cancellables)
     }

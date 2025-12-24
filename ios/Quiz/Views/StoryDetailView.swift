@@ -125,18 +125,40 @@ struct StoryDetailView: View {
                                         .padding(.horizontal)
                                 }
 
-                                if viewModel.mode == .section, let section = viewModel.currentSection {
-                                    sectionContent(section)
-
-                                    if !section.questions.isEmpty {
-                                        Divider().padding(.vertical)
-                                        Text("Comprehension Questions")
-                                            .font(AppTheme.Typography.headingFont)
+                                if viewModel.mode == .section {
+                                    if let sectionSummary = viewModel.currentSectionSummary {
+                                        sectionContent(sectionSummary)
+                                    } else {
+                                        Text("Unable to load section content.")
+                                            .font(AppTheme.Typography.subheadlineFont)
+                                            .foregroundColor(AppTheme.Colors.secondaryText)
                                             .padding(.horizontal)
+                                    }
 
-                                        ForEach(section.questions) { question in
-                                            questionView(question)
+                                    if let sectionDetail = viewModel.currentSectionDetail {
+                                        if !sectionDetail.questions.isEmpty {
+                                            Divider().padding(.vertical)
+                                            Text("Comprehension Questions")
+                                                .font(AppTheme.Typography.headingFont)
+                                                .padding(.horizontal)
+
+                                            ForEach(sectionDetail.questions) { question in
+                                                questionView(question)
+                                            }
+                                        } else {
+                                            Text("No questions available for this section yet.")
+                                                .font(AppTheme.Typography.subheadlineFont)
+                                                .foregroundColor(AppTheme.Colors.secondaryText)
+                                                .padding(.horizontal)
                                         }
+                                    } else if viewModel.isLoading {
+                                        ProgressView("Loading section details...")
+                                            .padding(.horizontal)
+                                    } else if viewModel.error != nil {
+                                        Text("Unable to load section details.")
+                                            .font(AppTheme.Typography.subheadlineFont)
+                                            .foregroundColor(AppTheme.Colors.errorRed)
+                                            .padding(.horizontal)
                                     }
                                 } else if viewModel.mode == .reading {
                                     ForEach(story.sections, id: \.id) { section in
@@ -193,7 +215,7 @@ struct StoryDetailView: View {
                     selectedText: text,
                     sourceLanguage: story.language,
                     questionId: nil,
-                    sectionId: viewModel.currentSection?.id,
+                    sectionId: viewModel.currentSectionDetail?.id ?? viewModel.currentSectionSummary?.id,
                     storyId: story.id,
                     sentence: translationSentence,
                     onClose: {
