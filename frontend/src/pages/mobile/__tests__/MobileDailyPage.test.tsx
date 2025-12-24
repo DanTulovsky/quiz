@@ -1,8 +1,8 @@
 import React from 'react';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import {describe, it, expect, beforeEach, vi} from 'vitest';
+import {screen, fireEvent, waitFor} from '@testing-library/react';
 import MobileDailyPage from '../MobileDailyPage';
-import { renderWithProviders } from '../../../test-utils';
+import {renderWithProviders} from '../../../test-utils';
 
 type MockSnippetProps = {
   component?: React.ElementType;
@@ -18,7 +18,7 @@ vi.mock('../../../components/SnippetHighlighter', () => ({
   __esModule: true,
   SnippetHighlighter: (props: MockSnippetProps) => {
     snippetMock(props);
-    const { component: Component, componentProps = {}, text } = props;
+    const {component: Component, componentProps = {}, text} = props;
     if (Component) {
       return React.createElement(Component, componentProps, text);
     }
@@ -31,7 +31,7 @@ vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
-    useParams: () => ({ date: undefined }),
+    useParams: () => ({date: undefined}),
   };
 });
 
@@ -59,7 +59,7 @@ vi.mock('@mantine/dates', async () => {
 
 const mockAuthStatusData = {
   authenticated: true,
-  user: { id: 1, role: 'user' },
+  user: {id: 1, role: 'user'},
 };
 
 const mockRefetch = vi.fn();
@@ -67,26 +67,26 @@ const mockRefetch = vi.fn();
 // Mock auth hook
 vi.mock('../../../hooks/useAuth', () => ({
   useAuth: () => ({
-    user: { id: 1, email: 'test@example.com' },
+    user: {id: 1, email: 'test@example.com'},
     isAuthenticated: true,
   }),
 }));
 
 // Mock tanstack-query mutation hooks used in component
 vi.mock('../../../api/api', () => ({
-  usePostV1QuizQuestionIdReport: () => ({ mutate: vi.fn(), isPending: false }),
+  usePostV1QuizQuestionIdReport: () => ({mutate: vi.fn(), isPending: false}),
   usePostV1QuizQuestionIdMarkKnown: () => ({
     mutate: mockMarkKnownMutate,
     isPending: false,
   }),
   // Mock snippet hooks
   useGetV1SnippetsByQuestionQuestionId: () => ({
-    data: { snippets: [] },
+    data: {snippets: []},
     isLoading: false,
     error: null,
   }),
   useGetV1PreferencesLearning: () => ({
-    data: { tts_voice: 'it-IT-TestVoice' },
+    data: {tts_voice: 'it-IT-TestVoice'},
   }),
   // Mock auth status for AuthProvider
   useGetV1AuthStatus: () => ({
@@ -211,7 +211,7 @@ describe('MobileDailyPage', () => {
       // Do not resolve to simulate a stuck request
     });
 
-    const { rerender } = renderComponent();
+    const {rerender} = renderComponent();
 
     await waitFor(() => {
       expect(screen.getByText('Daily Challenge')).toBeInTheDocument();
@@ -267,7 +267,7 @@ describe('MobileDailyPage', () => {
     renderComponent();
 
     await waitFor(() => {
-      expect(screen.getByText('1 of 2')).toBeInTheDocument();
+      expect(screen.getByText('1 OF 2')).toBeInTheDocument();
     });
   });
 
@@ -307,7 +307,7 @@ describe('MobileDailyPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /Submit Answer/i })
+        screen.getByRole('button', {name: /Submit Answer/i})
       ).toBeInTheDocument();
     });
   });
@@ -317,7 +317,7 @@ describe('MobileDailyPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /Submit Answer/i })
+        screen.getByRole('button', {name: /Submit Answer/i})
       ).toBeInTheDocument();
     });
   });
@@ -345,12 +345,12 @@ describe('MobileDailyPage', () => {
     }
 
     // Now submit the answer
-    const submitButton = screen.getByRole('button', { name: /Submit Answer/i });
+    const submitButton = screen.getByRole('button', {name: /Submit Answer/i});
     fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /Next Question/i })
+        screen.getByRole('button', {name: /Next Question/i})
       ).toBeInTheDocument();
     });
   });
@@ -416,7 +416,7 @@ describe('MobileDailyPage', () => {
     const passageCall = snippetMock.mock.calls.find(call => {
       const props = call[0];
       const componentProps = props.componentProps as
-        | { style?: { lineHeight?: number } }
+        | {style?: {lineHeight?: number}}
         | undefined;
       return componentProps?.style?.lineHeight === 1.7;
     });

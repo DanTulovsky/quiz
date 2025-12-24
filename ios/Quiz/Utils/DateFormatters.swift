@@ -5,7 +5,9 @@ struct DateFormatters {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        // Use local timezone instead of UTC to match web behavior
+        // This ensures the date matches the user's local calendar day
+        formatter.timeZone = TimeZone.current
         return formatter
     }()
 

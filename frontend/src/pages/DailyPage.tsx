@@ -380,10 +380,10 @@ const DailyPage: React.FC = () => {
                   <Title order={3}>Daily Questions</Title>
                   {/* moved date picker + history to right column for layout */}
                 </Group>
-                {progress && (
+                {questions && questions.length > 0 && (
                   <Group justify='flex-start' align='center'>
                     <Text size='sm' c='dimmed'>
-                      Progress: {progress.completed}/{progress.total} completed
+                      {currentQuestionIndex + 1} OF {questions.length}
                     </Text>
                   </Group>
                 )}

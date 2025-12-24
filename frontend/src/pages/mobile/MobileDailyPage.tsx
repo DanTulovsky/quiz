@@ -398,7 +398,7 @@ const MobileDailyPage: React.FC = () => {
               />
 
               <Badge variant='outline'>
-                {currentQuestionIndex + 1} of {questions.length}
+                {currentQuestionIndex + 1} OF {questions.length}
               </Badge>
             </Group>
             {/* Removed redundant Daily Questions label */}

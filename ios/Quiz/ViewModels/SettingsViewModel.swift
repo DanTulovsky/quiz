@@ -2,8 +2,7 @@ import Combine
 import Foundation
 
 class SettingsViewModel: BaseViewModel, LanguageCaching, ListFetchingWithName, LanguageFetching,
-    SuccessStateManaging, LevelFetching
-{
+                         SuccessStateManaging, LevelFetching {
     typealias Item = AIProviderInfo
 
     @Published var aiProviders: [AIProviderInfo] = []

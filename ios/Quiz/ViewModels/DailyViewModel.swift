@@ -20,7 +20,9 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
     private var lastLoadedQuestionId: Int?
 
     var currentQuestion: DailyQuestionWithDetails? {
-        guard currentQuestionIndex >= 0 && currentQuestionIndex < dailyQuestions.count else { return nil }
+        guard currentQuestionIndex >= 0 && currentQuestionIndex < dailyQuestions.count else {
+            return nil
+        }
         return dailyQuestions[currentQuestionIndex]
     }
 
@@ -31,6 +33,14 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
 
     var isAllCompleted: Bool {
         !dailyQuestions.isEmpty && dailyQuestions.allSatisfy { $0.isCompleted }
+    }
+
+    var completedCount: Int {
+        dailyQuestions.filter { $0.isCompleted }.count
+    }
+
+    var totalCount: Int {
+        dailyQuestions.count
     }
 
     var hasPreviousQuestion: Bool {
@@ -54,8 +64,12 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
 
         apiService.getDailyQuestions(date: today)
             .handleLoadingAndError(on: self)
+            .receive(on: DispatchQueue.main)
             .sinkValue(on: self) { [weak self] response in
                 guard let self = self else { return }
+
+                print("📥 Received daily questions response: \(response.questions.count) questions")
+
                 self.dailyQuestions = response.questions
 
                 // Always position on the first incomplete question when questions are loaded
@@ -64,6 +78,9 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
 
                 // Mark as positioned after setting the index
                 self.isPositioned = true
+                print(
+                    "📍 Positioning complete: index=\(self.currentQuestionIndex), isPositioned=\(self.isPositioned)"
+                )
 
                 // Load snippets for the positioned question
                 if let questionId = self.currentQuestion?.question.id {
@@ -79,12 +96,23 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
             return
         }
 
+        // Debug: Log completion status of all questions
+        let completedCount = dailyQuestions.filter { $0.isCompleted }.count
+        print("📊 Daily Questions: \(dailyQuestions.count) total, \(completedCount) completed")
+        for (index, question) in dailyQuestions.enumerated() {
+            print("  Question \(index + 1): isCompleted=\(question.isCompleted), id=\(question.id)")
+        }
+
         // Find the first incomplete question
         if let firstIncomplete = dailyQuestions.firstIndex(where: { !$0.isCompleted }) {
             currentQuestionIndex = firstIncomplete
+            print(
+                "✅ Positioned at first incomplete question: index \(firstIncomplete) (question \(firstIncomplete + 1))"
+            )
         } else {
             // All questions are completed, start at the first one
             currentQuestionIndex = 0
+            print("✅ All questions completed, positioned at index 0")
         }
     }
 
@@ -96,10 +124,12 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
         }
 
         // Check if current question is completed or invalid
-        let currentIsCompleted = currentQuestionIndex >= 0
+        let currentIsCompleted =
+            currentQuestionIndex >= 0
             && currentQuestionIndex < dailyQuestions.count
             && dailyQuestions[currentQuestionIndex].isCompleted
-        let currentIsInvalid = currentQuestionIndex < 0 || currentQuestionIndex >= dailyQuestions.count
+        let currentIsInvalid =
+            currentQuestionIndex < 0 || currentQuestionIndex >= dailyQuestions.count
 
         // If we're on a completed question or invalid index, find the first incomplete question
         if currentIsCompleted || currentIsInvalid {
@@ -178,7 +208,8 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
             }
         } else {
             // Find next unanswered question
-            if let nextIncompleteIndex = dailyQuestions.enumerated().first(where: { index, question in
+            if let nextIncompleteIndex = dailyQuestions.enumerated().first(where: {
+                index, question in
                 index > currentQuestionIndex && !question.isCompleted
             })?.offset {
                 currentQuestionIndex = nextIncompleteIndex

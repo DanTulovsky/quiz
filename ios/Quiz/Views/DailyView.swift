@@ -31,6 +31,184 @@ struct DailyView: View {
                         ProgressView("Loading Daily Challenge...")
                             .padding(.top, 50)
                     } else if let question = viewModel.currentQuestion {
+                        // Extra safety check: if we're at index 0, verify it's not a completed question
+                        // (unless all are completed) - if so, trigger repositioning
+                        if viewModel.currentQuestionIndex == 0 && viewModel.dailyQuestions.count > 0 {
+                            let firstQuestion = viewModel.dailyQuestions[0]
+                            let hasCompletedQuestions = viewModel.dailyQuestions.contains { $0.isCompleted }
+                            if firstQuestion.isCompleted && hasCompletedQuestions && !viewModel.isAllCompleted {
+                                // We're at a completed question when we shouldn't be - trigger repositioning
+                                ProgressView("Loading Daily Challenge...")
+                                    .padding(.top, 50)
+                                    .onAppear {
+                                        DispatchQueue.main.async {
+                                            viewModel.validateCurrentQuestionPosition()
+                                        }
+                                    }
+                            } else {
+                                // Safe to show question
+                                headerSection
+
+                                QuestionCardView(
+                                    question: question.question,
+                                    snippets: viewModel.snippets,
+                                    onTextSelected: { text, fullText in
+                                        selectedText = text
+                                        translationSentence = TextUtils.extractSentence(
+                                            from: fullText, containing: text)
+                                        showTranslationPopup = true
+                                    },
+                                    onSnippetTapped: { snippet in
+                                        showingSnippet = snippet
+                                    },
+                                    showLanguageBadge: false
+                                )
+                                .id(questionCardId)
+
+                                QuestionOptionsView(
+                                    question: question.question,
+                                    selectedAnswerIndex: viewModel.selectedAnswerIndex,
+                                    correctAnswerIndex: question.isCompleted
+                                        ? question.question.correctAnswerIndex : nil,
+                                    userAnswerIndex: question.isCompleted ? question.userAnswerIndex : nil,
+                                    showResults: viewModel.answerResponse != nil || question.isCompleted,
+                                    onOptionSelected: { index in
+                                        viewModel.selectedAnswerIndex = index
+                                    }
+                                )
+
+                                if let response = viewModel.answerResponse {
+                                    AnswerFeedbackView(
+                                        isCorrect: response.isCorrect,
+                                        explanation: response.explanation,
+                                        language: question.question.language,
+                                        snippets: viewModel.snippets,
+                                        onTextSelected: { text, fullText in
+                                            selectedText = text
+                                            translationSentence = TextUtils.extractSentence(
+                                                from: fullText, containing: text)
+                                            showTranslationPopup = true
+                                        },
+                                        onSnippetTapped: { snippet in
+                                            showingSnippet = snippet
+                                        },
+                                        showOverlay: true
+                                    )
+                                } else if question.isCompleted {
+                                    // Show feedback for completed questions even if answerResponse is nil
+                                    let isCorrect =
+                                        question.userAnswerIndex == question.question.correctAnswerIndex
+                                    let explanation =
+                                        stringValue(question.question.content["explanation"])
+                                        ?? "Review your answer above."
+                                    AnswerFeedbackView(
+                                        isCorrect: isCorrect,
+                                        explanation: explanation,
+                                        language: question.question.language,
+                                        snippets: viewModel.snippets,
+                                        onTextSelected: { text, fullText in
+                                            selectedText = text
+                                            translationSentence = TextUtils.extractSentence(
+                                                from: fullText, containing: text)
+                                            showTranslationPopup = true
+                                        },
+                                        onSnippetTapped: { snippet in
+                                            showingSnippet = snippet
+                                        },
+                                        showOverlay: true
+                                    )
+                                }
+
+                                actionButtons()
+
+                                QuestionActionButtons(
+                                    isReported: viewModel.isReported,
+                                    onReport: { viewModel.showReportModal = true },
+                                    onMarkKnown: { viewModel.showMarkKnownModal = true }
+                                )
+                            }
+                        } else {
+                            // Not at index 0, safe to show
+                            headerSection
+
+                            QuestionCardView(
+                                question: question.question,
+                                snippets: viewModel.snippets,
+                                onTextSelected: { text, fullText in
+                                    selectedText = text
+                                    translationSentence = TextUtils.extractSentence(
+                                        from: fullText, containing: text)
+                                    showTranslationPopup = true
+                                },
+                                onSnippetTapped: { snippet in
+                                    showingSnippet = snippet
+                                },
+                                showLanguageBadge: false
+                            )
+                            .id(questionCardId)
+
+                            QuestionOptionsView(
+                                question: question.question,
+                                selectedAnswerIndex: viewModel.selectedAnswerIndex,
+                                correctAnswerIndex: question.isCompleted
+                                    ? question.question.correctAnswerIndex : nil,
+                                userAnswerIndex: question.isCompleted ? question.userAnswerIndex : nil,
+                                showResults: viewModel.answerResponse != nil || question.isCompleted,
+                                onOptionSelected: { index in
+                                    viewModel.selectedAnswerIndex = index
+                                }
+                            )
+
+                            if let response = viewModel.answerResponse {
+                                AnswerFeedbackView(
+                                    isCorrect: response.isCorrect,
+                                    explanation: response.explanation,
+                                    language: question.question.language,
+                                    snippets: viewModel.snippets,
+                                    onTextSelected: { text, fullText in
+                                        selectedText = text
+                                        translationSentence = TextUtils.extractSentence(
+                                            from: fullText, containing: text)
+                                        showTranslationPopup = true
+                                    },
+                                    onSnippetTapped: { snippet in
+                                        showingSnippet = snippet
+                                    },
+                                    showOverlay: true
+                                )
+                            } else if question.isCompleted {
+                                // Show feedback for completed questions even if answerResponse is nil
+                                let isCorrect =
+                                    question.userAnswerIndex == question.question.correctAnswerIndex
+                                let explanation =
+                                    stringValue(question.question.content["explanation"])
+                                    ?? "Review your answer above."
+                                AnswerFeedbackView(
+                                    isCorrect: isCorrect,
+                                    explanation: explanation,
+                                    language: question.question.language,
+                                    snippets: viewModel.snippets,
+                                    onTextSelected: { text, fullText in
+                                        selectedText = text
+                                        translationSentence = TextUtils.extractSentence(
+                                            from: fullText, containing: text)
+                                        showTranslationPopup = true
+                                    },
+                                    onSnippetTapped: { snippet in
+                                        showingSnippet = snippet
+                                    },
+                                    showOverlay: true
+                                )
+                            }
+
+                            actionButtons()
+
+                            QuestionActionButtons(
+                                isReported: viewModel.isReported,
+                                onReport: { viewModel.showReportModal = true },
+                                onMarkKnown: { viewModel.showMarkKnownModal = true }
+                            )
+                        }
                         headerSection
 
                         QuestionCardView(
