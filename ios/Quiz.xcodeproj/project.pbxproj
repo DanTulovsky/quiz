@@ -30,6 +30,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Quiz.entitlements.production,
 			);
 			target = BE5781DC2EF24DFC00A9FE36 /* Quiz */;
 		};
