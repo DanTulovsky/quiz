@@ -20,3 +20,4 @@ struct LoadingView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
+

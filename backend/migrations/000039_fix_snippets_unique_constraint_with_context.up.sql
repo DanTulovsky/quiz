@@ -13,3 +13,4 @@ CREATE UNIQUE INDEX IF NOT EXISTS unique_snippet_per_user_text_language_context
 ON snippets (user_id, original_text, source_language, target_language, question_id, section_id, story_id)
 WHERE original_text IS NOT NULL;
 
+

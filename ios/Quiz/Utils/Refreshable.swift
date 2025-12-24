@@ -15,3 +15,4 @@ extension Refreshable {
         // Subclasses implement this
     }
 }
+
