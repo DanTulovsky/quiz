@@ -17,7 +17,9 @@ vi.mock('./axios', () => ({
 
 import { AXIOS_INSTANCE } from './axios';
 
-const mockAxios = AXIOS_INSTANCE as ReturnType<typeof vi.fn>;
+const mockAxios = AXIOS_INSTANCE as unknown as {
+  get: ReturnType<typeof vi.fn>;
+};
 
 const createWrapper = () => {
   const queryClient = new QueryClient({

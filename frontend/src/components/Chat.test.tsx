@@ -1,5 +1,5 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { vi } from 'vitest';
+import { vi, type MockedFunction } from 'vitest';
 import { Chat } from './Chat';
 import { useAuth } from '../hooks/useAuth';
 import {
@@ -60,19 +60,19 @@ vi.mock('react-hotkeys-hook', () => ({
   useHotkeys: vi.fn(),
 }));
 
-const mockUseAuth = useAuth as vi.MockedFunction<typeof useAuth>;
+const mockUseAuth = useAuth as MockedFunction<typeof useAuth>;
 const mockUseGetV1SettingsAiProviders =
-  useGetV1SettingsAiProviders as vi.MockedFunction<
+  useGetV1SettingsAiProviders as MockedFunction<
     typeof useGetV1SettingsAiProviders
   >;
 
 const mockUsePostV1AiConversations =
-  usePostV1AiConversations as vi.MockedFunction<
+  usePostV1AiConversations as MockedFunction<
     typeof usePostV1AiConversations
   >;
 
 const mockUsePostV1AiConversationsConversationIdMessages =
-  usePostV1AiConversationsConversationIdMessages as vi.MockedFunction<
+  usePostV1AiConversationsConversationIdMessages as MockedFunction<
     typeof usePostV1AiConversationsConversationIdMessages
   >;
 
@@ -80,20 +80,18 @@ const mockUsePostV1AiConversationsConversationIdMessages =
 // global.fetch = vi.fn();
 
 const mockQuestion = {
-  id: '1',
+  id: 1,
   content: {
-    text: 'Test question',
+    question: 'Test question',
     options: ['A', 'B', 'C', 'D'],
   },
-  type: 'multiple_choice',
-  difficulty: 'medium',
-  topic: 'test',
-  subtopic: 'test',
+  type: 'vocabulary' as const,
+  difficulty_score: 0.5,
   explanation: 'Test explanation',
 };
 
 const mockUser = {
-  id: '1',
+  id: 1,
   email: 'test@example.com',
   ai_enabled: true,
   ai_provider: 'openai',
@@ -123,28 +121,36 @@ describe('Chat Component', () => {
     // Setup default mocks
     mockUseAuth.mockReturnValue({
       user: mockUser,
-      login: vi.fn(),
-      logout: vi.fn(),
+      isAuthenticated: true,
       isLoading: false,
+      login: vi.fn(),
+      loginWithUser: vi.fn(),
+      logout: vi.fn(),
+      updateSettings: vi.fn(),
+      refreshUser: vi.fn(),
     });
 
     mockUseGetV1SettingsAiProviders.mockReturnValue({
       data: mockProvidersData,
       isLoading: false,
+      isError: false,
+      isSuccess: true,
       error: null,
-    });
+      refetch: vi.fn(),
+      queryKey: [],
+    } as any);
 
     mockUsePostV1AiConversations.mockReturnValue({
       mutateAsync: vi.fn().mockResolvedValue({ id: 'test-conversation-id' }),
-      isLoading: false,
+      isPending: false,
       error: null,
-    });
+    } as any);
 
     mockUsePostV1AiConversationsConversationIdMessages.mockReturnValue({
       mutateAsync: vi.fn().mockResolvedValue({ id: 'test-message-id' }),
-      isLoading: false,
+      isPending: false,
       error: null,
-    });
+    } as any);
 
     // ✅ FIXED: Properly mock the streaming response
     const mockReader = {
@@ -157,7 +163,7 @@ describe('Chat Component', () => {
         .mockResolvedValueOnce({ done: true, value: undefined }),
     };
 
-    (global.fetch as vi.Mock).mockResolvedValue({
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
       ok: true,
       body: {
         getReader: () => mockReader,

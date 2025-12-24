@@ -14,6 +14,13 @@ import {
 } from 'lucide-react';
 import { Question, AnswerResponse as Feedback } from '../api/api';
 import * as Api from '../api/api';
+
+// Extended Question type that includes user-specific stats (used in daily questions)
+type QuestionWithUserStats = Question & {
+  user_total_responses?: number;
+  user_correct_count?: number;
+  user_incorrect_count?: number;
+};
 import { defaultVoiceForLanguage } from '../utils/tts';
 import logger from '../utils/logger';
 import { useAuth } from '../hooks/useAuth';
@@ -136,7 +143,7 @@ const IconMoodCry: React.ComponentType<IconProps> =
   });
 
 export interface QuestionCardProps {
-  question: Question;
+  question: QuestionWithUserStats;
   onAnswer: (questionId: number, answer: string) => Promise<Feedback>;
   onNext: () => void;
   feedback?: Feedback | null;
@@ -527,10 +534,10 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     // Fetch question history - only for daily questions
     const { data: historyData, isLoading: isHistoryLoading } =
       useGetV1DailyHistoryQuestionId(
-        question.user_total_responses !== undefined ? question.id : 0,
+        question.user_total_responses !== undefined && question.id !== undefined ? question.id : 0,
         {
-          enabled: question.user_total_responses !== undefined,
           query: {
+            enabled: question.user_total_responses !== undefined && question.id !== undefined,
             queryKey: [`/v1/daily/history/${question.id}`, user?.id],
           },
         }
@@ -993,7 +1000,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                         getVoice={() => {
                           // Prefer user setting to match story behavior; fall back to default voice
                           const saved = (
-                            userLearningPrefs?.tts_voice || ''
+                            (userLearningPrefs as { tts_voice?: string } | undefined)?.tts_voice || ''
                           ).trim();
                           if (saved) return saved;
                           const voice = defaultVoiceForLanguage(
@@ -1273,7 +1280,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
             <QuestionHistoryChart
               history={historyData?.history || []}
               isLoading={isHistoryLoading}
-              questionId={question.id}
+              questionId={question.id ?? 0}
             />
           )}
         </Box>

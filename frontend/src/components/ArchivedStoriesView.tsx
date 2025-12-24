@@ -11,18 +11,25 @@ import {
   Loader,
   TextInput,
   ScrollArea,
+  useMantineTheme,
 } from '@mantine/core';
 import {
   IconArchive,
   IconBook,
-  IconRotateClockwise,
   IconCalendar,
   IconLanguage,
   IconSearch,
   IconCheck,
   IconEye,
 } from '@tabler/icons-react';
-import { Loader } from '@mantine/core';
+import * as TablerIcons from '@tabler/icons-react';
+
+const tablerIconMap = TablerIcons as unknown as Record<
+  string,
+  React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
+>;
+const IconRotateClockwise: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconRotateClockwise || tablerIconMap.IconRefresh || (() => null);
 import { Story, StoryWithSections } from '../api/storyApi';
 
 interface ArchivedStoriesViewProps {
@@ -46,6 +53,7 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
   onCreateNew,
   hideCreateButton = false,
 }) => {
+  const theme = useMantineTheme();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Filter stories to only show archived ones, then apply search filter
@@ -230,15 +238,19 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
                   <Group
                     key={story.id}
                     justify='space-between'
-                    style={{ alignItems: 'center' }}
-                    p='sm'
-                    sx={theme => ({
+                    style={{
+                      alignItems: 'center',
                       backgroundColor:
                         index % 2 === 0 ? theme.colors.gray[0] : 'transparent',
-                      '&:hover': {
-                        backgroundColor: theme.colors.gray[1],
-                      },
-                    })}
+                    }}
+                    p='sm'
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = theme.colors.gray[1];
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        index % 2 === 0 ? theme.colors.gray[0] : 'transparent';
+                    }}
                   >
                     <div style={{ flex: 1 }}>
                       <Group justify='space-between' mb='xs'>
@@ -261,7 +273,7 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
                         <Group gap='xs'>
                           <IconCalendar size={14} />
                           <Text size='sm' color='dimmed'>
-                            {new Date(story.created_at).toLocaleDateString()}
+                            {story.created_at ? new Date(story.created_at).toLocaleDateString() : 'N/A'}
                           </Text>
                         </Group>
 

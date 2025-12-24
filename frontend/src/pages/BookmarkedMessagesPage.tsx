@@ -389,7 +389,7 @@ export const BookmarkedMessagesPage: React.FC = () => {
         url: '/v1/ai/bookmarks',
         method: 'GET',
         params,
-      });
+      }) as { messages?: ChatMessage[]; total?: number };
 
       return {
         items: responseData.messages || [],

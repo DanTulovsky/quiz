@@ -1,7 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import {
   useInfiniteQuery,
-  UseInfiniteQueryOptions,
 } from '@tanstack/react-query';
 
 export interface PaginationOptions {
@@ -66,14 +65,7 @@ export function usePagination<TData = unknown>(
     total: number;
   };
 
-  const infiniteQueryOptions: UseInfiniteQueryOptions<
-    PageData,
-    Error,
-    PageData,
-    PageData,
-    readonly unknown[],
-    number
-  > = {
+  const infiniteQueryOptions = {
     queryKey: [...queryKey, 'pagination', currentPage],
     initialPageParam: 0,
     queryFn: ({ pageParam }: { pageParam: number }) => {
@@ -134,7 +126,7 @@ export function usePagination<TData = unknown>(
     if (enableInfiniteScroll) {
       // For infinite scroll, flatten all pages
       return (
-        data.pages.flatMap((page: PageData) => {
+        (data.pages as PageData[]).flatMap((page: PageData) => {
           // React Query stores the return value from queryFn directly in page
           // My query function returns {items: [...], total: 1}
           if (page && Array.isArray(page.items)) {
@@ -273,6 +265,5 @@ export function usePagination<TData = unknown>(
     goToPreviousPage,
     reset,
     loadMoreRef,
-    hasNextPage,
   };
 }

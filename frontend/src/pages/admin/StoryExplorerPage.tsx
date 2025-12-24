@@ -18,7 +18,15 @@ import {
   Badge,
 } from '@mantine/core';
 import { Navigate } from 'react-router-dom';
-import { IconBook, IconSearch, IconFilterSearch } from '@tabler/icons-react';
+import { IconBook, IconSearch } from '@tabler/icons-react';
+import * as TablerIcons from '@tabler/icons-react';
+
+const tablerIconMap = TablerIcons as unknown as Record<
+  string,
+  React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
+>;
+const IconFilterSearch: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconFilterSearch || tablerIconMap.IconSearch || (() => null);
 import { useAuth } from '../../hooks/useAuth';
 import {
   useAdminStories,

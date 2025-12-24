@@ -24,13 +24,22 @@ import {
   IconAlertCircle,
   IconCheck,
   IconX,
-  IconMail,
   IconClock,
   IconUser,
-  IconChartLine,
-  IconSend2,
   IconSearch,
 } from '@tabler/icons-react';
+import * as TablerIcons from '@tabler/icons-react';
+
+const tablerIconMap = TablerIcons as unknown as Record<
+  string,
+  React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
+>;
+const IconMail: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconMail || tablerIconMap.IconMailbox || (() => null);
+const IconChartLine: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconChartLine || (() => null);
+const IconSend2: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconSend2 || tablerIconMap.IconSend || (() => null);
 import { useAuth } from '../../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';

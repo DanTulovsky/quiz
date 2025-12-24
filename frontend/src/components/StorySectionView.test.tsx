@@ -531,7 +531,7 @@ describe('StorySectionView', () => {
         expect.objectContaining({
           title: expect.any(String),
         }),
-        mockSection.content.trim()
+        mockSection.content?.trim() || ''
       );
     });
 
@@ -581,7 +581,7 @@ describe('StorySectionView', () => {
         expect.objectContaining({
           title: expect.any(String),
         }),
-        mockSection.content.trim()
+        mockSection.content?.trim() || ''
       );
     });
 
@@ -599,7 +599,7 @@ describe('StorySectionView', () => {
         expect.objectContaining({
           title: expect.any(String),
         }),
-        mockSection.content.trim()
+        mockSection.content?.trim() || ''
       );
     });
   });

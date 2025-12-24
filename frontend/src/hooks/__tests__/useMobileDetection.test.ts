@@ -22,13 +22,14 @@ import {
 } from '../../utils/device';
 
 // Type the mocked functions properly
-const mockIsMobileDevice = isMobileDevice as vi.MockedFunction<
+import type { MockedFunction } from 'vitest';
+const mockIsMobileDevice = isMobileDevice as MockedFunction<
   typeof isMobileDevice
 >;
-const mockGetDeviceView = getDeviceView as vi.MockedFunction<
+const mockGetDeviceView = getDeviceView as MockedFunction<
   typeof getDeviceView
 >;
-const mockSupportsTouch = supportsTouch as vi.MockedFunction<
+const mockSupportsTouch = supportsTouch as MockedFunction<
   typeof supportsTouch
 >;
 

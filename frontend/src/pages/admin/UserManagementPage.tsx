@@ -34,18 +34,30 @@ import {
   IconRefresh,
   IconPlus,
   IconAlertCircle,
-  IconAlertTriangle,
   IconCheck,
   IconX,
   IconSearch,
-  IconFilterSearch,
-  IconDots,
   IconUser,
   IconBrain,
-  IconActivity,
-  IconPlayerPauseFilled,
-  IconPlayerPlayFilled,
 } from '@tabler/icons-react';
+import * as TablerIcons from '@tabler/icons-react';
+
+const tablerIconMap = TablerIcons as unknown as Record<
+  string,
+  React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
+>;
+const IconAlertTriangle: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconAlertTriangle || tablerIconMap.IconAlertCircle || (() => null);
+const IconFilterSearch: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconFilterSearch || tablerIconMap.IconSearch || (() => null);
+const IconDots: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconDots || tablerIconMap.IconDotsVertical || (() => null);
+const IconActivity: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconActivity || (() => null);
+const IconPlayerPauseFilled: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconPlayerPauseFilled || tablerIconMap.IconPlayerPause || (() => null);
+const IconPlayerPlayFilled: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconPlayerPlayFilled || tablerIconMap.IconPlayerPlay || (() => null);
 import { notifications } from '@mantine/notifications';
 import {
   useCreateUser,

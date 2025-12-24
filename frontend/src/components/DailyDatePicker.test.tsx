@@ -161,7 +161,7 @@ describe('DailyDatePicker', () => {
     act(() => {
       render(
         <TestWrapper>
-          <DailyDatePicker {...defaultProps} selectedDate={null} />
+          <DailyDatePicker {...defaultProps} selectedDate={undefined} />
         </TestWrapper>
       );
     });

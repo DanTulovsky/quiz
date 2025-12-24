@@ -66,6 +66,11 @@ vi.mock('../hooks/useAuth', () => ({
 vi.mock('../hooks/useMobileDetection', () => ({
   useMobileDetection: vi.fn(() => ({
     isMobile: false,
+    deviceView: 'desktop' as const,
+    isTouchDevice: false,
+    setMobileView: vi.fn(),
+    setDesktopView: vi.fn(),
+    resetView: vi.fn(),
   })),
 }));
 
@@ -508,7 +513,14 @@ describe('QuestionCard', () => {
 
   it('does not display copy button on mobile for reading comprehension', () => {
     // Set mobile detection to return true for mobile
-    vi.mocked(useMobileDetection).mockReturnValue({ isMobile: true });
+    vi.mocked(useMobileDetection).mockReturnValue({
+      isMobile: true,
+      deviceView: 'mobile' as const,
+      isTouchDevice: true,
+      setMobileView: vi.fn(),
+      setDesktopView: vi.fn(),
+      resetView: vi.fn(),
+    });
 
     const readingQuestion: Question = {
       id: 2,
@@ -537,7 +549,14 @@ describe('QuestionCard', () => {
     ).not.toBeInTheDocument();
 
     // Reset mock for other tests
-    vi.mocked(useMobileDetection).mockReturnValue({ isMobile: false });
+    vi.mocked(useMobileDetection).mockReturnValue({
+      isMobile: false,
+      deviceView: 'desktop' as const,
+      isTouchDevice: false,
+      setMobileView: vi.fn(),
+      setDesktopView: vi.fn(),
+      resetView: vi.fn(),
+    });
   });
 
   it.skip('handles TTS button click for reading comprehension', async () => {
@@ -1880,8 +1899,8 @@ describe('QuestionCard', () => {
 
       // Submission should be a valid original index within 0..4
       expect(capturedOriginalIndex).not.toBeNull();
-      expect(capturedOriginalIndex as number).toBeGreaterThanOrEqual(0);
-      expect(capturedOriginalIndex as number).toBeLessThan(5);
+      expect((capturedOriginalIndex ?? 0) as number).toBeGreaterThanOrEqual(0);
+      expect((capturedOriginalIndex ?? 0) as number).toBeLessThan(5);
 
       // Verify badges exist for both user and correct
       expect(screen.getAllByText('Your answer').length).toBeGreaterThan(0);
@@ -2260,7 +2279,7 @@ describe('Keyboard and mouse answer selection edge cases', () => {
       React.useEffect(() => {
         selectionSetterRef.current = (index: number) => {
           setSelectedAnswer(index);
-          setSelectedAnswerQuestionId(question.id);
+          setSelectedAnswerQuestionId(question.id ?? null);
         };
       }, []);
 
@@ -2274,7 +2293,7 @@ describe('Keyboard and mouse answer selection edge cases', () => {
           selectedAnswerQuestionId={selectedAnswerQuestionId}
           onAnswerSelect={index => {
             setSelectedAnswer(index);
-            setSelectedAnswerQuestionId(question.id);
+            setSelectedAnswerQuestionId(question.id ?? null);
           }}
           showExplanation={showExplanation}
           setShowExplanation={setShowExplanation}
@@ -2376,8 +2395,8 @@ describe('Keyboard and mouse answer selection edge cases', () => {
       const [feedback, setFeedback] = React.useState<AnswerResponse | null>(
         null
       );
-      const handleAnswer = async (qid: number, answer: string) => {
-        submitted = parseInt(answer, 10);
+      const handleAnswer = async (_qid: number, _answer: string) => {
+        submitted = parseInt(_answer, 10);
         const resp: AnswerResponse = {
           is_correct: submitted === 3,
           correct_answer_index: 3,
@@ -2530,7 +2549,7 @@ describe('Keyboard and mouse answer selection edge cases', () => {
         null
       );
       const [showExplanation, setShowExplanation] = React.useState(false);
-      const [maxOptions, setMaxOptions] = React.useState(0);
+      const [_maxOptions, setMaxOptions] = React.useState(0);
       const handleAnswer = async (_qid: number, _answer: string) => {
         return mockFeedback;
       };
@@ -2603,7 +2622,7 @@ describe('Keyboard and mouse answer selection edge cases', () => {
         null
       );
       const [showExplanation, setShowExplanation] = React.useState(false);
-      const [maxOptions, setMaxOptions] = React.useState(0);
+      const [_maxOptions, setMaxOptions] = React.useState(0);
       const handleAnswer = async (_qid: number, _answer: string) => {
         return mockFeedback;
       };
@@ -2703,12 +2722,12 @@ describe('Edge cases and race conditions', () => {
         null
       );
       const [showExplanation, setShowExplanation] = React.useState(false);
-      const [maxOptions, setMaxOptions] = React.useState(0);
+      const [_maxOptions, setMaxOptions] = React.useState(0);
       const [feedback, setFeedback] = React.useState<AnswerResponse | null>(
         null
       );
 
-      const handleAnswer = async (qid: number, answer: string) => {
+      const handleAnswer = async (_qid: number, _answer: string) => {
         const resp = feedback1;
         setFeedback(resp);
         return resp;
@@ -2784,7 +2803,7 @@ describe('Edge cases and race conditions', () => {
         null
       );
       const [showExplanation, setShowExplanation] = React.useState(false);
-      const [maxOptions, setMaxOptions] = React.useState(0);
+      const [_maxOptions, setMaxOptions] = React.useState(0);
 
       return (
         <QuestionCard
@@ -2835,7 +2854,7 @@ describe('Edge cases and race conditions', () => {
         null
       );
       const [showExplanation, setShowExplanation] = React.useState(false);
-      const [maxOptions, setMaxOptions] = React.useState(0);
+      const [_maxOptions, setMaxOptions] = React.useState(0);
 
       return (
         <QuestionCard
@@ -2902,7 +2921,7 @@ describe('Edge cases and race conditions', () => {
       );
       const [showExplanation, setShowExplanation] = React.useState(false);
       const [maxOptions, setMaxOptions] = React.useState(0);
-      const handleAnswer = async (qid: number, answer: string) => {
+      const handleAnswer = async (_qid: number, _answer: string) => {
         return {
           is_correct: true,
           correct_answer_index: 0,
@@ -2992,7 +3011,7 @@ describe('Edge cases and race conditions', () => {
       const [currentFeedback, setCurrentFeedback] =
         React.useState<AnswerResponse | null>(null);
 
-      const handleAnswer = async (qid: number, answer: string) => {
+      const handleAnswer = async (_qid: number, _answer: string) => {
         setCurrentFeedback(feedback);
         return feedback;
       };

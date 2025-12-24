@@ -10,7 +10,7 @@ export const useSectionSnippets = (sectionId: number | null | undefined) => {
         // Cache snippets for 5 minutes to avoid unnecessary refetches
         staleTime: 5 * 60 * 1000,
         // Keep data in cache for 10 minutes
-        cacheTime: 10 * 60 * 1000,
+        gcTime: 10 * 60 * 1000,
         // Don't retry on error (snippet highlighting is a nice-to-have feature)
         retry: false,
         // Don't refetch on window focus (not critical data)

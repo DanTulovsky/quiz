@@ -4,7 +4,7 @@ import { Box, useMantineTheme } from '@mantine/core';
 import { formatDateForAPI, parseLocalDateString } from '../utils/time';
 
 interface DailyDatePickerProps {
-  selectedDate: string;
+  selectedDate: string | null | undefined;
   onDateSelect: (date: string | null) => void;
   availableDates?: string[];
   progressData?: Record<string, { completed: number; total: number }>;

@@ -396,7 +396,7 @@ const StoryQuestionCard: React.FC<StoryQuestionCardProps> = ({ question }) => {
     <Paper p='sm' radius='sm' style={{ backgroundColor: '#f8f9fa' }}>
       <Text
         size='sm'
-        weight={500}
+        fw={500}
         mb='xs'
         data-allow-translate='true'
         data-selectable-text='true'
@@ -405,7 +405,7 @@ const StoryQuestionCard: React.FC<StoryQuestionCardProps> = ({ question }) => {
       </Text>
 
       <Stack gap='xs'>
-        {question.options.map((option, index) => (
+        {(question.options ?? []).map((option, index) => (
           <div key={index}>
             <input
               type='radio'
@@ -428,7 +428,7 @@ const StoryQuestionCard: React.FC<StoryQuestionCardProps> = ({ question }) => {
         ))}
       </Stack>
 
-      <Group position='apart' mt='xs'>
+      <Group justify='space-between' mt='xs'>
         {!showResult ? (
           <Button
             size='xs'

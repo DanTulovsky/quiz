@@ -85,7 +85,12 @@ const mockUsePauseUser = usePauseUser as ReturnType<typeof vi.fn>;
 const mockUseResumeUser = useResumeUser as ReturnType<typeof vi.fn>;
 const mockUseGetV1SettingsLanguages = vi.fn();
 const mockUseGetV1SettingsLevels = vi.fn();
-const mockNotifications = notifications as ReturnType<typeof vi.fn>;
+const mockNotifications = notifications as unknown as {
+  show: ReturnType<typeof vi.fn>;
+  hide: ReturnType<typeof vi.fn>;
+  update: ReturnType<typeof vi.fn>;
+  clean: ReturnType<typeof vi.fn>;
+};
 
 const mockUser: User = {
   id: 1,
@@ -159,7 +164,7 @@ describe('UserManagementPage - Pause/Unpause Functionality', () => {
       user: {
         id: 1,
         username: 'admin',
-        roles: [{ id: 1, name: 'admin', description: 'Administrator' }],
+        roles: [{ id: 1, name: 'admin', description: 'Administrator', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }],
       },
       isAuthenticated: true,
       login: vi.fn(),
@@ -679,7 +684,7 @@ describe('UserManagementPage - Pause/Unpause Functionality', () => {
         user: {
           id: 1,
           username: 'regular_user',
-          roles: [{ id: 1, name: 'user', description: 'Regular user' }],
+          roles: [{ id: 1, name: 'user', description: 'Regular user', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }],
         },
         isAuthenticated: true,
         login: vi.fn(),

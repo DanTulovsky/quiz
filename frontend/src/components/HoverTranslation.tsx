@@ -66,7 +66,7 @@ export const HoverTranslation: React.FC<HoverTranslationProps> = ({
               </Text>
             </div>
           ) : error ? (
-            <Alert color='red' size='sm'>
+            <Alert color='red'>
               <Text size='xs'>Translation failed</Text>
             </Alert>
           ) : translation ? (

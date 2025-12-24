@@ -368,7 +368,7 @@ export const SavedConversationsPage: React.FC = () => {
           url: '/v1/ai/search',
           method: 'GET',
           params,
-        });
+        }) as { conversations?: Array<{ id: string; title: string; created_at: string; updated_at: string; message_count: number; preview_message: string; user_id: number }>; total?: number };
         return {
           items: responseData.conversations || [],
           total: responseData.total || 0,
@@ -379,7 +379,7 @@ export const SavedConversationsPage: React.FC = () => {
           url: '/v1/ai/conversations',
           method: 'GET',
           params: { limit, offset },
-        });
+        }) as { conversations?: Array<{ id: string; title: string; created_at: string; updated_at: string; message_count: number; preview_message: string; user_id: number }>; total?: number };
         return {
           items: responseData.conversations || [],
           total: responseData.total || 0,

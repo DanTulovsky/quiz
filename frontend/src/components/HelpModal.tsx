@@ -12,14 +12,22 @@ import {
 } from '@mantine/core';
 import {
   IconBrain,
-  IconFile,
   IconCalendar,
   IconBook,
   IconAlertCircle,
   IconAbc,
   IconLanguage,
-  IconNote,
 } from '@tabler/icons-react';
+import * as TablerIcons from '@tabler/icons-react';
+
+const tablerIconMap = TablerIcons as unknown as Record<
+  string,
+  React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
+>;
+const IconFile: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconFile || (() => null);
+const IconNote: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconNote || tablerIconMap.IconFileText || (() => null);
 
 interface HelpModalProps {
   opened: boolean;

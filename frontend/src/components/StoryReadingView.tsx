@@ -49,7 +49,7 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
     );
   }
 
-  if (story.sections.length === 0) {
+  if (!story.sections || story.sections.length === 0) {
     if (isGenerating) {
       return (
         <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
@@ -92,7 +92,7 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
       <Paper p='lg' radius='md' style={{ position: 'relative' }}>
         <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
           <TTSButton
-            getText={() => story.sections.map(s => s.content).join('\n\n')}
+            getText={() => (story.sections ?? []).map(s => s.content).join('\n\n')}
             getVoice={() => {
               const saved = (userLearningPrefs?.tts_voice || '').trim();
               if (saved) return saved;
@@ -101,7 +101,7 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
             getMetadata={() => ({
               title: story.title || 'Story',
               language: story.language,
-              level: story.sections[0]?.language_level,
+              level: story.sections?.[0]?.language_level,
             })}
             size='md'
             ariaLabel='Story audio'
@@ -139,7 +139,7 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
               )}
 
               {/* Story Sections */}
-              {story.sections.map((section, index) => (
+              {(story.sections ?? []).map((section, index) => (
                 <div key={section.id || index}>
                   {/* Section Content */}
                   <SnippetHighlighter
@@ -154,7 +154,7 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
                         // Space for the TTS icon so text doesn't overlap
                         paddingRight: '4px',
                         marginBottom:
-                          index < story.sections.length - 1 ? '1.5rem' : '1rem',
+                          index < (story.sections?.length ?? 0) - 1 ? '1.5rem' : '1rem',
                       },
                     }}
                   />

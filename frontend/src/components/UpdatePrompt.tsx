@@ -25,7 +25,7 @@ const UpdatePrompt: React.FC = () => {
       }}
       data-testid='update-prompt'
     >
-      <Group spacing={12} align='center'>
+      <Group gap={12} align='center'>
         <IconRefresh />
         <Text>A new version of the app is available.</Text>
         <Button size='xs' onClick={() => applyUpdate()} aria-label='Reload now'>

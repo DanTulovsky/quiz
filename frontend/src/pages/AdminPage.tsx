@@ -10,11 +10,21 @@ import {
 } from '@mantine/core';
 import {
   IconUser,
-  IconChartLine,
-  IconAdjustments,
-  IconDatabase,
-  IconArrowUp,
 } from '@tabler/icons-react';
+import * as TablerIcons from '@tabler/icons-react';
+
+const tablerIconMap = TablerIcons as unknown as Record<
+  string,
+  React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
+>;
+const IconChartLine: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconChartLine || (() => null);
+const IconAdjustments: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconAdjustments || (() => null);
+const IconDatabase: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconDatabase || (() => null);
+const IconArrowUp: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconArrowUp || (() => null);
 import { useAuth } from '../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 

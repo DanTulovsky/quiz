@@ -77,7 +77,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
         });
         queryClient.invalidateQueries({
           predicate: query => {
-            return query.queryKey[0]?.toString().includes('/v1/snippets/');
+            return Boolean(query.queryKey[0]?.toString().includes('/v1/snippets/'));
           },
         });
       } catch (error) {
@@ -275,7 +275,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
                 color='red'
                 onClick={e => {
                   e.stopPropagation();
-                  handleDeleteClick(snippet.id);
+                  handleDeleteClick(snippet.id ?? 0);
                 }}
                 title='Delete snippet'
               >
@@ -326,10 +326,8 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
           withArrow
           shadow='md'
           radius='md'
-          trigger='click'
           width={300 * fontScaleMap[fontSize]}
           offset={8}
-          middlewares={{ flip: true, shift: true, inline: false }}
         >
           <Popover.Target>
             <span

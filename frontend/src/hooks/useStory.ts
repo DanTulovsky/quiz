@@ -103,7 +103,7 @@ export interface UseStoryReturn {
   generationErrorModal: {
     isOpen: boolean;
     errorMessage: string;
-    errorDetails?: ErrorResponse;
+    errorDetails?: ErrorWithResponse;
   };
   closeGenerationErrorModal: () => void;
 }
@@ -155,7 +155,9 @@ export const useStory = (options?: {
     const unsubscribe = subscribeToGlobalState(() => {
       setCurrentSectionIndexState(globalCurrentSectionIndex);
     });
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   // Wrapper for setCurrentSectionIndex that updates global state
@@ -174,7 +176,7 @@ export const useStory = (options?: {
   const [generationErrorModal, setGenerationErrorModal] = useState<{
     isOpen: boolean;
     errorMessage: string;
-    errorDetails?: ErrorResponse;
+    errorDetails?: ErrorWithResponse;
   }>({ isOpen: false, errorMessage: '' });
 
   // Polling
@@ -195,18 +197,18 @@ export const useStory = (options?: {
 
   // Handle generating status and polling
   useEffect(() => {
-    currentStoryRef.current = currentStory;
+    currentStoryRef.current = currentStory ?? null;
 
     // Check if we received a generating response or if story has no sections yet
     const isGeneratingState =
       (currentStory &&
         typeof currentStory === 'object' &&
         'status' in currentStory &&
-        currentStory.status === 'generating') ||
+        (currentStory as { status?: string }).status === 'generating') ||
       (currentStory &&
         typeof currentStory === 'object' &&
         'sections' in currentStory &&
-        (!currentStory.sections || currentStory.sections.length === 0));
+        (!(currentStory as StoryWithSections).sections || (currentStory as StoryWithSections).sections?.length === 0));
 
     if (isGeneratingState) {
       setIsGenerating(true);
@@ -287,8 +289,8 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Story Created',
         message: 'Your story has been created successfully!',
-        type: 'success',
-      });
+        color: 'green',
+      } as any);
       // Start polling for the first section
       setIsGenerating(true);
       setGenerationType('story');
@@ -313,7 +315,7 @@ export const useStory = (options?: {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the ErrorResponse structure
+            // Handle case where response.data is the ErrorWithResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -343,7 +345,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Error',
         message: errorMessage,
-        type: 'error',
+        color: 'red',
       });
       setGenerationType(null);
     },
@@ -373,7 +375,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Story Archived',
         message: 'Your story has been archived successfully.',
-        type: 'success',
+        color: 'green',
       });
     },
     onError: (error: unknown) => {
@@ -395,7 +397,7 @@ export const useStory = (options?: {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the ErrorResponse structure
+            // Handle case where response.data is the ErrorWithResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -425,7 +427,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Error',
         message: errorMessage,
-        type: 'error',
+        color: 'red',
       });
     },
   });
@@ -443,7 +445,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Story Completed',
         message: 'Your story has been marked as completed!',
-        type: 'success',
+        color: 'green',
       });
     },
     onError: (error: unknown) => {
@@ -465,7 +467,7 @@ export const useStory = (options?: {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the ErrorResponse structure
+            // Handle case where response.data is the ErrorWithResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -495,7 +497,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Error',
         message: errorMessage,
-        type: 'error',
+        color: 'red',
       });
     },
   });
@@ -517,7 +519,7 @@ export const useStory = (options?: {
         showNotificationWithClean({
           title: 'Story Activated',
           message: 'Story has been set as your current active story.',
-          type: 'success',
+          color: 'green',
         });
       }
     },
@@ -546,7 +548,7 @@ export const useStory = (options?: {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the ErrorResponse structure
+            // Handle case where response.data is the ErrorWithResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -576,7 +578,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Error',
         message: errorMessage,
-        type: 'error',
+        color: 'red',
       });
 
       // If story not found, navigate to /story to prevent showing wrong story
@@ -598,7 +600,9 @@ export const useStory = (options?: {
         if (result && typeof result === 'object') {
           if ('error' in result && result.error) {
             // Preserve the full error response object for error details extraction
-            const errorWithDetails: ErrorWithResponse = new Error(result.error);
+            const errorWithDetails: ErrorWithResponse = new Error(
+              typeof result.error === 'string' ? result.error : 'Unknown error'
+            );
             errorWithDetails.response = { data: result };
             throw errorWithDetails;
           }
@@ -635,7 +639,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Section Generated',
         message: 'A new section has been added to your story!',
-        type: 'success',
+        color: 'green',
       });
       // Stop generating state on success
       setIsGenerating(false);
@@ -659,7 +663,7 @@ export const useStory = (options?: {
               'error' in parsedError ||
               'details' in parsedError
             ) {
-              errorDetails = parsedError as ErrorResponse;
+              errorDetails = parsedError as ErrorWithResponse;
               errorMessage =
                 parsedError.message || parsedError.error || errorMessage;
             }
@@ -699,7 +703,7 @@ export const useStory = (options?: {
                   'error' in parsedError ||
                   'details' in parsedError
                 ) {
-                  errorDetails = parsedError as ErrorResponse;
+                  errorDetails = parsedError as ErrorWithResponse;
                   errorMessage =
                     parsedError.message || parsedError.error || errorMessage;
                   console.log(
@@ -727,10 +731,12 @@ export const useStory = (options?: {
               'error' in responseData ||
               'details' in responseData
             ) {
-              errorDetails = responseData as ErrorResponse;
+              errorDetails = responseData as ErrorWithResponse;
               errorMessage =
-                (responseData as ErrorResponse).message ||
-                (responseData as ErrorResponse).error ||
+                (responseData as ErrorWithResponse).message ||
+                (typeof (responseData as { error?: string }).error === 'string'
+                  ? (responseData as { error: string }).error
+                  : '') ||
                 errorMessage;
               console.log('Successfully extracted error details from object');
             } else if ('error' in responseData) {
@@ -760,7 +766,7 @@ export const useStory = (options?: {
               'error' in parsedError ||
               'details' in parsedError
             ) {
-              errorDetails = parsedError as ErrorResponse;
+              errorDetails = parsedError as ErrorWithResponse;
               errorMessage =
                 parsedError.message || parsedError.error || errorMessage;
               console.log(
@@ -786,7 +792,7 @@ export const useStory = (options?: {
               'error' in parsedError ||
               'details' in parsedError
             ) {
-              errorDetails = parsedError as ErrorResponse;
+              errorDetails = parsedError as ErrorWithResponse;
               errorMessage =
                 parsedError.message || parsedError.error || errorMessage;
               console.log('Successfully extracted error details from string');
@@ -809,7 +815,7 @@ export const useStory = (options?: {
               'error' in parsedError ||
               'details' in parsedError
             ) {
-              errorDetails = parsedError as ErrorResponse;
+              errorDetails = parsedError as ErrorWithResponse;
               errorMessage =
                 parsedError.message || parsedError.error || errorMessage;
               console.log(
@@ -833,7 +839,7 @@ export const useStory = (options?: {
       setGenerationErrorModal({
         isOpen: true,
         errorMessage,
-        errorDetails,
+        errorDetails: errorDetails as ErrorWithResponse | undefined,
       });
       // Stop generating state on error
       setIsGenerating(false);
@@ -854,7 +860,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Story Deleted',
         message: 'Story has been deleted successfully.',
-        type: 'success',
+        color: 'green',
       });
     },
     onError: (error: unknown) => {
@@ -876,7 +882,7 @@ export const useStory = (options?: {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the ErrorResponse structure
+            // Handle case where response.data is the ErrorWithResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -906,7 +912,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Error',
         message: errorMessage,
-        type: 'error',
+        color: 'red',
       });
     },
   });
@@ -927,7 +933,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Export Complete',
         message: 'Your story has been exported as PDF.',
-        type: 'success',
+        color: 'green',
       });
     },
     onError: (error: unknown) => {
@@ -949,7 +955,7 @@ export const useStory = (options?: {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the ErrorResponse structure
+            // Handle case where response.data is the ErrorWithResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -979,7 +985,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Error',
         message: errorMessage,
-        type: 'error',
+        color: 'red',
       });
     },
   });
@@ -1020,10 +1026,10 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Settings Updated',
         message,
-        type: 'success',
+        color: 'green',
       });
     },
-    onError: (error: unknown, variables, context) => {
+    onError: (error: unknown, _variables, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousStory) {
         queryClient.setQueryData(['currentStory'], context.previousStory);
@@ -1041,7 +1047,7 @@ export const useStory = (options?: {
       showNotificationWithClean({
         title: 'Update Failed',
         message: errorMessage,
-        type: 'error',
+        color: 'red',
       });
     },
   });
@@ -1113,7 +1119,7 @@ export const useStory = (options?: {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the ErrorResponse structure
+            // Handle case where response.data is the ErrorWithResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -1294,7 +1300,7 @@ export const useStory = (options?: {
 
   return {
     // State
-    currentStory,
+    currentStory: currentStory ?? null,
     archivedStories,
     sections,
     currentSectionIndex,
@@ -1327,7 +1333,7 @@ export const useStory = (options?: {
     canGenerateToday,
     hasCurrentStory,
     currentSection,
-    currentSectionWithQuestions,
+    currentSectionWithQuestions: currentSectionWithQuestions ?? null,
     isGeneratingNextSection: generateNextSectionMutation.isPending,
     generationDisabledReason: getGenerationDisabledReason(),
 

@@ -108,7 +108,7 @@ describe('Layout Component', () => {
     ];
 
     // Verify that each navigation item has the correct index for keyboard shortcuts
-    mainNav.forEach((item, index) => {
+    mainNav.forEach((_item, index) => {
       expect(index).toBeLessThan(3); // Only first 3 items have shortcuts on main nav
     });
   });

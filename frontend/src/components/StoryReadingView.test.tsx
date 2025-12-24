@@ -99,7 +99,6 @@ describe('StoryReadingView', () => {
     title: 'Test Mystery Story',
     language: 'en',
     status: 'active',
-    is_current: true,
     sections: [
       {
         id: 1,
@@ -371,7 +370,7 @@ describe('StoryReadingView', () => {
 
       // Get the actual text that will be played (all sections joined)
       const expectedContent =
-        defaultProps.story?.sections.map(s => s.content).join('\n\n') || '';
+        defaultProps.story?.sections?.map(s => s.content).join('\n\n') || '';
 
       // Set up initial playing state
       mockTTS.isPlaying = true;

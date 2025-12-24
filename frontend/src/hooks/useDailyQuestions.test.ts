@@ -18,7 +18,7 @@ global.Date = class extends OriginalDate {
       super(mockDate);
       return mockDate;
     }
-    return new OriginalDate(...(args as [unknown, ...unknown[]]));
+    return new OriginalDate(...(Array.isArray(args) ? args : [args]));
   }
 } as unknown as DateConstructor;
 
@@ -267,6 +267,12 @@ describe('useDailyQuestions', () => {
     mockUseAuth.mockReturnValue({
       user: mockUser,
       isAuthenticated: true,
+      isLoading: false,
+      login: vi.fn(),
+      loginWithUser: vi.fn(),
+      logout: vi.fn(),
+      updateSettings: vi.fn(),
+      refreshUser: vi.fn(),
     });
 
     // Mock the API hooks

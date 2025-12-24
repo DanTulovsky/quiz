@@ -33,7 +33,7 @@ const CreateStoryForm: React.FC<CreateStoryFormProps> = ({
     tone: null,
     character_names: null,
     custom_instructions: null,
-    section_length_override: null,
+    section_length_override: undefined,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});

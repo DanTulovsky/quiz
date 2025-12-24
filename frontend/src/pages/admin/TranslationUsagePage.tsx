@@ -18,11 +18,19 @@ import {
   Button,
 } from '@mantine/core';
 import {
-  IconArrowUp,
   IconAlertCircle,
   IconInfoCircle,
-  IconChartLine,
 } from '@tabler/icons-react';
+import * as TablerIcons from '@tabler/icons-react';
+
+const tablerIconMap = TablerIcons as unknown as Record<
+  string,
+  React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
+>;
+const IconArrowUp: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconArrowUp || (() => null);
+const IconChartLine: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconChartLine || (() => null);
 import {
   LineChart,
   Line,

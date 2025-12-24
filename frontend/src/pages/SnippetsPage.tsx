@@ -264,7 +264,7 @@ const SnippetsPage: React.FC = () => {
           url: '/v1/snippets/search',
           method: 'GET',
           params,
-        });
+        }) as { snippets?: Array<{ id: number; original_text: string; translated_text: string; context: string | null; source_language: string; target_language: string; difficulty_level: string | null; created_at: string; question_id?: number; story_id?: number; section_id?: number }>; total?: number };
         return {
           items: responseData.snippets || [],
           total: responseData.total || 0,
@@ -294,7 +294,7 @@ const SnippetsPage: React.FC = () => {
           url: '/v1/snippets',
           method: 'GET',
           params,
-        });
+        }) as { snippets?: Array<{ id: number; original_text: string; translated_text: string; context: string | null; source_language: string; target_language: string; difficulty_level: string | null; created_at: string; question_id?: number; story_id?: number; section_id?: number }>; total?: number };
         return {
           items: responseData.snippets || [],
           total: responseData.total || 0,
@@ -647,7 +647,7 @@ const SnippetsPage: React.FC = () => {
         {/* Snippets List */}
         {snippets && snippets.length > 0 ? (
           <Stack gap='md'>
-            {snippets.map(snippet => (
+            {snippets.map((snippet: { id: number; original_text: string; translated_text: string; context: string | null; source_language: string; target_language: string; difficulty_level: string | null; created_at: string; question_id?: number; story_id?: number; section_id?: number }) => (
               <Card key={snippet.id} withBorder>
                 <Stack gap='sm'>
                   <Group justify='space-between' align='flex-start'>

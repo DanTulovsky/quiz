@@ -1439,7 +1439,7 @@ const DataExplorerPage: React.FC = () => {
             autosize
             minRows={3}
           />
-          <Group position='right'>
+          <Group justify='flex-end'>
             <Button variant='subtle' onClick={() => setAIContextOpen(false)}>
               Cancel
             </Button>

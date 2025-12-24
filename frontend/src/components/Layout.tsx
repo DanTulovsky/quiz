@@ -24,24 +24,38 @@ import {
 import {
   IconBook,
   IconBook2,
-  IconChartLine,
-  IconAdjustments,
   IconLogout,
   IconBrain,
-  IconGlobe,
   IconTrophy,
   IconSun,
   IconMoon,
-  IconFile,
-  IconShieldCheck,
   IconCalendar,
   IconAbc,
-  IconPhone,
-  IconHelp,
   IconLanguage,
   IconAlertCircle,
-  IconStars,
 } from '@tabler/icons-react';
+import * as TablerIcons from '@tabler/icons-react';
+
+const tablerIconMap = TablerIcons as unknown as Record<
+  string,
+  React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
+>;
+const IconChartLine: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconChartLine || (() => null);
+const IconAdjustments: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconAdjustments || (() => null);
+const IconGlobe: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconGlobe || (() => null);
+const IconFile: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconFile || (() => null);
+const IconShieldCheck: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconShieldCheck || (() => null);
+const IconPhone: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconPhone || tablerIconMap.IconDeviceMobile || (() => null);
+const IconHelp: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconHelp || tablerIconMap.IconQuestionMark || (() => null);
+const IconStars: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
+  tablerIconMap.IconStars || tablerIconMap.IconStar || (() => null);
 import WorkerStatus from './WorkerStatus';
 import VersionDisplay from './VersionDisplay';
 import HelpModal from './HelpModal';
