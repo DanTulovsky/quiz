@@ -301,7 +301,9 @@ describe('SavedConversationsPage', () => {
       failureReason: null,
       submittedAt: 0,
       variables: undefined,
-    } as unknown as ReturnType<typeof apiModule.usePutV1AiConversationsBookmark>);
+    } as unknown as ReturnType<
+      typeof apiModule.usePutV1AiConversationsBookmark
+    >);
   });
 
   afterEach(() => {

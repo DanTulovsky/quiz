@@ -335,10 +335,7 @@ const NotificationsPage: React.FC = () => {
           <Tabs.Tab value='stats' leftSection={<IconChartLine size={16} />}>
             Statistics
           </Tabs.Tab>
-          <Tabs.Tab
-            value='errors'
-            leftSection={<IconAlertCircle size={16} />}
-          >
+          <Tabs.Tab value='errors' leftSection={<IconAlertCircle size={16} />}>
             Errors
           </Tabs.Tab>
           <Tabs.Tab value='sent' leftSection={<IconMail size={16} />}>

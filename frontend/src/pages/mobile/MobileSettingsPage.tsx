@@ -592,7 +592,10 @@ const MobileSettingsPage: React.FC = () => {
       // Invalidate story-specific snippet queries used by useStorySnippets
       queryClient.invalidateQueries({
         predicate: query => {
-          return (query.queryKey[0]?.toString().includes('/v1/snippets/story/')) ?? false;
+          return (
+            query.queryKey[0]?.toString().includes('/v1/snippets/story/') ??
+            false
+          );
         },
       });
 
@@ -619,9 +622,11 @@ const MobileSettingsPage: React.FC = () => {
       // Invalidate translation practice queries to ensure UI updates immediately
       queryClient.invalidateQueries({
         predicate: query => {
-          return (query.queryKey[0]
-            ?.toString()
-            .includes('/v1/translation-practice')) ?? false;
+          return (
+            query.queryKey[0]
+              ?.toString()
+              .includes('/v1/translation-practice') ?? false
+          );
         },
       });
 
@@ -872,11 +877,14 @@ const MobileSettingsPage: React.FC = () => {
                     onChange={value => setLanguage(value || '')}
                     data={
                       languages?.map(lang => {
-                        const langName = typeof lang === 'string' ? lang : lang.name;
+                        const langName =
+                          typeof lang === 'string' ? lang : lang.name;
                         const displayName = langName || '';
                         return {
                           value: displayName,
-                          label: displayName.charAt(0).toUpperCase() + displayName.slice(1),
+                          label:
+                            displayName.charAt(0).toUpperCase() +
+                            displayName.slice(1),
                         };
                       }) || []
                     }

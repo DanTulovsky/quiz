@@ -309,11 +309,14 @@ const MobileSignupPage: React.FC = () => {
                 data={
                   Array.isArray(languagesQuery.data)
                     ? languagesQuery.data.map(lang => {
-                        const langName = typeof lang === 'string' ? lang : lang.name;
+                        const langName =
+                          typeof lang === 'string' ? lang : lang.name;
                         const displayName = langName || '';
                         return {
                           value: displayName,
-                          label: displayName.charAt(0).toUpperCase() + displayName.slice(1),
+                          label:
+                            displayName.charAt(0).toUpperCase() +
+                            displayName.slice(1),
                         };
                       })
                     : []

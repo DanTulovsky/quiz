@@ -1,4 +1,4 @@
-import {useState, useCallback, useMemo} from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import {
   useInfiniteQuery,
   UseInfiniteQueryOptions,
@@ -47,14 +47,14 @@ export interface UsePaginationReturn<TData> {
 
 export function usePagination<TData = unknown>(
   queryKey: string[],
-  queryFn: (params: {limit: number; offset: number}) => Promise<{
+  queryFn: (params: { limit: number; offset: number }) => Promise<{
     items?: TData[];
     conversations?: TData[];
     total: number;
   }>,
   options: PaginationOptions = {}
 ): UsePaginationReturn<TData> {
-  const {initialLimit = 20, enableInfiniteScroll = false} = options;
+  const { initialLimit = 20, enableInfiniteScroll = false } = options;
 
   const [limit] = useState(initialLimit);
   const [currentPage, setCurrentPage] = useState(1);
@@ -76,7 +76,7 @@ export function usePagination<TData = unknown>(
   > = {
     queryKey: [...queryKey, 'pagination', currentPage],
     initialPageParam: 0,
-    queryFn: ({pageParam}: {pageParam: number}) => {
+    queryFn: ({ pageParam }: { pageParam: number }) => {
       // For traditional pagination, calculate offset based on current page
       const offset = enableInfiniteScroll
         ? pageParam * limit
@@ -151,7 +151,10 @@ export function usePagination<TData = unknown>(
       const currentPageData = data.pages[0] as PageData | undefined;
       if (currentPageData && Array.isArray(currentPageData.items)) {
         return currentPageData.items;
-      } else if (currentPageData && Array.isArray(currentPageData.conversations)) {
+      } else if (
+        currentPageData &&
+        Array.isArray(currentPageData.conversations)
+      ) {
         return currentPageData.conversations;
       } else {
         return [];
@@ -244,7 +247,7 @@ export function usePagination<TData = unknown>(
             loadMore();
           }
         },
-        {threshold: 0.1}
+        { threshold: 0.1 }
       );
 
       observer.observe(node);

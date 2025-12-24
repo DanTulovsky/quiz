@@ -225,14 +225,19 @@ const MobileSnippetsPage: React.FC = () => {
     reset: resetSnippets,
   } = usePagination(
     activeSearchQuery
-      ? [
+      ? ([
           '/v1/snippets/search',
           activeSearchQuery,
           selectedStoryId ?? '',
           selectedLevel ?? '',
           selectedSourceLang ?? '',
-        ].filter(Boolean) as string[]
-      : ['/v1/snippets', selectedStoryId ?? '', selectedLevel ?? '', selectedSourceLang ?? ''].filter(Boolean) as string[],
+        ].filter(Boolean) as string[])
+      : ([
+          '/v1/snippets',
+          selectedStoryId ?? '',
+          selectedLevel ?? '',
+          selectedSourceLang ?? '',
+        ].filter(Boolean) as string[]),
     async ({ limit, offset }) => {
       if (activeSearchQuery.trim()) {
         // Use search API

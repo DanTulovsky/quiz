@@ -133,11 +133,7 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
             <Alert
               color={isGenerating ? 'blue' : 'green'}
               icon={
-                isGenerating ? (
-                  <Loader size={16} />
-                ) : (
-                  <IconCheck size={16} />
-                )
+                isGenerating ? <Loader size={16} /> : <IconCheck size={16} />
               }
             >
               <Group justify='space-between' mb='xs'>

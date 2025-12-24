@@ -606,8 +606,8 @@ const TokenUsageInfo: React.FC = () => {
         generation, chat conversations, and story creation.
       </Text>
       <Text size='sm' c='dimmed'>
-        This helps you monitor your AI consumption, understand usage patterns, and
-        manage your API costs effectively.
+        This helps you monitor your AI consumption, understand usage patterns,
+        and manage your API costs effectively.
       </Text>
       <Text size='sm' fw={600}>
         What you'll see:
@@ -643,21 +643,27 @@ const TokenUsageInfo: React.FC = () => {
         <List.Item>
           <strong>Supported:</strong>{' '}
           {providersData?.providers
-            ?.filter((p: { usage_supported?: boolean; name?: string }) => p.usage_supported)
+            ?.filter(
+              (p: { usage_supported?: boolean; name?: string }) =>
+                p.usage_supported
+            )
             .map((p: { name?: string }) => p.name)
             .join(', ') || 'Loading...'}
         </List.Item>
         <List.Item>
           <strong>Not supported:</strong>{' '}
           {providersData?.providers
-            ?.filter((p: { usage_supported?: boolean; name?: string }) => !p.usage_supported)
+            ?.filter(
+              (p: { usage_supported?: boolean; name?: string }) =>
+                !p.usage_supported
+            )
             .map((p: { name?: string }) => p.name)
             .join(', ') || 'Loading...'}
         </List.Item>
       </List>
-    <Text size='sm' fw={600}>
-      Tips for usage management:
-    </Text>
+      <Text size='sm' fw={600}>
+        Tips for usage management:
+      </Text>
       <List size='sm' spacing='xs'>
         <List.Item>Monitor your daily usage patterns</List.Item>
         <List.Item>Identify peak usage times</List.Item>
@@ -1335,7 +1341,10 @@ const ProgressPage: React.FC = () => {
                       </Text>
                       <Text size='xl' fw={700}>
                         {tokenUsage
-                          .reduce((sum, day) => sum + (day.total_tokens || 0), 0)
+                          .reduce(
+                            (sum, day) => sum + (day.total_tokens || 0),
+                            0
+                          )
                           .toLocaleString()}
                       </Text>
                     </Stack>

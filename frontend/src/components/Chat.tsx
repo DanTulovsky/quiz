@@ -218,7 +218,11 @@ interface ChatPanelProps {
   setShowClearConfirm: (v: boolean) => void;
   selectedSuggestionIndex: number;
   setSelectedSuggestionIndex: (index: number) => void;
-  onSaveMessage?: (messageText: string, messageIndex: number, messageId: string) => void | Promise<void>;
+  onSaveMessage?: (
+    messageText: string,
+    messageIndex: number,
+    messageId: string
+  ) => void | Promise<void>;
   onSaveConversation?: () => void;
   currentConversationId?: string | null;
   // When true, disable/hide save actions to avoid duplicates (auto-save active)

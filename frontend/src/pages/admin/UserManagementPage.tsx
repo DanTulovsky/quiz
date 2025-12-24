@@ -34,6 +34,7 @@ import {
   IconRefresh,
   IconPlus,
   IconAlertCircle,
+  IconAlertTriangle,
   IconCheck,
   IconX,
   IconSearch,
@@ -41,7 +42,7 @@ import {
   IconDots,
   IconUser,
   IconBrain,
-  IconPulse,
+  IconActivity,
   IconPlayerPauseFilled,
   IconPlayerPlayFilled,
 } from '@tabler/icons-react';
@@ -373,7 +374,7 @@ const UserManagementPage: React.FC = () => {
           <Paper p='md' withBorder>
             <Group>
               <ThemeIcon size='lg' color='orange'>
-                <IconPulse size={20} />
+                <IconActivity size={20} />
               </ThemeIcon>
               <div>
                 <Text size='xs' color='dimmed' tt='uppercase' fw={700}>
@@ -646,7 +647,9 @@ const UserManagementPage: React.FC = () => {
                                 </Menu.Item>
                                 {user?.is_paused ? (
                                   <Menu.Item
-                                    leftSection={<IconPlayerPlayFilled size={16} />}
+                                    leftSection={
+                                      <IconPlayerPlayFilled size={16} />
+                                    }
                                     onClick={() => {
                                       if (user?.id) {
                                         resumeUserMutation.mutate(user.id, {
@@ -674,7 +677,9 @@ const UserManagementPage: React.FC = () => {
                                   </Menu.Item>
                                 ) : (
                                   <Menu.Item
-                                    leftSection={<IconPlayerPauseFilled size={16} />}
+                                    leftSection={
+                                      <IconPlayerPauseFilled size={16} />
+                                    }
                                     onClick={() => {
                                       if (user?.id) {
                                         pauseUserMutation.mutate(user.id, {
