@@ -1,4 +1,3 @@
-import React from 'react';
 import { Group, Text, Tooltip, Box, LoadingOverlay } from '@mantine/core';
 import { DailyQuestionHistory } from '../api/api';
 import { useTheme } from '../contexts/ThemeContext';

@@ -123,7 +123,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
         aria-hidden='true'
         style={{ height: 0, margin: 0, padding: 0 }}
       />
-      <Stack spacing='md'>
+      <Stack gap='md'>
         {/* Generating Alert */}
         {isGenerating && (
           <Alert color='blue' icon={<IconBook size={16} />}>
@@ -145,7 +145,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
               width: '100%',
             }}
           >
-            <Group spacing='xs'>
+            <Group gap='xs'>
               <Button
                 variant='light'
                 leftSection={<IconChevronsLeft size={16} />}
@@ -196,7 +196,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
             </Group>
 
             <Badge variant='outline'>
-              <Group spacing={4}>
+              <Group gap={4}>
                 <IconLanguage size={12} />
                 {section.language_level}
               </Group>
@@ -251,7 +251,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
             <Title order={5} mb='sm'>
               Comprehension Questions
             </Title>
-            <Stack spacing='sm'>
+            <Stack gap='sm'>
               {sectionWithQuestions.questions.map((question, index) => (
                 <StoryQuestionCard
                   key={question.id || index}
@@ -276,7 +276,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
               width: '100%',
             }}
           >
-            <Group spacing='xs'>
+            <Group gap='xs'>
               <Button
                 variant='light'
                 leftSection={<IconChevronsLeft size={16} />}
@@ -404,7 +404,7 @@ const StoryQuestionCard: React.FC<StoryQuestionCardProps> = ({ question }) => {
         {question.question_text}
       </Text>
 
-      <Stack spacing='xs'>
+      <Stack gap='xs'>
         {question.options.map((option, index) => (
           <div key={index}>
             <input

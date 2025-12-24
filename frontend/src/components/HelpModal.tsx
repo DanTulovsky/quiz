@@ -12,14 +12,13 @@ import {
 } from '@mantine/core';
 import {
   IconBrain,
-  IconFileText,
+  IconFile,
   IconCalendar,
   IconBook,
   IconAlertCircle,
   IconAbc,
-  IconBookmark,
   IconLanguage,
-  IconNotes,
+  IconNote,
 } from '@tabler/icons-react';
 
 interface HelpModalProps {
@@ -76,7 +75,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ opened, onClose }) => {
               <strong>Vocabulary:</strong> Practice and review vocabulary words
               with spaced repetition
             </List.Item>
-            <List.Item icon={<IconFileText size={16} />}>
+            <List.Item icon={<IconFile size={16} />}>
               <strong>Reading Comprehension:</strong> Practice reading passages
               with comprehension questions
             </List.Item>
@@ -92,11 +91,11 @@ const HelpModal: React.FC<HelpModalProps> = ({ opened, onClose }) => {
               <strong>Saved AI Conversations:</strong> Access and review your
               saved AI chat conversations
             </List.Item>
-            <List.Item icon={<IconBookmark size={16} />}>
+            <List.Item icon={<IconBook size={16} />}>
               <strong>Bookmarked AI Messages:</strong> View AI messages you've
               bookmarked for later reference
             </List.Item>
-            <List.Item icon={<IconNotes size={16} />}>
+            <List.Item icon={<IconNote size={16} />}>
               <strong>Saved Snippets:</strong> Access your saved text snippets
               and phrases
             </List.Item>

@@ -18,10 +18,10 @@ import {
   Button,
 } from '@mantine/core';
 import {
-  IconTrendingUp,
-  IconAlertTriangle,
+  IconArrowUp,
+  IconAlertCircle,
   IconInfoCircle,
-  IconChartBar,
+  IconChartLine,
 } from '@tabler/icons-react';
 import {
   LineChart,
@@ -225,7 +225,7 @@ const TranslationUsagePage: React.FC = () => {
           variant='light'
           color='red'
           title='Error'
-          icon={<IconAlertTriangle size={16} />}
+          icon={<IconAlertCircle size={16} />}
         >
           {error}
         </Alert>
@@ -438,13 +438,13 @@ const TranslationUsagePage: React.FC = () => {
               <Tabs.List>
                 <Tabs.Tab
                   value='overview'
-                  leftSection={<IconTrendingUp size={16} />}
+                  leftSection={<IconArrowUp size={16} />}
                 >
                   Overview
                 </Tabs.Tab>
                 <Tabs.Tab
                   value='monthly'
-                  leftSection={<IconTrendingUp size={16} />}
+                  leftSection={<IconArrowUp size={16} />}
                 >
                   Monthly Breakdown
                 </Tabs.Tab>
@@ -653,7 +653,7 @@ const TranslationUsagePage: React.FC = () => {
             </Tabs>
 
             <Button
-              leftSection={<IconChartBar size={16} />}
+              leftSection={<IconChartLine size={16} />}
               variant='light'
               onClick={() => setChartModalOpen(true)}
               disabled={

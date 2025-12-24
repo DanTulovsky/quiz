@@ -65,7 +65,7 @@ interface Message {
 
 interface ChatMessage {
   role: string;
-  content: string;
+  content: { text: string };
 }
 
 const suggestedPrompts = [
@@ -218,7 +218,7 @@ interface ChatPanelProps {
   setShowClearConfirm: (v: boolean) => void;
   selectedSuggestionIndex: number;
   setSelectedSuggestionIndex: (index: number) => void;
-  onSaveMessage?: (messageText: string, messageIndex: number) => void;
+  onSaveMessage?: (messageText: string, messageIndex: number, messageId: string) => void | Promise<void>;
   onSaveConversation?: () => void;
   currentConversationId?: string | null;
   // When true, disable/hide save actions to avoid duplicates (auto-save active)
@@ -1088,9 +1088,6 @@ export const Chat: React.FC<ChatProps> = ({
       } catch {}
     }
 
-    // Use existing conversation ID or create a temporary one for this request
-    const requestConversationId = conversationId || crypto.randomUUID();
-
     // Save user message if auto-save is enabled (but don't wait for it)
     if (autoSaveEnabled && user?.id && question?.id && conversationId) {
       try {
@@ -1126,16 +1123,10 @@ export const Chat: React.FC<ChatProps> = ({
     abortControllerRef.current = abortController;
 
     try {
-      const now = new Date().toISOString();
-
       // Convert current messages to conversation history format
       const conversationHistory: ChatMessage[] = messages.map(msg => ({
-        id: crypto.randomUUID(),
-        conversation_id: requestConversationId,
         role: msg.sender === 'user' ? 'user' : 'assistant',
         content: { text: msg.text },
-        created_at: now,
-        updated_at: now,
       }));
 
       // Use fetch with streaming for Server-Sent Events
@@ -1323,7 +1314,7 @@ export const Chat: React.FC<ChatProps> = ({
   };
 
   const handleBookmarkMessage = async (
-    messageText: string,
+    _messageText: string,
     messageIndex: number,
     messageId: string
   ) => {
@@ -1369,7 +1360,7 @@ export const Chat: React.FC<ChatProps> = ({
       if (!conversationId) {
         const conversation = await createConversationMutation.mutateAsync({
           data: {
-            title: `AI Chat - ${question.question_text?.substring(0, 50)}...`,
+            title: `AI Chat - ${question.content?.question?.substring(0, 50) || 'New Chat'}...`,
           },
         });
         conversationId = conversation.id;

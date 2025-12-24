@@ -18,7 +18,7 @@ import {
   Badge,
 } from '@mantine/core';
 import { Navigate } from 'react-router-dom';
-import { IconBook, IconSearch, IconFilter } from '@tabler/icons-react';
+import { IconBook, IconSearch, IconFilterSearch } from '@tabler/icons-react';
 import { useAuth } from '../../hooks/useAuth';
 import {
   useAdminStories,
@@ -169,7 +169,7 @@ const StoryExplorerPage: React.FC = () => {
           <Button
             variant='light'
             size='sm'
-            leftSection={<IconFilter size={16} />}
+            leftSection={<IconFilterSearch size={16} />}
             onClick={clearFilters}
           >
             Clear All Filters

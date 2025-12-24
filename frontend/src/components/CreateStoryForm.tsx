@@ -145,19 +145,19 @@ const CreateStoryForm: React.FC<CreateStoryFormProps> = ({
 
   return (
     <Paper p='xl' radius='md' style={{ maxWidth: 600, margin: '0 auto' }}>
-      <Stack spacing='lg'>
-        <Group position='center' spacing='xs'>
+      <Stack gap='lg'>
+        <Group justify='center' gap='xs'>
           <IconBook size={24} />
           <Title order={3}>Create New Story</Title>
         </Group>
 
-        <Text size='sm' color='dimmed' align='center'>
+        <Text size='sm' color='dimmed' ta='center'>
           Create a personalized story in your target language. The AI will
           generate content at your current proficiency level.
         </Text>
 
         <form onSubmit={handleSubmit}>
-          <Stack spacing='md'>
+          <Stack gap='md'>
             {/* Title - Required */}
             <TextInput
               label='Story Title'
@@ -259,7 +259,7 @@ const CreateStoryForm: React.FC<CreateStoryFormProps> = ({
 
             {/* Section Length Override */}
             <div>
-              <Text size='sm' weight={500} mb='xs'>
+              <Text size='sm' fw={500} mb='xs'>
                 Section Length Preference (Optional)
               </Text>
               <Text size='xs' color='dimmed' mb='sm'>

@@ -21,14 +21,14 @@ import {
 } from '@mantine/core';
 import {
   IconRefresh,
-  IconAlertTriangle,
+  IconAlertCircle,
   IconCheck,
   IconX,
   IconMail,
   IconClock,
-  IconUsers,
-  IconChartBar,
-  IconSend,
+  IconUser,
+  IconChartLine,
+  IconSend2,
   IconSearch,
 } from '@tabler/icons-react';
 import { useAuth } from '../../hooks/useAuth';
@@ -332,19 +332,19 @@ const NotificationsPage: React.FC = () => {
         onChange={value => setActiveTab(value || 'stats')}
       >
         <Tabs.List>
-          <Tabs.Tab value='stats' leftSection={<IconChartBar size={16} />}>
+          <Tabs.Tab value='stats' leftSection={<IconChartLine size={16} />}>
             Statistics
           </Tabs.Tab>
           <Tabs.Tab
             value='errors'
-            leftSection={<IconAlertTriangle size={16} />}
+            leftSection={<IconAlertCircle size={16} />}
           >
             Errors
           </Tabs.Tab>
           <Tabs.Tab value='sent' leftSection={<IconMail size={16} />}>
             Sent
           </Tabs.Tab>
-          <Tabs.Tab value='force-send' leftSection={<IconSend size={16} />}>
+          <Tabs.Tab value='force-send' leftSection={<IconSend2 size={16} />}>
             Force Send
           </Tabs.Tab>
         </Tabs.List>
@@ -389,7 +389,7 @@ const NotificationsPage: React.FC = () => {
                 <Card withBorder>
                   <Group>
                     <ThemeIcon size='lg' color='blue'>
-                      <IconUsers size={20} />
+                      <IconUser size={20} />
                     </ThemeIcon>
                     <div>
                       <Text size='xs' c='dimmed' tt='uppercase'>
@@ -736,7 +736,7 @@ const NotificationsPage: React.FC = () => {
             <Alert
               title='Force Send Notifications'
               color='blue'
-              icon={<IconSend size={16} />}
+              icon={<IconSend2 size={16} />}
             >
               This feature allows you to force send a daily reminder
               notification to any user, bypassing the normal time and date
@@ -766,7 +766,7 @@ const NotificationsPage: React.FC = () => {
 
                 <Group>
                   <Button
-                    leftSection={<IconSend size={16} />}
+                    leftSection={<IconSend2 size={16} />}
                     onClick={() => forceSendNotification(selectedUsername)}
                     disabled={!selectedUsername || isSending}
                     loading={isSending}

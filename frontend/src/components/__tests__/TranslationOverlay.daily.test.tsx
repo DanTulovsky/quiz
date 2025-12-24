@@ -1,4 +1,3 @@
-import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { renderWithProviders } from '../../test-utils';
 import { TranslationOverlay } from '../../components/TranslationOverlay';

@@ -691,8 +691,6 @@ export const useUsersPaginated = ({
   aiEnabled?: string;
   active?: string;
 }) => {
-  const queryClient = useQueryClient();
-
   return useQuery({
     queryKey: [
       'users-paginated',

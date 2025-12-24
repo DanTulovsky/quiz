@@ -16,8 +16,8 @@ import {
   LoadingOverlay,
 } from '@mantine/core';
 import {
-  IconPlayerPlay,
-  IconPlayerPause,
+  IconPlayerPlayFilled,
+  IconPlayerPauseFilled,
   IconRefresh,
   IconTrash,
 } from '@tabler/icons-react';
@@ -586,7 +586,7 @@ const WorkerAdminPage: React.FC = () => {
           <Group>
             <Button
               onClick={handleTriggerRun}
-              leftSection={<IconPlayerPlay size={16} />}
+              leftSection={<IconPlayerPlayFilled size={16} />}
             >
               Trigger Manual Run
             </Button>
@@ -594,9 +594,9 @@ const WorkerAdminPage: React.FC = () => {
               onClick={handleInstancePause}
               leftSection={
                 workerStatus?.is_paused ? (
-                  <IconPlayerPlay size={16} />
+                  <IconPlayerPlayFilled size={16} />
                 ) : (
-                  <IconPlayerPause size={16} />
+                  <IconPlayerPauseFilled size={16} />
                 )
               }
               disabled={globalPaused}
@@ -607,9 +607,9 @@ const WorkerAdminPage: React.FC = () => {
               onClick={handleGlobalPause}
               leftSection={
                 globalPaused ? (
-                  <IconPlayerPlay size={16} />
+                  <IconPlayerPlayFilled size={16} />
                 ) : (
-                  <IconPlayerPause size={16} />
+                  <IconPlayerPauseFilled size={16} />
                 )
               }
             >
@@ -637,9 +637,9 @@ const WorkerAdminPage: React.FC = () => {
                 onClick={() => setLogPaused(!logPaused)}
                 leftSection={
                   logPaused ? (
-                    <IconPlayerPlay size={14} />
+                    <IconPlayerPlayFilled size={14} />
                   ) : (
-                    <IconPlayerPause size={14} />
+                    <IconPlayerPauseFilled size={14} />
                   )
                 }
               >

@@ -361,7 +361,7 @@ export const MobileBookmarkedMessagesPage: React.FC = () => {
           </Badge>
         </Group>
 
-        <Card padding='sm' radius='md' withBorder>
+        <Card p='sm' radius='md' withBorder>
           <Stack gap='sm'>
             <TextInput
               ref={searchInputRef}
@@ -398,7 +398,7 @@ export const MobileBookmarkedMessagesPage: React.FC = () => {
             Loading bookmarked messages...
           </Text>
         ) : messages.length === 0 ? (
-          <Paper padding='xl' radius='md' withBorder>
+          <Paper p='xl' radius='md' withBorder>
             <Text ta='center' c='dimmed' size='sm'>
               {activeSearchQuery
                 ? 'No bookmarked messages found matching your search.'

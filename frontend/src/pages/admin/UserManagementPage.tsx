@@ -30,20 +30,20 @@ import {
 import {
   IconTrash,
   IconEdit,
-  IconKey,
+  IconLock,
   IconRefresh,
   IconPlus,
-  IconAlertTriangle,
+  IconAlertCircle,
   IconCheck,
   IconX,
   IconSearch,
-  IconFilter,
-  IconDotsVertical,
-  IconUsers,
+  IconFilterSearch,
+  IconDots,
+  IconUser,
   IconBrain,
-  IconActivity,
-  IconPlayerPause,
-  IconPlayerPlay,
+  IconPulse,
+  IconPlayerPauseFilled,
+  IconPlayerPlayFilled,
 } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import {
@@ -338,7 +338,7 @@ const UserManagementPage: React.FC = () => {
           <Paper p='md' withBorder>
             <Group>
               <ThemeIcon size='lg' color='blue'>
-                <IconUsers size={20} />
+                <IconUser size={20} />
               </ThemeIcon>
               <div>
                 <Text size='xs' color='dimmed' tt='uppercase' fw={700}>
@@ -373,7 +373,7 @@ const UserManagementPage: React.FC = () => {
           <Paper p='md' withBorder>
             <Group>
               <ThemeIcon size='lg' color='orange'>
-                <IconActivity size={20} />
+                <IconPulse size={20} />
               </ThemeIcon>
               <div>
                 <Text size='xs' color='dimmed' tt='uppercase' fw={700}>
@@ -399,7 +399,7 @@ const UserManagementPage: React.FC = () => {
             <Button
               variant='light'
               size='sm'
-              leftSection={<IconFilter size={16} />}
+              leftSection={<IconFilterSearch size={16} />}
               onClick={() =>
                 setFilters({
                   search: '',
@@ -501,7 +501,7 @@ const UserManagementPage: React.FC = () => {
             </Center>
           ) : error ? (
             <Alert
-              icon={<IconAlertTriangle size={16} />}
+              icon={<IconAlertCircle size={16} />}
               title='Error'
               color='red'
             >
@@ -606,7 +606,7 @@ const UserManagementPage: React.FC = () => {
                             <Menu>
                               <Menu.Target>
                                 <ActionIcon variant='subtle' size='sm'>
-                                  <IconDotsVertical size={16} />
+                                  <IconDots size={16} />
                                 </ActionIcon>
                               </Menu.Target>
                               <Menu.Dropdown>
@@ -636,7 +636,7 @@ const UserManagementPage: React.FC = () => {
                                   Edit
                                 </Menu.Item>
                                 <Menu.Item
-                                  leftSection={<IconKey size={16} />}
+                                  leftSection={<IconLock size={16} />}
                                   onClick={() => {
                                     setSelectedUser(user);
                                     setIsPasswordModalOpen(true);
@@ -646,7 +646,7 @@ const UserManagementPage: React.FC = () => {
                                 </Menu.Item>
                                 {user?.is_paused ? (
                                   <Menu.Item
-                                    leftSection={<IconPlayerPlay size={16} />}
+                                    leftSection={<IconPlayerPlayFilled size={16} />}
                                     onClick={() => {
                                       if (user?.id) {
                                         resumeUserMutation.mutate(user.id, {
@@ -674,7 +674,7 @@ const UserManagementPage: React.FC = () => {
                                   </Menu.Item>
                                 ) : (
                                   <Menu.Item
-                                    leftSection={<IconPlayerPause size={16} />}
+                                    leftSection={<IconPlayerPauseFilled size={16} />}
                                     onClick={() => {
                                       if (user?.id) {
                                         pauseUserMutation.mutate(user.id, {
@@ -746,7 +746,7 @@ const UserManagementPage: React.FC = () => {
           ) : (
             <Center py='xl'>
               <Stack align='center' gap='md'>
-                <IconUsers size={48} color='gray' />
+                <IconUser size={48} color='gray' />
                 <Text size='lg' fw={500}>
                   No users found
                 </Text>

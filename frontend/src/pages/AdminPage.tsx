@@ -9,11 +9,11 @@ import {
   Stack,
 } from '@mantine/core';
 import {
-  IconUsers,
-  IconChartBar,
-  IconSettings,
-  IconServer,
-  IconTrendingUp,
+  IconUser,
+  IconChartLine,
+  IconAdjustments,
+  IconDatabase,
+  IconArrowUp,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
@@ -37,7 +37,7 @@ const AdminPage: React.FC = () => {
     {
       title: 'User Management',
       description: 'Manage users, roles, and permissions',
-      icon: <IconUsers size={24} />,
+      icon: <IconUser size={24} />,
       path: '/admin/backend/userz',
       color: 'blue',
     },
@@ -45,28 +45,28 @@ const AdminPage: React.FC = () => {
     {
       title: 'Backend Overview',
       description: 'Backend service administration and monitoring',
-      icon: <IconServer size={24} />,
+      icon: <IconDatabase size={24} />,
       path: '/admin/backend/adminz',
       color: 'orange',
     },
     {
       title: 'Worker Admin',
       description: 'Worker service administration and controls',
-      icon: <IconSettings size={24} />,
+      icon: <IconAdjustments size={24} />,
       path: '/admin/worker/adminz',
       color: 'purple',
     },
     {
       title: 'Analytics',
       description: 'Advanced analytics and reporting',
-      icon: <IconChartBar size={24} />,
+      icon: <IconChartLine size={24} />,
       path: '/admin/worker/analyticsz',
       color: 'teal',
     },
     {
       title: 'Stats',
       description: 'Usage statistics and monitoring',
-      icon: <IconTrendingUp size={24} />,
+      icon: <IconArrowUp size={24} />,
       path: '/admin/stats/translation',
       color: 'green',
     },
