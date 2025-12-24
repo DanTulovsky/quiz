@@ -142,7 +142,7 @@ struct DailyQuestionContentView: View {
     let onTextSelected: (String, String) -> Void
     let onSnippetTapped: (Snippet) -> Void
     let stringValue: (JSONValue?) -> String?
-    @ViewBuilder let actionButtons: () -> some View
+    let actionButtons: () -> AnyView
 
     var body: some View {
         VStack(spacing: 20) {

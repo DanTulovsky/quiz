@@ -63,7 +63,7 @@ struct DailyView: View {
                                         showingSnippet = snippet
                                     },
                                     stringValue: stringValue,
-                                    actionButtons: { actionButtons() }
+                                    actionButtons: { AnyView(actionButtons()) }
                                 )
                             }
                         } else {
@@ -84,7 +84,7 @@ struct DailyView: View {
                                     showingSnippet = snippet
                                 },
                                 stringValue: stringValue,
-                                actionButtons: { actionButtons() }
+                                actionButtons: { AnyView(actionButtons()) }
                             )
                         }
                     } else if !viewModel.dailyQuestions.isEmpty {
