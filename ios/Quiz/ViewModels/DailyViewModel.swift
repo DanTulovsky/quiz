@@ -2,7 +2,8 @@ import Combine
 import Foundation
 
 class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, SubmittingState,
-                      QuestionIDProvider {
+    QuestionIDProvider
+{
     @Published var dailyQuestions: [DailyQuestionWithDetails] = []
     @Published var currentQuestionIndex = -1
     @Published var snippets = [Snippet]()
@@ -68,8 +69,6 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
             .sinkValue(on: self) { [weak self] response in
                 guard let self = self else { return }
 
-                print("📥 Received daily questions response: \(response.questions.count) questions")
-
                 self.dailyQuestions = response.questions
 
                 // Always position on the first incomplete question when questions are loaded
@@ -78,9 +77,6 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
 
                 // Mark as positioned after setting the index
                 self.isPositioned = true
-                print(
-                    "📍 Positioning complete: index=\(self.currentQuestionIndex), isPositioned=\(self.isPositioned)"
-                )
 
                 // Load snippets for the positioned question
                 if let questionId = self.currentQuestion?.question.id {
@@ -96,23 +92,12 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
             return
         }
 
-        // Debug: Log completion status of all questions
-        let completedCount = dailyQuestions.filter { $0.isCompleted }.count
-        print("📊 Daily Questions: \(dailyQuestions.count) total, \(completedCount) completed")
-        for (index, question) in dailyQuestions.enumerated() {
-            print("  Question \(index + 1): isCompleted=\(question.isCompleted), id=\(question.id)")
-        }
-
         // Find the first incomplete question
         if let firstIncomplete = dailyQuestions.firstIndex(where: { !$0.isCompleted }) {
             currentQuestionIndex = firstIncomplete
-            print(
-                "✅ Positioned at first incomplete question: index \(firstIncomplete) (question \(firstIncomplete + 1))"
-            )
         } else {
             // All questions are completed, start at the first one
             currentQuestionIndex = 0
-            print("✅ All questions completed, positioned at index 0")
         }
     }
 
