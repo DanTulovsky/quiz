@@ -33,7 +33,6 @@ import {
   IconKey,
   IconRefresh,
   IconPlus,
-  IconAlertTriangle,
   IconCheck,
   IconX,
   IconSearch,
@@ -45,6 +44,7 @@ import {
   IconPlayerPause,
   IconPlayerPlay,
 } from '@tabler/icons-react';
+import * as TablerIcons from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import {
   useCreateUser,
@@ -58,6 +58,13 @@ import {
   useResumeUser,
 } from '../../api/admin';
 import { User, Role } from '../../api/api';
+
+const tablerIconMap = TablerIcons as Record<
+  string,
+  React.ComponentType<React.SVGProps<SVGSVGElement>>
+>;
+const IconAlertTriangle =
+  tablerIconMap.IconAlertTriangle || (() => null as React.ReactElement);
 import {
   useGetV1SettingsLanguages,
   useGetV1SettingsLevels,
