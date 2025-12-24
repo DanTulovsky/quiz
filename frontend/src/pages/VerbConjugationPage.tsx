@@ -237,7 +237,7 @@ export function VerbConjugationPage() {
                         ).trim();
                         if (saved) return saved;
                         const voice = defaultVoiceForLanguage(
-                          user?.preferred_language
+                          user?.preferred_language || undefined
                         );
                         return voice || undefined;
                       }}

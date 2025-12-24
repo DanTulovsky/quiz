@@ -21,16 +21,12 @@ const WordOfTheDayEmbedPage: React.FC = () => {
     data: htmlContent,
     isLoading,
     error,
-  } = useGetV1WordOfDayDateEmbed(
-    resolvedDate,
-    {},
-    {
-      query: {
-        enabled: !!resolvedDate,
-        retry: false,
-      },
-    }
-  );
+  } = useGetV1WordOfDayDateEmbed(resolvedDate, {
+    query: {
+      enabled: !!resolvedDate,
+      retry: false,
+    },
+  });
 
   // Format date for display
   const formatDisplayDate = (dateStr: string): string => {

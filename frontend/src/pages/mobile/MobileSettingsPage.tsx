@@ -223,8 +223,8 @@ const MobileSettingsPage: React.FC = () => {
           // Only keep voices for the selected language; do not merge previous-language voice
           setAvailableVoices(voices);
         }
-      } catch {
-        console.warn('Failed to fetch TTS voices:', error);
+      } catch (err) {
+        console.warn('Failed to fetch TTS voices:', err);
         setAvailableVoices([]);
       }
     };
@@ -592,7 +592,7 @@ const MobileSettingsPage: React.FC = () => {
       // Invalidate story-specific snippet queries used by useStorySnippets
       queryClient.invalidateQueries({
         predicate: query => {
-          return query.queryKey[0]?.toString().includes('/v1/snippets/story/');
+          return (query.queryKey[0]?.toString().includes('/v1/snippets/story/')) ?? false;
         },
       });
 
@@ -619,9 +619,9 @@ const MobileSettingsPage: React.FC = () => {
       // Invalidate translation practice queries to ensure UI updates immediately
       queryClient.invalidateQueries({
         predicate: query => {
-          return query.queryKey[0]
+          return (query.queryKey[0]
             ?.toString()
-            .includes('/v1/translation-practice');
+            .includes('/v1/translation-practice')) ?? false;
         },
       });
 
@@ -871,14 +871,14 @@ const MobileSettingsPage: React.FC = () => {
                     value={language}
                     onChange={value => setLanguage(value || '')}
                     data={
-                      languages?.map(lang => ({
-                        value: lang.name || lang,
-                        label: lang.name
-                          ? lang.name.charAt(0).toUpperCase() +
-                            lang.name.slice(1)
-                          : (lang.name || lang).charAt(0).toUpperCase() +
-                            (lang.name || lang).slice(1),
-                      })) || []
+                      languages?.map(lang => {
+                        const langName = typeof lang === 'string' ? lang : lang.name;
+                        const displayName = langName || '';
+                        return {
+                          value: displayName,
+                          label: displayName.charAt(0).toUpperCase() + displayName.slice(1),
+                        };
+                      }) || []
                     }
                     placeholder='Select language'
                     data-testid='learning-language-select'

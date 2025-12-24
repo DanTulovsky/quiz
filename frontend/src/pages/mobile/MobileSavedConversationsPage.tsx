@@ -565,8 +565,8 @@ export const MobileSavedConversationsPage: React.FC = () => {
           <Text ta='center' py='xl' c='dimmed' size='sm'>
             Loading conversations...
           </Text>
-        ) : conversations.length === 0 ? (
-          <Paper padding='xl' radius='md' withBorder>
+        ) : !conversations || conversations.length === 0 ? (
+          <Paper p='xl' radius='md' withBorder>
             <Text ta='center' c='dimmed' size='sm'>
               {activeSearchQuery
                 ? 'No conversations found matching your search.'
@@ -576,7 +576,7 @@ export const MobileSavedConversationsPage: React.FC = () => {
         ) : (
           <>
             <Stack gap='sm'>
-              {conversations.map(conversation => (
+              {(conversations || []).map(conversation => (
                 <ConversationCard
                   key={conversation.id}
                   conversation={conversation}

@@ -596,74 +596,77 @@ const RecentActivityInfo: React.FC = () => (
   </Stack>
 );
 
-const TokenUsageInfo: React.FC = () => (
-  <Stack gap='md'>
-    <Title order={4}>AI Token Usage</Title>
-    <Text size='sm'>
-      Track your AI usage across all AI-powered features including question
-      generation, chat conversations, and story creation.
-    </Text>
-    <Text size='sm' c='dimmed'>
-      This helps you monitor your AI consumption, understand usage patterns, and
-      manage your API costs effectively.
-    </Text>
-    <Text size='sm' fw={600}>
-      What you'll see:
-    </Text>
-    <List size='sm' spacing='xs'>
-      <List.Item>
-        <strong>Total Tokens:</strong> Sum of all tokens used in the last 30
-        days
-      </List.Item>
-      <List.Item>
-        <strong>Total Requests:</strong> Number of AI API calls made
-      </List.Item>
-      <List.Item>
-        <strong>Avg Tokens/Request:</strong> Average tokens per API call
-      </List.Item>
-      <List.Item>
-        <strong>Daily Breakdown:</strong> Usage trends over time
-      </List.Item>
-    </List>
-    <Text size='sm' fw={600}>
-      Usage types tracked:
-    </Text>
-    <List size='sm' spacing='xs'>
-      <List.Item>Question Generation</List.Item>
-      <List.Item>Chat Conversations</List.Item>
-      <List.Item>Story Generation</List.Item>
-      <List.Item>Story Questions</List.Item>
-    </List>
-    <Text size='sm' fw={600}>
-      Provider compatibility:
-    </Text>
-    <List size='sm' spacing='xs'>
-      <List.Item>
-        <strong>Supported:</strong>{' '}
-        {providersData?.providers
-          ?.filter(p => p.usage_supported)
-          .map(p => p.name)
-          .join(', ') || 'Loading...'}
-      </List.Item>
-      <List.Item>
-        <strong>Not supported:</strong>{' '}
-        {providersData?.providers
-          ?.filter(p => !p.usage_supported)
-          .map(p => p.name)
-          .join(', ') || 'Loading...'}
-      </List.Item>
-    </List>
+const TokenUsageInfo: React.FC = () => {
+  const { data: providersData } = useGetV1SettingsAiProviders();
+  return (
+    <Stack gap='md'>
+      <Title order={4}>AI Token Usage</Title>
+      <Text size='sm'>
+        Track your AI usage across all AI-powered features including question
+        generation, chat conversations, and story creation.
+      </Text>
+      <Text size='sm' c='dimmed'>
+        This helps you monitor your AI consumption, understand usage patterns, and
+        manage your API costs effectively.
+      </Text>
+      <Text size='sm' fw={600}>
+        What you'll see:
+      </Text>
+      <List size='sm' spacing='xs'>
+        <List.Item>
+          <strong>Total Tokens:</strong> Sum of all tokens used in the last 30
+          days
+        </List.Item>
+        <List.Item>
+          <strong>Total Requests:</strong> Number of AI API calls made
+        </List.Item>
+        <List.Item>
+          <strong>Avg Tokens/Request:</strong> Average tokens per API call
+        </List.Item>
+        <List.Item>
+          <strong>Daily Breakdown:</strong> Usage trends over time
+        </List.Item>
+      </List>
+      <Text size='sm' fw={600}>
+        Usage types tracked:
+      </Text>
+      <List size='sm' spacing='xs'>
+        <List.Item>Question Generation</List.Item>
+        <List.Item>Chat Conversations</List.Item>
+        <List.Item>Story Generation</List.Item>
+        <List.Item>Story Questions</List.Item>
+      </List>
+      <Text size='sm' fw={600}>
+        Provider compatibility:
+      </Text>
+      <List size='sm' spacing='xs'>
+        <List.Item>
+          <strong>Supported:</strong>{' '}
+          {providersData?.providers
+            ?.filter((p: { usage_supported?: boolean; name?: string }) => p.usage_supported)
+            .map((p: { name?: string }) => p.name)
+            .join(', ') || 'Loading...'}
+        </List.Item>
+        <List.Item>
+          <strong>Not supported:</strong>{' '}
+          {providersData?.providers
+            ?.filter((p: { usage_supported?: boolean; name?: string }) => !p.usage_supported)
+            .map((p: { name?: string }) => p.name)
+            .join(', ') || 'Loading...'}
+        </List.Item>
+      </List>
     <Text size='sm' fw={600}>
       Tips for usage management:
     </Text>
-    <List size='sm' spacing='xs'>
-      <List.Item>Monitor your daily usage patterns</List.Item>
-      <List.Item>Identify peak usage times</List.Item>
-      <List.Item>Optimize prompts to reduce token consumption</List.Item>
-      <List.Item>Review usage trends to plan API costs</List.Item>
-    </List>
-  </Stack>
-);
+      <List size='sm' spacing='xs'>
+        <List.Item>Monitor your daily usage patterns</List.Item>
+        <List.Item>Identify peak usage times</List.Item>
+        <List.Item>Optimize prompts to reduce token consumption</List.Item>
+        <List.Item>Review usage trends to plan API costs</List.Item>
+      </List>
+    </Stack>
+  );
+};
 
 const ProgressPage: React.FC = () => {
   const navigate = useNavigate();
@@ -1332,7 +1335,7 @@ const ProgressPage: React.FC = () => {
                       </Text>
                       <Text size='xl' fw={700}>
                         {tokenUsage
-                          .reduce((sum, day) => sum + day.total_tokens, 0)
+                          .reduce((sum, day) => sum + (day.total_tokens || 0), 0)
                           .toLocaleString()}
                       </Text>
                     </Stack>
@@ -1355,7 +1358,7 @@ const ProgressPage: React.FC = () => {
                       </Text>
                       <Text size='xl' fw={700}>
                         {tokenUsage.reduce(
-                          (sum, day) => sum + day.total_requests,
+                          (sum, day) => sum + (day.total_requests || 0),
                           0
                         )}
                       </Text>
@@ -1381,11 +1384,11 @@ const ProgressPage: React.FC = () => {
                         {tokenUsage.length > 0
                           ? Math.round(
                               tokenUsage.reduce(
-                                (sum, day) => sum + day.total_tokens,
+                                (sum, day) => sum + (day.total_tokens || 0),
                                 0
                               ) /
                                 tokenUsage.reduce(
-                                  (sum, day) => sum + day.total_requests,
+                                  (sum, day) => sum + (day.total_requests || 0),
                                   0
                                 )
                             )

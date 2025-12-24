@@ -49,15 +49,13 @@ import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query';
 import { useQueryClient } from '@tanstack/react-query';
 
 // Type definitions for mock return values
-type MockQueryResult<T> = Partial<UseQueryResult<T, Error>> & {
+type MockQueryResult<T> = UseQueryResult<T, Error> & {
   data?: T;
   isLoading?: boolean;
   refetch?: () => void;
 };
 
-type MockMutationResult = Partial<
-  UseMutationResult<unknown, Error, unknown, unknown>
-> & {
+type MockMutationResult = UseMutationResult<unknown, Error, unknown, unknown> & {
   mutateAsync?: () => Promise<unknown>;
   isPending?: boolean;
 };
@@ -285,44 +283,44 @@ describe('useDailyQuestions', () => {
     });
 
     // Mock the API hooks
-    mockUseGetV1DailyQuestionsDate.mockReturnValue({
+      mockUseGetV1DailyQuestionsDate.mockReturnValue({
       data: { questions: mockQuestions },
       isLoading: false,
       refetch: vi.fn(),
-    } as MockQueryResult<{ questions: DailyQuestionWithDetails[] }>);
+    } as unknown as ReturnType<typeof useGetV1DailyQuestionsDate>);
 
     mockUseGetV1DailyProgressDate.mockReturnValue({
       data: { date: '2025-08-04', completed: 1, total: 3 },
       isLoading: false,
       refetch: vi.fn(),
-    } as MockQueryResult<DailyProgress>);
+    } as unknown as ReturnType<typeof useGetV1DailyProgressDate>);
 
     mockUseGetV1DailyDates.mockReturnValue({
       data: { dates: ['2025-08-04'] },
       refetch: vi.fn(),
-    } as MockQueryResult<{ dates: string[] }>);
+    } as unknown as ReturnType<typeof useGetV1DailyDates>);
 
     mockUsePostV1DailyQuestionsDateCompleteQuestionId.mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as MockMutationResult);
+    } as unknown as ReturnType<typeof usePostV1DailyQuestionsDateCompleteQuestionId>);
 
     mockUseDeleteV1DailyQuestionsDateCompleteQuestionId.mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as MockMutationResult);
+    } as unknown as ReturnType<typeof useDeleteV1DailyQuestionsDateCompleteQuestionId>);
 
     mockUsePostV1DailyQuestionsDateAnswerQuestionId.mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as MockMutationResult);
+    } as unknown as ReturnType<typeof usePostV1DailyQuestionsDateCompleteQuestionId>);
 
     // Provide a default mock for the history hook used by the implementation
     mockUseGetV1DailyHistoryQuestionId.mockReturnValue({
       data: { history: [] },
       isLoading: false,
       refetch: vi.fn(),
-    } as MockQueryResult<{ history: unknown[] }>);
+    } as unknown as ReturnType<typeof useGetV1DailyHistoryQuestionId>);
   });
 
   afterEach(() => {
@@ -438,7 +436,7 @@ describe('useDailyQuestions', () => {
         data: { questions: allCompletedQuestions },
         isLoading: false,
         refetch: vi.fn(),
-      } as MockQueryResult<{ questions: DailyQuestionWithDetails[] }>);
+      } as unknown as ReturnType<typeof useGetV1DailyQuestionsDate>);
 
       const { result } = renderHook(() => useDailyQuestions());
 
@@ -470,7 +468,7 @@ describe('useDailyQuestions', () => {
         data: { questions: allCompletedQuestions },
         isLoading: false,
         refetch: vi.fn(),
-      } as MockQueryResult<{ questions: DailyQuestionWithDetails[] }>);
+      } as unknown as ReturnType<typeof useGetV1DailyQuestionsDate>);
 
       const { result } = renderHook(() => useDailyQuestions());
 
@@ -529,24 +527,24 @@ describe('useDailyQuestions', () => {
         data: { date: '2025-08-04', completed: 1, total: 4 },
         isLoading: false,
         refetch: mockRefetchProgress,
-      } as MockQueryResult<DailyProgress>);
+      } as unknown as ReturnType<typeof useGetV1DailyProgressDate>);
 
       mockUseGetV1DailyQuestionsDate.mockReturnValue({
         data: { questions: mockQuestions },
         isLoading: false,
         refetch: mockRefetchQuestions,
-      } as MockQueryResult<{ questions: DailyQuestionWithDetails[] }>);
+      } as unknown as ReturnType<typeof useGetV1DailyQuestionsDate>);
 
       mockUseGetV1DailyDates.mockReturnValue({
         data: { dates: ['2025-08-04'] },
         refetch: mockRefetchDates,
-      } as MockQueryResult<{ dates: string[] }>);
+      } as unknown as ReturnType<typeof useGetV1DailyDates>);
 
       const mockSubmitAnswerMutation = vi.fn().mockResolvedValue({});
       mockUsePostV1DailyQuestionsDateAnswerQuestionId.mockReturnValue({
         mutateAsync: mockSubmitAnswerMutation,
         isPending: false,
-      } as MockMutationResult);
+      } as unknown as ReturnType<typeof usePostV1DailyQuestionsDateCompleteQuestionId>);
 
       const mockQueryClient: MockQueryClient = {
         invalidateQueries: mockInvalidateQueries,
@@ -597,24 +595,24 @@ describe('useDailyQuestions', () => {
         data: { date: '2025-08-04', completed: 1, total: 4 },
         isLoading: false,
         refetch: mockRefetchProgress,
-      } as MockQueryResult<DailyProgress>);
+      } as unknown as ReturnType<typeof useGetV1DailyProgressDate>);
 
       mockUseGetV1DailyQuestionsDate.mockReturnValue({
         data: { questions: mockQuestions },
         isLoading: false,
         refetch: mockRefetchQuestions,
-      } as MockQueryResult<{ questions: DailyQuestionWithDetails[] }>);
+      } as unknown as ReturnType<typeof useGetV1DailyQuestionsDate>);
 
       mockUseGetV1DailyDates.mockReturnValue({
         data: { dates: ['2025-08-04'] },
         refetch: mockRefetchDates,
-      } as MockQueryResult<{ dates: string[] }>);
+      } as unknown as ReturnType<typeof useGetV1DailyDates>);
 
       const mockCompleteQuestionMutation = vi.fn().mockResolvedValue({});
       mockUsePostV1DailyQuestionsDateCompleteQuestionId.mockReturnValue({
         mutateAsync: mockCompleteQuestionMutation,
         isPending: false,
-      } as MockMutationResult);
+      } as unknown as ReturnType<typeof usePostV1DailyQuestionsDateCompleteQuestionId>);
 
       const mockQueryClient: MockQueryClient = {
         invalidateQueries: mockInvalidateQueries,
@@ -662,24 +660,24 @@ describe('useDailyQuestions', () => {
         data: { date: '2025-08-04', completed: 1, total: 4 },
         isLoading: false,
         refetch: mockRefetchProgress,
-      } as MockQueryResult<DailyProgress>);
+      } as unknown as ReturnType<typeof useGetV1DailyProgressDate>);
 
       mockUseGetV1DailyQuestionsDate.mockReturnValue({
         data: { questions: mockQuestions },
         isLoading: false,
         refetch: mockRefetchQuestions,
-      } as MockQueryResult<{ questions: DailyQuestionWithDetails[] }>);
+      } as unknown as ReturnType<typeof useGetV1DailyQuestionsDate>);
 
       mockUseGetV1DailyDates.mockReturnValue({
         data: { dates: ['2025-08-04'] },
         refetch: mockRefetchDates,
-      } as MockQueryResult<{ dates: string[] }>);
+      } as unknown as ReturnType<typeof useGetV1DailyDates>);
 
       const mockResetQuestionMutation = vi.fn().mockResolvedValue({});
       mockUseDeleteV1DailyQuestionsDateCompleteQuestionId.mockReturnValue({
-        mutateAsync: mockResetQuestionMutation,
-        isPending: false,
-      } as MockMutationResult);
+      mutateAsync: mockResetQuestionMutation,
+      isPending: false,
+    } as unknown as ReturnType<typeof useDeleteV1DailyQuestionsDateCompleteQuestionId>);
 
       const mockQueryClient: MockQueryClient = {
         invalidateQueries: mockInvalidateQueries,
@@ -724,7 +722,7 @@ describe('useDailyQuestions', () => {
       mockUsePostV1DailyQuestionsDateAnswerQuestionId.mockReturnValue({
         mutateAsync: mockSubmitAnswerMutation,
         isPending: false,
-      } as MockMutationResult);
+      } as unknown as ReturnType<typeof usePostV1DailyQuestionsDateCompleteQuestionId>);
 
       const mockQueryClient: MockQueryClient = {
         invalidateQueries: vi.fn(),
@@ -770,6 +768,7 @@ describe('useDailyQuestions', () => {
           completed_at: '2025-08-04T10:00:00Z',
           user_answer_index: 2,
           submitted_at: '2025-08-04T10:00:00Z',
+          created_at: '2025-08-04T00:00:00Z',
           question: {
             id: 1,
             type: 'multiple_choice',
@@ -799,7 +798,7 @@ describe('useDailyQuestions', () => {
         data: { questions: questionsWithFeedback },
         isLoading: false,
         refetch: vi.fn(),
-      } as MockQueryResult<{ questions: DailyQuestionWithDetails[] }>);
+      } as unknown as ReturnType<typeof useGetV1DailyQuestionsDate>);
 
       const { result } = renderHook(() => useDailyQuestions());
 
@@ -819,6 +818,7 @@ describe('useDailyQuestions', () => {
           completed_at: null,
           user_answer_index: null,
           submitted_at: null,
+          created_at: '2025-08-04T00:00:00Z',
           question: {
             id: 1,
             type: 'multiple_choice',
@@ -848,7 +848,7 @@ describe('useDailyQuestions', () => {
         data: { questions: questionsWithoutFeedback },
         isLoading: false,
         refetch: vi.fn(),
-      } as MockQueryResult<{ questions: DailyQuestionWithDetails[] }>);
+      } as unknown as ReturnType<typeof useGetV1DailyQuestionsDate>);
 
       const { result } = renderHook(() => useDailyQuestions());
 
@@ -870,6 +870,7 @@ describe('useDailyQuestions', () => {
           completed_at: '2025-08-04T10:00:00Z',
           user_answer_index: 2,
           submitted_at: '2025-08-04T10:00:00Z',
+          created_at: '2025-08-04T00:00:00Z',
           question: {
             id: 1,
             type: 'multiple_choice',
@@ -902,6 +903,7 @@ describe('useDailyQuestions', () => {
           completed_at: null,
           user_answer_index: null,
           submitted_at: null,
+          created_at: '2025-08-04T00:00:00Z',
           question: {
             id: 2,
             type: 'multiple_choice',
@@ -931,7 +933,7 @@ describe('useDailyQuestions', () => {
         data: { questions: mixedQuestions },
         isLoading: false,
         refetch: vi.fn(),
-      } as MockQueryResult<{ questions: DailyQuestionWithDetails[] }>);
+      } as unknown as ReturnType<typeof useGetV1DailyQuestionsDate>);
 
       const { result } = renderHook(() => useDailyQuestions());
 

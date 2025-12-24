@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import {useState, useCallback, useMemo} from 'react';
 import {
   useInfiniteQuery,
   UseInfiniteQueryOptions,
@@ -42,26 +42,41 @@ export interface UsePaginationReturn<TData> {
   reset: () => void;
 
   // Infinite scroll helpers
-  loadMoreRef: (node?: Element | null) => void;
+  loadMoreRef: (node?: Element | null | undefined) => void;
 }
 
 export function usePagination<TData = unknown>(
   queryKey: string[],
-  queryFn: (params: { limit: number; offset: number }) => Promise<{
-    items: TData[];
+  queryFn: (params: {limit: number; offset: number}) => Promise<{
+    items?: TData[];
+    conversations?: TData[];
     total: number;
   }>,
   options: PaginationOptions = {}
 ): UsePaginationReturn<TData> {
-  const { initialLimit = 20, enableInfiniteScroll = false } = options;
+  const {initialLimit = 20, enableInfiniteScroll = false} = options;
 
   const [limit] = useState(initialLimit);
   const [currentPage, setCurrentPage] = useState(1);
   const [allData, setAllData] = useState<TData[]>([]);
 
-  const infiniteQueryOptions: UseInfiniteQueryOptions = {
+  type PageData = {
+    items?: TData[];
+    conversations?: TData[];
+    total: number;
+  };
+
+  const infiniteQueryOptions: UseInfiniteQueryOptions<
+    PageData,
+    Error,
+    PageData,
+    PageData,
+    readonly unknown[],
+    number
+  > = {
     queryKey: [...queryKey, 'pagination', currentPage],
-    queryFn: ({ pageParam = 0 }) => {
+    initialPageParam: 0,
+    queryFn: ({pageParam}: {pageParam: number}) => {
       // For traditional pagination, calculate offset based on current page
       const offset = enableInfiniteScroll
         ? pageParam * limit
@@ -71,12 +86,12 @@ export function usePagination<TData = unknown>(
         offset,
       });
     },
-    getNextPageParam: (lastPage, pages) => {
+    getNextPageParam: (lastPage: PageData, pages: PageData[]) => {
       if (!enableInfiniteScroll) {
         return undefined; // Traditional pagination doesn't use next page param
       }
 
-      const totalLoaded = pages.reduce((acc, page) => {
+      const totalLoaded = pages.reduce((acc: number, page: PageData) => {
         if (page?.items && Array.isArray(page.items)) {
           return acc + page.items.length;
         } else if (page?.conversations && Array.isArray(page.conversations)) {
@@ -89,7 +104,7 @@ export function usePagination<TData = unknown>(
 
       return totalLoaded < total ? pages.length : undefined;
     },
-    getPreviousPageParam: (firstPage, pages) => {
+    getPreviousPageParam: (_firstPage: PageData, pages: PageData[]) => {
       if (!enableInfiniteScroll) {
         return undefined; // Traditional pagination doesn't use previous page param
       }
@@ -119,12 +134,12 @@ export function usePagination<TData = unknown>(
     if (enableInfiniteScroll) {
       // For infinite scroll, flatten all pages
       return (
-        data.pages.flatMap(page => {
+        data.pages.flatMap((page: PageData) => {
           // React Query stores the return value from queryFn directly in page
           // My query function returns {items: [...], total: 1}
           if (page && Array.isArray(page.items)) {
             return page.items;
-          } else if (page && page.conversations) {
+          } else if (page && Array.isArray(page.conversations)) {
             return page.conversations;
           } else {
             return [];
@@ -133,10 +148,10 @@ export function usePagination<TData = unknown>(
       );
     } else {
       // For traditional pagination, only show the current page's data
-      const currentPageData = data.pages[0];
+      const currentPageData = data.pages[0] as PageData | undefined;
       if (currentPageData && Array.isArray(currentPageData.items)) {
         return currentPageData.items;
-      } else if (currentPageData && currentPageData.conversations) {
+      } else if (currentPageData && Array.isArray(currentPageData.conversations)) {
         return currentPageData.conversations;
       } else {
         return [];
@@ -154,7 +169,7 @@ export function usePagination<TData = unknown>(
       return 0;
     }
 
-    const firstPage = data.pages[0];
+    const firstPage = data.pages[0] as PageData;
 
     let total = 0;
     if (firstPage?.total !== undefined) {
@@ -220,7 +235,7 @@ export function usePagination<TData = unknown>(
 
   // Intersection Observer for infinite scroll
   const loadMoreRef = useCallback(
-    (node: Element | null) => {
+    (node: Element | null | undefined) => {
       if (!node || !enableInfiniteScroll) return;
 
       const observer = new IntersectionObserver(
@@ -229,7 +244,7 @@ export function usePagination<TData = unknown>(
             loadMore();
           }
         },
-        { threshold: 0.1 }
+        {threshold: 0.1}
       );
 
       observer.observe(node);

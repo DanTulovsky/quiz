@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
   Container,
   Title,
@@ -526,7 +526,7 @@ const PhrasebookCategoryPage = () => {
                                         ).trim();
                                         if (saved) return saved;
                                         const voice = defaultVoiceForLanguage(
-                                          user?.preferred_language
+                                          user?.preferred_language || undefined
                                         );
                                         return voice || undefined;
                                       }}

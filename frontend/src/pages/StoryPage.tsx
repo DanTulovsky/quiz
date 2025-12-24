@@ -374,7 +374,7 @@ const StoryPage: React.FC = () => {
           <ArchivedStoriesView
             currentStory={currentStory}
             isGenerating={isGenerating}
-            archivedStories={archivedStories}
+            archivedStories={archivedStories || []}
             isLoading={isLoadingArchivedStories}
             onUnarchive={handleUnarchiveStory}
             onCreateNew={() => setShowCreateModal(true)}
@@ -550,7 +550,7 @@ const StoryPage: React.FC = () => {
           <ArchivedStoriesView
             currentStory={currentStory}
             isGenerating={isGenerating}
-            archivedStories={archivedStories}
+            archivedStories={archivedStories || []}
             isLoading={isLoadingArchivedStories}
             onUnarchive={handleUnarchiveStory}
             onViewCurrentStory={() => {

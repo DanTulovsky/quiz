@@ -214,8 +214,9 @@ export default function MobileVerbConjugationPage() {
                       const saved = (userLearningPrefs?.tts_voice || '').trim();
                       if (saved) return saved;
                       return (
-                        defaultVoiceForLanguage(user?.preferred_language) ||
-                        undefined
+                        defaultVoiceForLanguage(
+                          user?.preferred_language || undefined
+                        ) || undefined
                       );
                     }}
                     size='sm'
@@ -303,7 +304,7 @@ export default function MobileVerbConjugationPage() {
             />
 
             <Accordion
-              value={accordionValue}
+              value={accordionValue ?? undefined}
               onChange={setAccordionValue}
               chevronPosition='right'
               multiple

@@ -51,7 +51,7 @@ describe('ReadingComprehensionPage - lifecycle safety', () => {
       message: 'No questions available.',
     });
 
-    let unmount: () => void;
+    let unmount: (() => void) | undefined;
     act(() => {
       const renderResult = render(
         <QueryClientProvider client={createTestQueryClient()}>
@@ -80,7 +80,7 @@ describe('ReadingComprehensionPage - lifecycle safety', () => {
     });
 
     // Clean up to prevent polling timers from causing warnings
-    unmount();
+    unmount?.();
   });
 
   it('unmounts cleanly without calling undefined cleanup (regression for stopPolling)', () => {
@@ -96,7 +96,7 @@ describe('ReadingComprehensionPage - lifecycle safety', () => {
     };
     (api.getV1QuizQuestion as Mock).mockResolvedValue(question);
 
-    let unmount: () => void;
+    let unmount: (() => void) | undefined;
     act(() => {
       const renderResult = render(
         <QueryClientProvider client={createTestQueryClient()}>

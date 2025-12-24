@@ -1,11 +1,19 @@
 import { normalizeLanguageKey, languageFallbackChain } from './locale';
+import { IconCalendar } from '@tabler/icons-react';
 
-export type PhrasebookWord = Record<string, string | undefined> & {
-  term?: string;
-  en?: string;
+export interface PhrasebookWord {
+  term: string; // English term (default)
   icon?: string;
-  note?: string;
-};
+  note: string;
+  en?: string; // English
+  it?: string; // Italian
+  fr?: string; // French
+  de?: string; // German
+  ru?: string; // Russian
+  ja?: string; // Japanese
+  zh?: string; // Chinese
+  [key: string]: string | undefined; // Allow additional language codes
+}
 
 export function getTermForLanguage(
   word: PhrasebookWord,
@@ -22,21 +30,6 @@ export function getTermForLanguage(
 
 export function getNormalizedLanguage(input?: string): string | undefined {
   return normalizeLanguageKey(input);
-}
-
-import { IconCalendar } from '@tabler/icons-react';
-
-export interface PhrasebookWord {
-  term: string; // English term (default)
-  icon?: string;
-  note: string;
-  en?: string; // English
-  it?: string; // Italian
-  fr?: string; // French
-  de?: string; // German
-  ru?: string; // Russian
-  ja?: string; // Japanese
-  zh?: string; // Chinese
 }
 
 export interface PhrasebookSection {

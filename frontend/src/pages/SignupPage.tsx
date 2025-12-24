@@ -301,14 +301,14 @@ const SignupPage: React.FC = () => {
                     }
                     data={
                       Array.isArray(languagesQuery.data)
-                        ? languagesQuery.data.map(lang => ({
-                            value: lang.name || lang,
-                            label: lang.name
-                              ? lang.name.charAt(0).toUpperCase() +
-                                lang.name.slice(1)
-                              : (lang.name || lang).charAt(0).toUpperCase() +
-                                (lang.name || lang).slice(1),
-                          }))
+                        ? languagesQuery.data.map(lang => {
+                            const langName = typeof lang === 'string' ? lang : lang.name;
+                            const displayName = langName || '';
+                            return {
+                              value: displayName,
+                              label: displayName.charAt(0).toUpperCase() + displayName.slice(1),
+                            };
+                          })
                         : []
                     }
                     placeholder='Select language'

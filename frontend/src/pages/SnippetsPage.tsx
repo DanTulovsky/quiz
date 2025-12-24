@@ -226,11 +226,11 @@ const SnippetsPage: React.FC = () => {
       ? [
           '/v1/snippets/search',
           activeSearchQuery,
-          selectedStoryId,
-          selectedLevel,
-          selectedSourceLang,
-        ]
-      : ['/v1/snippets', selectedStoryId, selectedLevel, selectedSourceLang],
+          selectedStoryId ?? '',
+          selectedLevel ?? '',
+          selectedSourceLang ?? '',
+        ].filter(Boolean) as string[]
+      : ['/v1/snippets', selectedStoryId ?? '', selectedLevel ?? '', selectedSourceLang ?? ''].filter(Boolean) as string[],
     async ({ limit, offset }) => {
       if (activeSearchQuery.trim()) {
         // Use search API

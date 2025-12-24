@@ -228,19 +228,80 @@ describe('SavedConversationsPage', () => {
     vi.mocked(apiModule.useGetV1AiConversationsId).mockReturnValue({
       data: mockConversationDetailData,
       isLoading: false,
-    });
+      isError: false,
+      error: null,
+      isSuccess: true,
+      isPending: false,
+      status: 'success',
+      dataUpdatedAt: Date.now(),
+      errorUpdatedAt: 0,
+      failureCount: 0,
+      failureReason: null,
+      errorUpdateCount: 0,
+      isFetched: true,
+      isFetchedAfterMount: true,
+      isFetching: false,
+      isInitialLoading: false,
+      isLoadingError: false,
+      isPaused: false,
+      isPlaceholderData: false,
+      isRefetching: false,
+      isRefetchError: false,
+      isStale: false,
+      refetch: vi.fn(),
+      fetchStatus: 'idle',
+    } as unknown as ReturnType<typeof apiModule.useGetV1AiConversationsId>);
 
     vi.mocked(apiModule.useDeleteV1AiConversationsId).mockReturnValue({
       mutateAsync: vi.fn(),
-    });
+      mutate: vi.fn(),
+      reset: vi.fn(),
+      status: 'idle',
+      isIdle: true,
+      isPending: false,
+      isError: false,
+      isSuccess: false,
+      data: undefined,
+      error: null,
+      failureCount: 0,
+      failureReason: null,
+      submittedAt: 0,
+      variables: undefined,
+    } as unknown as ReturnType<typeof apiModule.useDeleteV1AiConversationsId>);
 
     vi.mocked(apiModule.usePutV1AiConversationsId).mockReturnValue({
       mutateAsync: vi.fn(),
-    });
+      mutate: vi.fn(),
+      reset: vi.fn(),
+      status: 'idle',
+      isIdle: true,
+      isPending: false,
+      isError: false,
+      isSuccess: false,
+      data: undefined,
+      error: null,
+      failureCount: 0,
+      failureReason: null,
+      submittedAt: 0,
+      variables: undefined,
+    } as unknown as ReturnType<typeof apiModule.usePutV1AiConversationsId>);
 
     vi.mocked(apiModule.usePutV1AiConversationsBookmark).mockReturnValue({
       mutateAsync: vi.fn(),
-    });
+      mutate: vi.fn(),
+      reset: vi.fn(),
+      status: 'idle',
+      isIdle: true,
+      isPending: false,
+      isError: false,
+      isSuccess: false,
+      data: undefined,
+      error: null,
+      failureCount: 0,
+      failureReason: null,
+      submittedAt: 0,
+      variables: undefined,
+    } as unknown as ReturnType<typeof apiModule.usePutV1AiConversationsBookmark>);
   });
 
   afterEach(() => {

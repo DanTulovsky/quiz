@@ -549,8 +549,8 @@ func (h *AdminHandler) FixQuestionWithAI(c *gin.Context) {
 			p := h.config.Providers[0]
 			if len(p.Models) > 0 {
 				// Use first provider and model from global config
-				reporterProvider = sql.NullString{String: p.Code, Valid: true}
-				reporterModel = sql.NullString{String: p.Models[0].Code, Valid: true}
+				reporterProvider = sql.NullString{String: p.Code}
+				reporterModel = sql.NullString{String: p.Models[0].Code}
 				reporterUsername = "system"
 				foundProvider = true
 				h.logger.Info(ctx, "Falling back to global configured AI provider", map[string]interface{}{"provider": p.Code, "model": p.Models[0].Code})
