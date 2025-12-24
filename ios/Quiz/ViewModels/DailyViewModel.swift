@@ -4,8 +4,9 @@ import Foundation
 class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, SubmittingState,
                       QuestionIDProvider {
     @Published var dailyQuestions: [DailyQuestionWithDetails] = []
-    @Published var currentQuestionIndex = 0
+    @Published var currentQuestionIndex = -1
     @Published var snippets = [Snippet]()
+    @Published var isPositioned = false
 
     @Published var selectedAnswerIndex: Int?
     @Published var answerResponse: DailyAnswerResponse?
@@ -19,12 +20,12 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
     private var lastLoadedQuestionId: Int?
 
     var currentQuestion: DailyQuestionWithDetails? {
-        guard currentQuestionIndex < dailyQuestions.count else { return nil }
+        guard currentQuestionIndex >= 0 && currentQuestionIndex < dailyQuestions.count else { return nil }
         return dailyQuestions[currentQuestionIndex]
     }
 
     var progress: Double {
-        guard !dailyQuestions.isEmpty else { return 0 }
+        guard !dailyQuestions.isEmpty && currentQuestionIndex >= 0 else { return 0 }
         return Double(currentQuestionIndex + 1) / Double(dailyQuestions.count)
     }
 
@@ -47,19 +48,24 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
     func fetchDaily() {
         let today = Date().iso8601String
 
+        // Reset positioning state
+        isPositioned = false
+        currentQuestionIndex = -1
+
         apiService.getDailyQuestions(date: today)
             .handleLoadingAndError(on: self)
             .sinkValue(on: self) { [weak self] response in
                 guard let self = self else { return }
                 self.dailyQuestions = response.questions
+
                 // Always position on the first incomplete question when questions are loaded
                 // This ensures users never start on a completed question
-                if let firstIncomplete = response.questions.firstIndex(where: { !$0.isCompleted }) {
-                    self.currentQuestionIndex = firstIncomplete
-                } else if !response.questions.isEmpty {
-                    // All questions are completed, start at the first one
-                    self.currentQuestionIndex = 0
-                }
+                self.positionOnFirstIncomplete()
+
+                // Mark as positioned after setting the index
+                self.isPositioned = true
+
+                // Load snippets for the positioned question
                 if let questionId = self.currentQuestion?.question.id {
                     self.loadSnippets(questionId: questionId)
                 }
@@ -67,25 +73,64 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
             .store(in: &cancellables)
     }
 
+    private func positionOnFirstIncomplete() {
+        guard !dailyQuestions.isEmpty else {
+            currentQuestionIndex = -1
+            return
+        }
+
+        // Find the first incomplete question
+        if let firstIncomplete = dailyQuestions.firstIndex(where: { !$0.isCompleted }) {
+            currentQuestionIndex = firstIncomplete
+        } else {
+            // All questions are completed, start at the first one
+            currentQuestionIndex = 0
+        }
+    }
+
     func ensurePositionedOnFirstIncomplete() {
-        guard !dailyQuestions.isEmpty else { return }
+        guard !dailyQuestions.isEmpty else {
+            currentQuestionIndex = -1
+            isPositioned = false
+            return
+        }
 
         // Check if current question is completed or invalid
-        let currentIsCompleted =
-            currentQuestionIndex < dailyQuestions.count
+        let currentIsCompleted = currentQuestionIndex >= 0
+            && currentQuestionIndex < dailyQuestions.count
             && dailyQuestions[currentQuestionIndex].isCompleted
-        let currentIsInvalid = currentQuestionIndex >= dailyQuestions.count
+        let currentIsInvalid = currentQuestionIndex < 0 || currentQuestionIndex >= dailyQuestions.count
 
         // If we're on a completed question or invalid index, find the first incomplete question
         if currentIsCompleted || currentIsInvalid {
-            if let firstIncomplete = dailyQuestions.firstIndex(where: { !$0.isCompleted }) {
-                currentQuestionIndex = firstIncomplete
-            } else {
-                // All questions are completed, go to first question
-                currentQuestionIndex = 0
-            }
+            positionOnFirstIncomplete()
+            isPositioned = true
         }
         // If current question is valid and not completed, we're already positioned correctly
+    }
+
+    func validateCurrentQuestionPosition() {
+        guard !dailyQuestions.isEmpty else {
+            if currentQuestionIndex != -1 {
+                currentQuestionIndex = -1
+                isPositioned = false
+            }
+            return
+        }
+
+        // Validate that current index is within bounds
+        if currentQuestionIndex < 0 || currentQuestionIndex >= dailyQuestions.count {
+            positionOnFirstIncomplete()
+            isPositioned = true
+            return
+        }
+
+        // If current question is completed and not all are completed, reposition
+        let currentQuestion = dailyQuestions[currentQuestionIndex]
+        if currentQuestion.isCompleted && !isAllCompleted {
+            positionOnFirstIncomplete()
+            isPositioned = true
+        }
     }
 
     func submitAnswer(index: Int) {

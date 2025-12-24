@@ -26,6 +26,10 @@ struct DailyView: View {
                             showRetryButton: true,
                             onRetry: { viewModel.fetchDaily() }
                         )
+                    } else if !viewModel.isPositioned && !viewModel.dailyQuestions.isEmpty {
+                        // Show loading while positioning to prevent showing question 0
+                        ProgressView("Loading Daily Challenge...")
+                            .padding(.top, 50)
                     } else if let question = viewModel.currentQuestion {
                         headerSection
 
@@ -227,7 +231,7 @@ struct DailyView: View {
             Task { @MainActor in
                 try? await Task.sleep(nanoseconds: 200_000_000)  // 0.2 seconds
                 if !viewModel.dailyQuestions.isEmpty {
-                    viewModel.ensurePositionedOnFirstIncomplete()
+                    viewModel.validateCurrentQuestionPosition()
                     // Only load snippets if we don't already have them for this question
                     if let question = viewModel.currentQuestion {
                         if viewModel.snippets.isEmpty
@@ -242,12 +246,15 @@ struct DailyView: View {
             // When questions count changes (questions loaded), ensure positioning
             if new > 0 {
                 DispatchQueue.main.async {
-                    viewModel.ensurePositionedOnFirstIncomplete()
+                    viewModel.validateCurrentQuestionPosition()
                     // Load snippets for the current question after positioning
                     if let question = viewModel.currentQuestion {
                         viewModel.loadSnippets(questionId: question.question.id)
                     }
                 }
+            } else {
+                // Reset positioning state when questions are cleared
+                viewModel.isPositioned = false
             }
         }
         .onChange(of: viewModel.currentQuestion?.question.id) { oldQuestionId, newQuestionId in

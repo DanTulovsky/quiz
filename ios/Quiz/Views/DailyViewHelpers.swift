@@ -98,7 +98,9 @@ extension DailyView {
 
                 BadgeView(
                     text:
-                        "\(viewModel.currentQuestionIndex + 1) OF \(viewModel.dailyQuestions.count)",
+                        viewModel.currentQuestionIndex >= 0
+                        ? "\(viewModel.currentQuestionIndex + 1) OF \(viewModel.dailyQuestions.count)"
+                        : "0 OF \(viewModel.dailyQuestions.count)",
                     color: .blue)
             }
 
