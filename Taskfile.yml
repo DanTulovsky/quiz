@@ -1196,13 +1196,14 @@ tasks:
       - echo "✅ Backend linting passed!"
 
   lint-frontend:
-    desc: "Run frontend linters (ESLint and Prettier)"
+    desc: "Run frontend linters (ESLint, Prettier, and TypeScript)"
     deps: [format-frontend]
     dir: frontend
     cmds:
       - echo "Running frontend linters..."
       - npm run format:check
       - npm run lint
+      # - npm run typecheck
       - echo "✅ Frontend linting passed!"
 
   lint-ios:

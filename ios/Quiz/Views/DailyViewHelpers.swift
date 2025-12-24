@@ -134,3 +134,73 @@ extension DailyView {
         .padding(.top, 50)
     }
 }
+
+struct DailyQuestionContentView: View {
+    let question: DailyQuestionWithDetails
+    let viewModel: DailyViewModel
+    let questionCardId: String
+    let onTextSelected: (String, String) -> Void
+    let onSnippetTapped: (Snippet) -> Void
+    let stringValue: (JSONValue?) -> String?
+    @ViewBuilder let actionButtons: () -> some View
+
+    var body: some View {
+        VStack(spacing: 20) {
+            QuestionCardView(
+                question: question.question,
+                snippets: viewModel.snippets,
+                onTextSelected: onTextSelected,
+                onSnippetTapped: onSnippetTapped,
+                showLanguageBadge: false
+            )
+            .id(questionCardId)
+
+            QuestionOptionsView(
+                question: question.question,
+                selectedAnswerIndex: viewModel.selectedAnswerIndex,
+                correctAnswerIndex: question.isCompleted
+                    ? question.question.correctAnswerIndex : nil,
+                userAnswerIndex: question.isCompleted ? question.userAnswerIndex : nil,
+                showResults: viewModel.answerResponse != nil || question.isCompleted,
+                onOptionSelected: { index in
+                    viewModel.selectedAnswerIndex = index
+                }
+            )
+
+            if let response = viewModel.answerResponse {
+                AnswerFeedbackView(
+                    isCorrect: response.isCorrect,
+                    explanation: response.explanation,
+                    language: question.question.language,
+                    snippets: viewModel.snippets,
+                    onTextSelected: onTextSelected,
+                    onSnippetTapped: onSnippetTapped,
+                    showOverlay: true
+                )
+            } else if question.isCompleted {
+                let isCorrect =
+                    question.userAnswerIndex == question.question.correctAnswerIndex
+                let explanation =
+                    stringValue(question.question.content["explanation"])
+                    ?? "Review your answer above."
+                AnswerFeedbackView(
+                    isCorrect: isCorrect,
+                    explanation: explanation,
+                    language: question.question.language,
+                    snippets: viewModel.snippets,
+                    onTextSelected: onTextSelected,
+                    onSnippetTapped: onSnippetTapped,
+                    showOverlay: true
+                )
+            }
+
+            actionButtons()
+
+            QuestionActionButtons(
+                isReported: viewModel.isReported,
+                onReport: { viewModel.showReportModal = true },
+                onMarkKnown: { viewModel.showMarkKnownModal = true }
+            )
+        }
+    }
+}

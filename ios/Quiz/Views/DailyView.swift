@@ -49,9 +49,10 @@ struct DailyView: View {
                                 // Safe to show question
                                 headerSection
 
-                                QuestionCardView(
-                                    question: question.question,
-                                    snippets: viewModel.snippets,
+                                DailyQuestionContentView(
+                                    question: question,
+                                    viewModel: viewModel,
+                                    questionCardId: questionCardId,
                                     onTextSelected: { text, fullText in
                                         selectedText = text
                                         translationSentence = TextUtils.extractSentence(
@@ -61,79 +62,18 @@ struct DailyView: View {
                                     onSnippetTapped: { snippet in
                                         showingSnippet = snippet
                                     },
-                                    showLanguageBadge: false
-                                )
-                                .id(questionCardId)
-
-                                QuestionOptionsView(
-                                    question: question.question,
-                                    selectedAnswerIndex: viewModel.selectedAnswerIndex,
-                                    correctAnswerIndex: question.isCompleted
-                                        ? question.question.correctAnswerIndex : nil,
-                                    userAnswerIndex: question.isCompleted ? question.userAnswerIndex : nil,
-                                    showResults: viewModel.answerResponse != nil || question.isCompleted,
-                                    onOptionSelected: { index in
-                                        viewModel.selectedAnswerIndex = index
-                                    }
-                                )
-
-                                if let response = viewModel.answerResponse {
-                                    AnswerFeedbackView(
-                                        isCorrect: response.isCorrect,
-                                        explanation: response.explanation,
-                                        language: question.question.language,
-                                        snippets: viewModel.snippets,
-                                        onTextSelected: { text, fullText in
-                                            selectedText = text
-                                            translationSentence = TextUtils.extractSentence(
-                                                from: fullText, containing: text)
-                                            showTranslationPopup = true
-                                        },
-                                        onSnippetTapped: { snippet in
-                                            showingSnippet = snippet
-                                        },
-                                        showOverlay: true
-                                    )
-                                } else if question.isCompleted {
-                                    // Show feedback for completed questions even if answerResponse is nil
-                                    let isCorrect =
-                                        question.userAnswerIndex == question.question.correctAnswerIndex
-                                    let explanation =
-                                        stringValue(question.question.content["explanation"])
-                                        ?? "Review your answer above."
-                                    AnswerFeedbackView(
-                                        isCorrect: isCorrect,
-                                        explanation: explanation,
-                                        language: question.question.language,
-                                        snippets: viewModel.snippets,
-                                        onTextSelected: { text, fullText in
-                                            selectedText = text
-                                            translationSentence = TextUtils.extractSentence(
-                                                from: fullText, containing: text)
-                                            showTranslationPopup = true
-                                        },
-                                        onSnippetTapped: { snippet in
-                                            showingSnippet = snippet
-                                        },
-                                        showOverlay: true
-                                    )
-                                }
-
-                                actionButtons()
-
-                                QuestionActionButtons(
-                                    isReported: viewModel.isReported,
-                                    onReport: { viewModel.showReportModal = true },
-                                    onMarkKnown: { viewModel.showMarkKnownModal = true }
+                                    stringValue: stringValue,
+                                    actionButtons: { actionButtons() }
                                 )
                             }
                         } else {
                             // Not at index 0, safe to show
                             headerSection
 
-                            QuestionCardView(
-                                question: question.question,
-                                snippets: viewModel.snippets,
+                            DailyQuestionContentView(
+                                question: question,
+                                viewModel: viewModel,
+                                questionCardId: questionCardId,
                                 onTextSelected: { text, fullText in
                                     selectedText = text
                                     translationSentence = TextUtils.extractSentence(
@@ -143,151 +83,10 @@ struct DailyView: View {
                                 onSnippetTapped: { snippet in
                                     showingSnippet = snippet
                                 },
-                                showLanguageBadge: false
-                            )
-                            .id(questionCardId)
-
-                            QuestionOptionsView(
-                                question: question.question,
-                                selectedAnswerIndex: viewModel.selectedAnswerIndex,
-                                correctAnswerIndex: question.isCompleted
-                                    ? question.question.correctAnswerIndex : nil,
-                                userAnswerIndex: question.isCompleted ? question.userAnswerIndex : nil,
-                                showResults: viewModel.answerResponse != nil || question.isCompleted,
-                                onOptionSelected: { index in
-                                    viewModel.selectedAnswerIndex = index
-                                }
-                            )
-
-                            if let response = viewModel.answerResponse {
-                                AnswerFeedbackView(
-                                    isCorrect: response.isCorrect,
-                                    explanation: response.explanation,
-                                    language: question.question.language,
-                                    snippets: viewModel.snippets,
-                                    onTextSelected: { text, fullText in
-                                        selectedText = text
-                                        translationSentence = TextUtils.extractSentence(
-                                            from: fullText, containing: text)
-                                        showTranslationPopup = true
-                                    },
-                                    onSnippetTapped: { snippet in
-                                        showingSnippet = snippet
-                                    },
-                                    showOverlay: true
-                                )
-                            } else if question.isCompleted {
-                                // Show feedback for completed questions even if answerResponse is nil
-                                let isCorrect =
-                                    question.userAnswerIndex == question.question.correctAnswerIndex
-                                let explanation =
-                                    stringValue(question.question.content["explanation"])
-                                    ?? "Review your answer above."
-                                AnswerFeedbackView(
-                                    isCorrect: isCorrect,
-                                    explanation: explanation,
-                                    language: question.question.language,
-                                    snippets: viewModel.snippets,
-                                    onTextSelected: { text, fullText in
-                                        selectedText = text
-                                        translationSentence = TextUtils.extractSentence(
-                                            from: fullText, containing: text)
-                                        showTranslationPopup = true
-                                    },
-                                    onSnippetTapped: { snippet in
-                                        showingSnippet = snippet
-                                    },
-                                    showOverlay: true
-                                )
-                            }
-
-                            actionButtons()
-
-                            QuestionActionButtons(
-                                isReported: viewModel.isReported,
-                                onReport: { viewModel.showReportModal = true },
-                                onMarkKnown: { viewModel.showMarkKnownModal = true }
+                                stringValue: stringValue,
+                                actionButtons: { actionButtons() }
                             )
                         }
-                        headerSection
-
-                        QuestionCardView(
-                            question: question.question,
-                            snippets: viewModel.snippets,
-                            onTextSelected: { text, fullText in
-                                selectedText = text
-                                translationSentence = TextUtils.extractSentence(
-                                    from: fullText, containing: text)
-                                showTranslationPopup = true
-                            },
-                            onSnippetTapped: { snippet in
-                                showingSnippet = snippet
-                            },
-                            showLanguageBadge: false
-                        )
-                        .id(questionCardId)
-
-                        QuestionOptionsView(
-                            question: question.question,
-                            selectedAnswerIndex: viewModel.selectedAnswerIndex,
-                            correctAnswerIndex: question.isCompleted
-                                ? question.question.correctAnswerIndex : nil,
-                            userAnswerIndex: question.isCompleted ? question.userAnswerIndex : nil,
-                            showResults: viewModel.answerResponse != nil || question.isCompleted,
-                            onOptionSelected: { index in
-                                viewModel.selectedAnswerIndex = index
-                            }
-                        )
-
-                        if let response = viewModel.answerResponse {
-                            AnswerFeedbackView(
-                                isCorrect: response.isCorrect,
-                                explanation: response.explanation,
-                                language: question.question.language,
-                                snippets: viewModel.snippets,
-                                onTextSelected: { text, fullText in
-                                    selectedText = text
-                                    translationSentence = TextUtils.extractSentence(
-                                        from: fullText, containing: text)
-                                    showTranslationPopup = true
-                                },
-                                onSnippetTapped: { snippet in
-                                    showingSnippet = snippet
-                                },
-                                showOverlay: true
-                            )
-                        } else if question.isCompleted {
-                            // Show feedback for completed questions even if answerResponse is nil
-                            let isCorrect =
-                                question.userAnswerIndex == question.question.correctAnswerIndex
-                            let explanation =
-                                stringValue(question.question.content["explanation"])
-                                ?? "Review your answer above."
-                            AnswerFeedbackView(
-                                isCorrect: isCorrect,
-                                explanation: explanation,
-                                language: question.question.language,
-                                snippets: viewModel.snippets,
-                                onTextSelected: { text, fullText in
-                                    selectedText = text
-                                    translationSentence = TextUtils.extractSentence(
-                                        from: fullText, containing: text)
-                                    showTranslationPopup = true
-                                },
-                                onSnippetTapped: { snippet in
-                                    showingSnippet = snippet
-                                },
-                                showOverlay: true
-                            )
-                        }
-
-                        actionButtons()
-
-                        QuestionActionButtons(
-                            isReported: viewModel.isReported,
-                            onReport: { viewModel.showReportModal = true },
-                            onMarkKnown: { viewModel.showMarkKnownModal = true }
-                        )
                     } else if !viewModel.dailyQuestions.isEmpty {
                         completionView
                     }

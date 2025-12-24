@@ -2,8 +2,7 @@ import Combine
 import Foundation
 
 class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, SubmittingState,
-    QuestionIDProvider
-{
+    QuestionIDProvider {
     @Published var dailyQuestions: [DailyQuestionWithDetails] = []
     @Published var currentQuestionIndex = -1
     @Published var snippets = [Snippet]()
@@ -193,8 +192,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
             }
         } else {
             // Find next unanswered question
-            if let nextIncompleteIndex = dailyQuestions.enumerated().first(where: {
-                index, question in
+            if let nextIncompleteIndex = dailyQuestions.enumerated().first(where: { index, question in
                 index > currentQuestionIndex && !question.isCompleted
             })?.offset {
                 currentQuestionIndex = nextIncompleteIndex
