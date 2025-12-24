@@ -188,30 +188,21 @@ func (w *Worker) checkForDailyReminders(ctx context.Context) error {
 	now := w.timeNow().UTC()
 	currentHour := now.Hour()
 
-	// Check if it's time to send reminders (default: 9 AM)
+	// Target hour users should receive reminders in their local timezone (default: 9 AM)
 	reminderHour := w.cfg.Email.DailyReminder.Hour
-	if currentHour != reminderHour {
-		span.SetAttributes(
-			attribute.Int("check.current_hour", currentHour),
-			attribute.Int("check.reminder_hour", reminderHour),
-			attribute.Bool("check.should_send", false),
-			attribute.String("check.reason", "wrong_hour"),
-		)
-		return nil
-	}
 
 	span.SetAttributes(
-		attribute.Int("check.current_hour", currentHour),
+		attribute.Int("check.utc_hour", currentHour),
 		attribute.Int("check.reminder_hour", reminderHour),
-		attribute.Bool("check.should_send", true),
 	)
 
 	w.logger.Info(ctx, "Checking for users needing daily reminders", map[string]interface{}{
 		"reminder_hour": reminderHour,
+		"utc_hour":      currentHour,
 	})
 
-	// Get users who need daily reminders
-	users, err := w.getUsersNeedingDailyReminders(ctx)
+	// Get users who need daily reminders right now (based on their timezone)
+	users, err := w.getUsersNeedingDailyReminders(ctx, reminderHour)
 	if err != nil {
 		span.RecordError(err)
 		span.SetAttributes(
@@ -330,9 +321,13 @@ func (w *Worker) checkForDailyReminders(ctx context.Context) error {
 	return nil
 }
 
-// getUsersNeedingDailyReminders returns users who should receive daily reminders
-func (w *Worker) getUsersNeedingDailyReminders(ctx context.Context) ([]models.User, error) {
-	ctx, span := otel.Tracer("worker").Start(ctx, "getUsersNeedingDailyReminders")
+// getUsersNeedingDailyReminders returns users who should receive daily reminders right now.
+// A user qualifies when they have daily reminders enabled, have not received one today in their
+// local timezone, and their local hour matches the configured reminder hour.
+func (w *Worker) getUsersNeedingDailyReminders(ctx context.Context, reminderHour int) ([]models.User, error) {
+	ctx, span := otel.Tracer("worker").Start(ctx, "getUsersNeedingDailyReminders",
+		trace.WithAttributes(attribute.Int("reminder_hour", reminderHour)),
+	)
 	defer span.End()
 
 	// Get all users and filter for those with email addresses and daily reminders enabled
@@ -343,7 +338,7 @@ func (w *Worker) getUsersNeedingDailyReminders(ctx context.Context) ([]models.Us
 	}
 
 	var eligibleUsers []models.User
-	today := w.timeNow().UTC().Format("2006-01-02")
+	nowUTC := w.timeNow()
 
 	for _, user := range users {
 		// Check if user has email address
@@ -367,9 +362,33 @@ func (w *Worker) getUsersNeedingDailyReminders(ctx context.Context) ([]models.Us
 			continue
 		}
 
+		// Determine user's timezone (default to UTC)
+		timezone := "UTC"
+		if user.Timezone.Valid && strings.TrimSpace(user.Timezone.String) != "" {
+			timezone = user.Timezone.String
+		}
+
+		loc, err := time.LoadLocation(timezone)
+		if err != nil {
+			w.logger.Warn(ctx, "Invalid timezone for user, falling back to UTC", map[string]interface{}{
+				"user_id":  user.ID,
+				"username": user.Username,
+				"timezone": timezone,
+				"error":    err.Error(),
+			})
+			loc = time.UTC
+		}
+
+		userNow := nowUTC.In(loc)
+		if userNow.Hour() != reminderHour {
+			continue
+		}
+
+		today := userNow.Format("2006-01-02")
+
 		// Check if we've already sent a reminder today
 		if prefs.LastDailyReminderSent != nil {
-			lastReminderDate := prefs.LastDailyReminderSent.Format("2006-01-02")
+			lastReminderDate := prefs.LastDailyReminderSent.In(loc).Format("2006-01-02")
 			if lastReminderDate == today {
 				continue
 			}
@@ -378,9 +397,15 @@ func (w *Worker) getUsersNeedingDailyReminders(ctx context.Context) ([]models.Us
 		eligibleUsers = append(eligibleUsers, user)
 	}
 
+	span.SetAttributes(
+		attribute.Int("users.total", len(users)),
+		attribute.Int("users.eligible", len(eligibleUsers)),
+	)
+
 	w.logger.Info(ctx, "Found users eligible for daily reminders", map[string]interface{}{
 		"total_users":    len(users),
 		"eligible_users": len(eligibleUsers),
+		"reminder_hour":  reminderHour,
 	})
 
 	return eligibleUsers, nil
