@@ -9,23 +9,22 @@ import {
   Divider,
 } from '@mantine/core';
 import {
-  IconUsers,
-  IconChartBar,
-  IconSettings,
-  IconServer,
+  IconUser,
+  IconChartLine,
+  IconAdjustments,
+  IconDatabase,
   IconHome,
   IconLogout,
-  IconDatabase,
   IconArrowLeft,
   IconBell,
   IconCalendar,
   IconBook,
-  IconTrendingUp,
+  IconArrowUp,
+  IconAlertCircle,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import FeedbackModal from './FeedbackModal';
-import { IconBug } from '@tabler/icons-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -40,12 +39,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const backendNavItems = [
     {
       label: 'Backend Overview',
-      icon: <IconServer size={16} />,
+      icon: <IconDatabase size={16} />,
       path: '/admin/backend/adminz',
     },
     {
       label: 'User Management',
-      icon: <IconUsers size={16} />,
+      icon: <IconUser size={16} />,
       path: '/admin/backend/userz',
     },
     {
@@ -63,12 +62,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const workerNavItems = [
     {
       label: 'Worker Admin',
-      icon: <IconSettings size={16} />,
+      icon: <IconAdjustments size={16} />,
       path: '/admin/worker/adminz',
     },
     {
       label: 'Analytics',
-      icon: <IconChartBar size={16} />,
+      icon: <IconChartLine size={16} />,
       path: '/admin/worker/analyticsz',
     },
     {
@@ -86,12 +85,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const statsNavItems = [
     {
       label: 'Translation Usage',
-      icon: <IconTrendingUp size={16} />,
+      icon: <IconArrowUp size={16} />,
       path: '/admin/stats/translation',
     },
     {
       label: 'Feedback Reports',
-      icon: <IconBug size={16} />,
+      icon: <IconAlertCircle size={16} />,
       path: '/admin/feedback',
     },
   ];
@@ -120,7 +119,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           <Group>
             <Button
               variant='subtle'
-              leftSection={<IconBug size={16} />}
+              leftSection={<IconAlertCircle size={16} />}
               onClick={() => setFeedbackModalOpened(true)}
               data-testid='feedback-button'
             >

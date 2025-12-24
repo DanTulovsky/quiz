@@ -15,14 +15,14 @@ import {
 import {
   IconArchive,
   IconBook,
-  IconRestore,
+  IconRotateClockwise,
   IconCalendar,
   IconLanguage,
   IconSearch,
-  IconLoader,
   IconCheck,
   IconEye,
 } from '@tabler/icons-react';
+import { Loader } from '@mantine/core';
 import { Story, StoryWithSections } from '../api/storyApi';
 
 interface ArchivedStoriesViewProps {
@@ -62,7 +62,7 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
   if (isLoading) {
     return (
       <Container size='sm' py='xl'>
-        <Stack spacing='md' align='center'>
+        <Stack gap='md' style={{ alignItems: 'center' }}>
           <Loader size='lg' />
           <Text color='dimmed'>Loading archived stories...</Text>
         </Stack>
@@ -73,13 +73,13 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
   if (!archivedStories || archivedStories.length === 0) {
     return (
       <Container size='sm' py='xl'>
-        <Stack spacing='lg' align='center'>
-          <Group position='center' spacing='xs'>
+        <Stack gap='lg' style={{ alignItems: 'center' }}>
+          <Group justify='center' gap='xs'>
             <IconBook size={32} />
             <Title order={2}>Story Mode</Title>
           </Group>
 
-          <Text size='lg' color='dimmed' align='center'>
+          <Text size='lg' color='dimmed' ta='center'>
             Create personalized stories in your target language at your
             proficiency level. Each story is generated daily with comprehension
             questions to test your understanding.
@@ -108,10 +108,10 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
 
   return (
     <Container size='md' py='xl'>
-      <Stack spacing='md'>
+      <Stack gap='md'>
         {/* Create New Story Button - Moved to top */}
         {!hideCreateButton && (
-          <Group position='center'>
+          <Group justify='center'>
             <Button
               leftSection={<IconBook size={16} />}
               size='lg'
@@ -134,13 +134,13 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
               color={isGenerating ? 'blue' : 'green'}
               icon={
                 isGenerating ? (
-                  <IconLoader size={16} />
+                  <Loader size={16} />
                 ) : (
                   <IconCheck size={16} />
                 )
               }
             >
-              <Group position='apart' mb='xs'>
+              <Group justify='space-between' mb='xs'>
                 <Title order={4} style={{ margin: 0 }}>
                   {currentStory.title}
                 </Title>
@@ -165,13 +165,13 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
                 </Group>
               </Group>
 
-              <Group spacing='lg'>
-                <Group spacing='xs'>
+              <Group gap='lg'>
+                <Group gap='xs'>
                   <IconLanguage size={14} />
                   <Text size='sm'>{currentStory.language}</Text>
                 </Group>
 
-                <Group spacing='xs'>
+                <Group gap='xs'>
                   <IconBook size={14} />
                   <Text size='sm'>
                     {currentStory.sections?.length || 0} section
@@ -179,7 +179,7 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
                   </Text>
                 </Group>
 
-                <Group spacing='xs'>
+                <Group gap='xs'>
                   <IconCalendar size={14} />
                   <Text size='sm'>
                     {currentStory.created_at
@@ -222,9 +222,9 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
         {/* Scrollable Stories Area */}
         <div style={{ height: '500px' }}>
           <ScrollArea h='100%' type='auto'>
-            <Stack spacing='xs'>
+            <Stack gap='xs'>
               {filteredStories.length === 0 ? (
-                <Text color='dimmed' align='center' py='xl'>
+                <Text color='dimmed' ta='center' py='xl'>
                   {searchQuery
                     ? 'No stories match your search.'
                     : 'No archived stories found.'}
@@ -233,8 +233,8 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
                 filteredStories.map((story, index) => (
                   <Group
                     key={story.id}
-                    position='apart'
-                    align='center'
+                    justify='space-between'
+                    style={{ alignItems: 'center' }}
                     p='sm'
                     sx={theme => ({
                       backgroundColor:
@@ -245,7 +245,7 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
                     })}
                   >
                     <div style={{ flex: 1 }}>
-                      <Group position='apart' mb='xs'>
+                      <Group justify='space-between' mb='xs'>
                         <Title order={4} style={{ margin: 0 }}>
                           {story.title}
                         </Title>
@@ -254,15 +254,15 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
                         </Badge>
                       </Group>
 
-                      <Group spacing='lg'>
-                        <Group spacing='xs'>
+                      <Group gap='lg'>
+                        <Group gap='xs'>
                           <IconLanguage size={14} />
                           <Text size='sm' color='dimmed'>
                             {story.language}
                           </Text>
                         </Group>
 
-                        <Group spacing='xs'>
+                        <Group gap='xs'>
                           <IconCalendar size={14} />
                           <Text size='sm' color='dimmed'>
                             {new Date(story.created_at).toLocaleDateString()}
@@ -285,7 +285,7 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
 
                     <Button
                       variant='light'
-                      leftSection={<IconRestore size={16} />}
+                      leftSection={<IconRotateClockwise size={16} />}
                       onClick={() => onUnarchive(story.id!)}
                       color='green'
                       size='sm'

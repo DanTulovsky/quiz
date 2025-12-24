@@ -21,7 +21,7 @@ import {
   IconCheck,
   IconX,
   IconArrowLeft,
-  IconArrowRight,
+  IconChevronRight,
 } from '@tabler/icons-react';
 import { splitIntoParagraphs } from '../../utils/passage';
 import { useMediaQuery } from '@mantine/hooks';
@@ -428,7 +428,7 @@ const MobileDailyPage: React.FC = () => {
                 variant='light'
                 onClick={handleNextQuestion}
                 disabled={!hasNextQuestion}
-                rightSection={<IconArrowRight size={16} />}
+                rightSection={<IconChevronRight size={16} />}
                 size='sm'
               >
                 Next

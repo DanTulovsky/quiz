@@ -20,15 +20,13 @@ import {
   IconMessage,
   IconCalendar,
   IconLogout,
-  IconBookmark,
   IconBook,
   IconBrain,
   IconLanguage,
-  IconNotes,
-  IconLanguageHiragana,
-  IconSettings,
-  IconBug,
-  IconSparkles,
+  IconNote,
+  IconAdjustments,
+  IconAlertCircle,
+  IconStars,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import FeedbackModal from './FeedbackModal';
@@ -108,7 +106,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     {
       key: 'word-of-day',
       label: 'Word of the Day',
-      icon: IconSparkles,
+      icon: IconStars,
       path: '/m/word-of-day',
     },
     {
@@ -126,13 +124,13 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     {
       key: 'bookmarks',
       label: 'Bookmarked Messages',
-      icon: IconBookmark,
+      icon: IconBook,
       path: '/m/bookmarks',
     },
     {
       key: 'snippets',
       label: 'Snippets',
-      icon: IconNotes,
+      icon: IconNote,
       path: '/m/snippets',
     },
     {
@@ -144,7 +142,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     {
       key: 'verb-conjugation',
       label: 'Verb Conjugations',
-      icon: IconLanguageHiragana,
+      icon: IconLanguage,
       path: '/m/verb-conjugation',
     },
   ];
@@ -207,7 +205,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
             <Divider my='xs' />
             <Button
               variant={activeTab === 'settings' ? 'light' : 'subtle'}
-              leftSection={<IconSettings size={16} />}
+              leftSection={<IconAdjustments size={16} />}
               onClick={() => {
                 handleNavigation('/m/settings');
                 if (opened) toggle();
@@ -269,7 +267,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
               onClick={openFeedbackModal}
               title='Feedback'
             >
-              <IconBug size={18} />
+              <IconAlertCircle size={18} />
             </ActionIcon>
             <ActionIcon
               variant='outline'

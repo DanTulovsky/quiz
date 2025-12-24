@@ -32,7 +32,13 @@ export const getUserStories = async (
 export const getCurrentStory = async (): Promise<StoryWithSections | null> => {
   const { getV1StoryCurrent } = await import('./api');
   try {
-    return await getV1StoryCurrent();
+    const result = await getV1StoryCurrent();
+    // If it's a GeneratingResponse, return null (story is being generated)
+    if (result && typeof result === 'object' && 'status' in result && result.status === 'generating') {
+      return null;
+    }
+    // Otherwise, it should be StoryWithSections
+    return result as StoryWithSections;
   } catch (error) {
     // If no current story, return null instead of throwing
     if (

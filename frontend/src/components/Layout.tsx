@@ -24,24 +24,23 @@ import {
 import {
   IconBook,
   IconBook2,
-  IconChartBar,
-  IconSettings,
+  IconChartLine,
+  IconAdjustments,
   IconLogout,
   IconBrain,
-  IconWorld,
+  IconGlobe,
   IconTrophy,
   IconSun,
   IconMoon,
-  IconFileText,
-  IconShield,
+  IconFile,
+  IconShieldCheck,
   IconCalendar,
   IconAbc,
-  IconDeviceMobile,
-  IconQuestionMark,
-  IconBookmark,
+  IconPhone,
+  IconHelp,
   IconLanguage,
-  IconBug,
-  IconSparkles,
+  IconAlertCircle,
+  IconStars,
 } from '@tabler/icons-react';
 import WorkerStatus from './WorkerStatus';
 import VersionDisplay from './VersionDisplay';
@@ -166,7 +165,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {
         name: 'Reading Comprehension',
         href: '/reading-comprehension',
-        icon: IconFileText,
+        icon: IconFile,
         testId: 'nav-reading',
       },
       {
@@ -178,7 +177,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {
         name: 'Word of the Day',
         href: '/word-of-day',
-        icon: IconSparkles,
+        icon: IconStars,
         testId: 'nav-word-of-day',
       },
       {
@@ -202,13 +201,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {
         name: 'Bookmarked AI Messages',
         href: '/bookmarks',
-        icon: IconBookmark,
+        icon: IconBook,
         testId: 'nav-bookmarks',
       },
       {
         name: 'Saved Snippets',
         href: '/snippets',
-        icon: IconBookmark,
+        icon: IconBook,
         testId: 'nav-snippets',
       },
       {
@@ -230,7 +229,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {
             name: 'Admin',
             href: '/admin',
-            icon: IconShield,
+            icon: IconShieldCheck,
             testId: 'nav-admin',
           },
         ]
@@ -428,7 +427,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Group gap='md'>
               <WorkerStatus />
               <Group gap='xs'>
-                <IconWorld size={16} />
+                <IconGlobe size={16} />
                 <Text size='sm' fw={500} data-testid='quiz-title'>
                   {user?.preferred_language || 'italian'}
                 </Text>
@@ -471,7 +470,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     size='lg'
                     aria-label='Progress'
                   >
-                    <IconChartBar
+                    <IconChartLine
                       size={20}
                       color={
                         location.pathname.startsWith('/progress')
@@ -515,7 +514,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       size='lg'
                       aria-label='Switch to mobile view'
                     >
-                      <IconDeviceMobile size={20} />
+                      <IconPhone size={20} />
                     </ActionIcon>
                   </Tooltip>
                 )}
@@ -530,7 +529,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     size='lg'
                     aria-label='Help'
                   >
-                    <IconQuestionMark size={20} />
+                    <IconHelp size={20} />
                   </ActionIcon>
                 </Tooltip>
                 <Tooltip
@@ -545,7 +544,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     aria-label='Feedback'
                     data-testid='feedback-button'
                   >
-                    <IconBug size={20} />
+                    <IconAlertCircle size={20} />
                   </ActionIcon>
                 </Tooltip>
                 <Tooltip
@@ -569,7 +568,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     size='lg'
                     aria-label='Settings'
                   >
-                    <IconSettings
+                    <IconAdjustments
                       size={20}
                       color={
                         location.pathname.startsWith('/settings')

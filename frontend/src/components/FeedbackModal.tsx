@@ -12,7 +12,7 @@ import {
   Alert,
   LoadingOverlay,
 } from '@mantine/core';
-import { IconBug, IconCheck, IconAlertCircle } from '@tabler/icons-react';
+import { IconAlertCircle, IconCheck } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { usePostV1Feedback } from '../api/api';
 import html2canvas from 'html2canvas';
@@ -219,7 +219,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
       onClose={onClose}
       title={
         <Group gap='xs'>
-          <IconBug size={24} />
+          <IconAlertCircle size={24} />
           <Text size='lg' fw={600}>
             Report Issue or Feedback
           </Text>
@@ -358,7 +358,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
             onClick={handleSubmit}
             loading={isSubmitting}
             disabled={isSubmitting}
-            leftSection={<IconBug />}
+            leftSection={<IconAlertCircle />}
           >
             Submit Feedback
           </Button>

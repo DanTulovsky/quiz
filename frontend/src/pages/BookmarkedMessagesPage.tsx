@@ -354,8 +354,6 @@ const MessageDetailModal: React.FC<MessageDetailModalProps> = ({
 
 export const BookmarkedMessagesPage: React.FC = () => {
   const {} = useAuth();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { fontSize } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
 
   const [activeSearchQuery, setActiveSearchQuery] = useState('');

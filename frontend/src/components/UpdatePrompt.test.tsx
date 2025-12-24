@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen, act } from '@testing-library/react';
 import { vi } from 'vitest';
 import { renderWithProviders } from '@/test-utils';

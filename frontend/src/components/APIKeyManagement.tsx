@@ -19,7 +19,7 @@ import {
   Loader,
 } from '@mantine/core';
 import {
-  IconKey,
+  IconLock,
   IconPlus,
   IconTrash,
   IconCopy,
@@ -246,7 +246,7 @@ export const APIKeyManagement: React.FC = () => {
       <Stack gap='lg'>
         <Group justify='space-between'>
           <Group>
-            <IconKey size={20} />
+            <IconLock size={20} />
             <Title order={2}>API Keys</Title>
           </Group>
           <Button
