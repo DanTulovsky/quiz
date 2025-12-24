@@ -44,21 +44,8 @@ vi.mock('../notifications', () => ({
 import { renderHook, act } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach, afterAll } from 'vitest';
 import { useDailyQuestions } from './useDailyQuestions';
-import { DailyQuestionWithDetails, DailyProgress } from '../api/api';
-import type { UseQueryResult, UseMutationResult } from '@tanstack/react-query';
+import { DailyQuestionWithDetails } from '../api/api';
 import { useQueryClient } from '@tanstack/react-query';
-
-// Type definitions for mock return values
-type MockQueryResult<T> = UseQueryResult<T, Error> & {
-  data?: T;
-  isLoading?: boolean;
-  refetch?: () => void;
-};
-
-type MockMutationResult = UseMutationResult<unknown, Error, unknown, unknown> & {
-  mutateAsync?: () => Promise<unknown>;
-  isPending?: boolean;
-};
 
 type MockQueryClient = {
   invalidateQueries: ReturnType<typeof vi.fn>;
@@ -283,7 +270,7 @@ describe('useDailyQuestions', () => {
     });
 
     // Mock the API hooks
-      mockUseGetV1DailyQuestionsDate.mockReturnValue({
+    mockUseGetV1DailyQuestionsDate.mockReturnValue({
       data: { questions: mockQuestions },
       isLoading: false,
       refetch: vi.fn(),
@@ -303,17 +290,23 @@ describe('useDailyQuestions', () => {
     mockUsePostV1DailyQuestionsDateCompleteQuestionId.mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as unknown as ReturnType<typeof usePostV1DailyQuestionsDateCompleteQuestionId>);
+    } as unknown as ReturnType<
+      typeof usePostV1DailyQuestionsDateCompleteQuestionId
+    >);
 
     mockUseDeleteV1DailyQuestionsDateCompleteQuestionId.mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as unknown as ReturnType<typeof useDeleteV1DailyQuestionsDateCompleteQuestionId>);
+    } as unknown as ReturnType<
+      typeof useDeleteV1DailyQuestionsDateCompleteQuestionId
+    >);
 
     mockUsePostV1DailyQuestionsDateAnswerQuestionId.mockReturnValue({
       mutateAsync: vi.fn(),
       isPending: false,
-    } as unknown as ReturnType<typeof usePostV1DailyQuestionsDateCompleteQuestionId>);
+    } as unknown as ReturnType<
+      typeof usePostV1DailyQuestionsDateCompleteQuestionId
+    >);
 
     // Provide a default mock for the history hook used by the implementation
     mockUseGetV1DailyHistoryQuestionId.mockReturnValue({
@@ -544,7 +537,9 @@ describe('useDailyQuestions', () => {
       mockUsePostV1DailyQuestionsDateAnswerQuestionId.mockReturnValue({
         mutateAsync: mockSubmitAnswerMutation,
         isPending: false,
-      } as unknown as ReturnType<typeof usePostV1DailyQuestionsDateCompleteQuestionId>);
+      } as unknown as ReturnType<
+        typeof usePostV1DailyQuestionsDateCompleteQuestionId
+      >);
 
       const mockQueryClient: MockQueryClient = {
         invalidateQueries: mockInvalidateQueries,
@@ -612,7 +607,9 @@ describe('useDailyQuestions', () => {
       mockUsePostV1DailyQuestionsDateCompleteQuestionId.mockReturnValue({
         mutateAsync: mockCompleteQuestionMutation,
         isPending: false,
-      } as unknown as ReturnType<typeof usePostV1DailyQuestionsDateCompleteQuestionId>);
+      } as unknown as ReturnType<
+        typeof usePostV1DailyQuestionsDateCompleteQuestionId
+      >);
 
       const mockQueryClient: MockQueryClient = {
         invalidateQueries: mockInvalidateQueries,
@@ -675,9 +672,11 @@ describe('useDailyQuestions', () => {
 
       const mockResetQuestionMutation = vi.fn().mockResolvedValue({});
       mockUseDeleteV1DailyQuestionsDateCompleteQuestionId.mockReturnValue({
-      mutateAsync: mockResetQuestionMutation,
-      isPending: false,
-    } as unknown as ReturnType<typeof useDeleteV1DailyQuestionsDateCompleteQuestionId>);
+        mutateAsync: mockResetQuestionMutation,
+        isPending: false,
+      } as unknown as ReturnType<
+        typeof useDeleteV1DailyQuestionsDateCompleteQuestionId
+      >);
 
       const mockQueryClient: MockQueryClient = {
         invalidateQueries: mockInvalidateQueries,
@@ -722,7 +721,9 @@ describe('useDailyQuestions', () => {
       mockUsePostV1DailyQuestionsDateAnswerQuestionId.mockReturnValue({
         mutateAsync: mockSubmitAnswerMutation,
         isPending: false,
-      } as unknown as ReturnType<typeof usePostV1DailyQuestionsDateCompleteQuestionId>);
+      } as unknown as ReturnType<
+        typeof usePostV1DailyQuestionsDateCompleteQuestionId
+      >);
 
       const mockQueryClient: MockQueryClient = {
         invalidateQueries: vi.fn(),

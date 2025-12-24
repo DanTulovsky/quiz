@@ -2685,39 +2685,29 @@ func TestWorker_CheckForDailyReminders_Integration(t *testing.T) {
 }
 
 func TestWorker_CheckForDailyReminders_WrongHour(t *testing.T) {
-	userService := &mockUserService{}
-	questionService := &mockQuestionService{}
-	aiService := &mockAIService{}
-	learningService := &mockLearningService{}
-	workerService := &mockWorkerService{}
-	dailyQuestionService := &mockDailyQuestionService{}
-	emailService := &mockEmailService{}
 	cfg := testWorkerConfig()
+	fakeTime := time.Date(2024, 1, 1, 14, 0, 0, 0, time.UTC) // 2 PM UTC (not 9 AM)
+	w := newWorkerWithFakeTime(t, fakeTime, cfg)
 
-	// Set reminder hour to 9 AM
-	cfg.Email.DailyReminder.Hour = 9
-	cfg.Email.DailyReminder.Enabled = true
+	user := models.User{
+		ID:       1,
+		Username: "user_outside_hour",
+		Email:    sql.NullString{String: "user@example.com", Valid: true},
+		Timezone: sql.NullString{String: "UTC", Valid: true},
+	}
 
-	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockWordOfTheDayService{}, &mockStoryService{}, emailService, &mockAPNSService{}, &mockGenerationHintService{}, services.NewInMemoryTranslationCacheRepository(), "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w.userService.(*mockUserService).On("GetAllUsers", mock.Anything).Return([]models.User{user}, nil)
+	w.learningService.(*mockLearningService).On("GetUserLearningPreferences", mock.Anything, 1).Return(&models.UserLearningPreferences{
+		UserID:               1,
+		DailyReminderEnabled: true,
+	}, nil)
+	w.apnsService.(*mockAPNSService).On("IsEnabled").Return(false)
 
-	// Mock current time to be 2 PM (not 9 AM)
-	// We can't easily mock time.Now() in unit tests, so we'll test the logic
-	// by ensuring no users are processed when it's not the right hour
-
-	// Mock APNS service (shouldn't be called, but mock it to avoid panics)
-	apnsService := &mockAPNSService{}
-	apnsService.On("IsEnabled").Return(false)
-	w.apnsService = apnsService
-
-	// Test the daily reminder check
 	ctx := context.Background()
 	err := w.checkForDailyReminders(ctx)
 
-	// Should not error (just skip processing)
 	assert.NoError(t, err)
-
-	// Verify no emails were sent
-	emailService.AssertNumberOfCalls(t, "SendDailyReminder", 0)
+	w.emailService.(*mockEmailService).AssertNumberOfCalls(t, "SendDailyReminder", 0)
 }
 
 func TestWorker_CheckForDailyReminders_Disabled(t *testing.T) {
@@ -2815,7 +2805,7 @@ func TestWorker_GetUsersNeedingDailyReminders_Integration(t *testing.T) {
 
 	// Test the function
 	ctx := context.Background()
-	users, err := w.getUsersNeedingDailyReminders(ctx)
+	users, err := w.getUsersNeedingDailyReminders(ctx, cfg.Email.DailyReminder.Hour)
 
 	// Should not error
 	assert.NoError(t, err)
@@ -2824,6 +2814,44 @@ func TestWorker_GetUsersNeedingDailyReminders_Integration(t *testing.T) {
 	assert.Len(t, users, 1)
 	assert.Equal(t, user1.ID, users[0].ID)
 	assert.Equal(t, user1.Username, users[0].Username)
+}
+
+func TestWorker_GetUsersNeedingDailyReminders_RespectsTimezoneHour(t *testing.T) {
+	cfg := testWorkerConfig()
+
+	// 2 PM UTC = 9 AM in New York, so only the NY user should match the reminder hour
+	fakeTime := time.Date(2024, 1, 1, 14, 0, 0, 0, time.UTC)
+	w := newWorkerWithFakeTime(t, fakeTime, cfg)
+
+	nyUser := models.User{
+		ID:       1,
+		Username: "ny_user",
+		Email:    sql.NullString{String: "ny@example.com", Valid: true},
+		Timezone: sql.NullString{String: "America/New_York", Valid: true},
+	}
+
+	utcUser := models.User{
+		ID:       2,
+		Username: "utc_user",
+		Email:    sql.NullString{String: "utc@example.com", Valid: true},
+		Timezone: sql.NullString{String: "UTC", Valid: true},
+	}
+
+	w.userService.(*mockUserService).On("GetAllUsers", mock.Anything).Return([]models.User{nyUser, utcUser}, nil)
+	w.learningService.(*mockLearningService).On("GetUserLearningPreferences", mock.Anything, 1).Return(&models.UserLearningPreferences{
+		UserID:               1,
+		DailyReminderEnabled: true,
+	}, nil)
+	w.learningService.(*mockLearningService).On("GetUserLearningPreferences", mock.Anything, 2).Return(&models.UserLearningPreferences{
+		UserID:               2,
+		DailyReminderEnabled: true,
+	}, nil)
+
+	users, err := w.getUsersNeedingDailyReminders(context.Background(), cfg.Email.DailyReminder.Hour)
+
+	assert.NoError(t, err)
+	assert.Len(t, users, 1)
+	assert.Equal(t, nyUser.ID, users[0].ID)
 }
 
 // TestCheckForDailyQuestionAssignments tests the new daily question assignment functionality
