@@ -130,7 +130,7 @@ extension StoryDetailView {
     }
 
     @ViewBuilder
-    func sectionContent(_ section: StorySectionWithQuestions) -> some View {
+    func sectionContent(_ section: StorySection) -> some View {
         VStack(alignment: .trailing) {
             TTSButton(text: section.content, language: viewModel.selectedStory?.language ?? "en")
 
