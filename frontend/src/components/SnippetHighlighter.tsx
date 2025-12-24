@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, {useMemo, useState} from 'react';
 import {
   Popover,
   Stack,
@@ -10,13 +10,13 @@ import {
   Modal,
   Button,
 } from '@mantine/core';
-import { IconTrash, IconExternalLink } from '@tabler/icons-react';
-import { useDisclosure } from '@mantine/hooks';
-import { useNavigate } from 'react-router-dom';
-import { Snippet, deleteV1SnippetsId } from '../api/api';
-import { useQueryClient } from '@tanstack/react-query';
-import { useTheme } from '../contexts/ThemeContext';
-import { fontScaleMap } from '../theme/theme';
+import {IconTrash, IconExternalLink} from '@tabler/icons-react';
+import {useDisclosure} from '@mantine/hooks';
+import {useNavigate} from 'react-router-dom';
+import {Snippet, deleteV1SnippetsId} from '../api/api';
+import {useQueryClient} from '@tanstack/react-query';
+import {useTheme} from '../contexts/ThemeContext';
+import {fontScaleMap} from '../theme/theme';
 
 interface SnippetHighlighterProps {
   text: string;
@@ -54,10 +54,10 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { fontSize } = useTheme();
+  const {fontSize} = useTheme();
   const [
     deleteModalOpened,
-    { open: openDeleteModal, close: closeDeleteModal },
+    {open: openDeleteModal, close: closeDeleteModal},
   ] = useDisclosure(false);
   const [snippetToDelete, setSnippetToDelete] = useState<number | null>(null);
 
@@ -91,7 +91,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
   const segments = useMemo(() => {
     // If no snippets and no target word, return the original text as a single segment
     if ((!snippets || snippets.length === 0) && !targetWord) {
-      return [{ text, isSnippet: false, isTargetWord: false }];
+      return [{text, isSnippet: false, isTargetWord: false}];
     }
 
     // Build a map of all highlights (snippets and target word) in the text
@@ -234,7 +234,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
     // Target word highlighting (blue and bold)
     if (segment.isTargetWord && !segment.isSnippet) {
       return (
-        <strong key={index} style={{ color: '#1976d2', fontWeight: 700 }}>
+        <strong key={index} style={{color: '#1976d2', fontWeight: 700}}>
           {segment.text}
         </strong>
       );
@@ -249,7 +249,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
         <Stack gap='xs'>
           {/* Header with translation and action buttons */}
           <Group justify='space-between' align='flex-start'>
-            <Text size='md' fw={500} style={{ flex: 1 }}>
+            <Text size='md' fw={500} style={{flex: 1}}>
               {snippet.translated_text || 'No translation available'}
             </Text>
             <Group gap='xs'>
