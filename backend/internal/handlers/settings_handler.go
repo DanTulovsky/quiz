@@ -583,6 +583,7 @@ func (h *SettingsHandler) SendTestIOSNotification(c *gin.Context) {
 				},
 				"sound": "default",
 			},
+			"deep_link":   "word-of-day",
 			"word":        wordOfTheDay.Word,
 			"translation": wordOfTheDay.Translation,
 		}
