@@ -291,7 +291,7 @@ export const useStory = (options?: {
         title: 'Story Created',
         message: 'Your story has been created successfully!',
         color: 'green',
-      } as any);
+      });
       // Start polling for the first section
       setIsGenerating(true);
       setGenerationType('story');

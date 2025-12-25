@@ -137,19 +137,21 @@ describe('Chat Component', () => {
       error: null,
       refetch: vi.fn(),
       queryKey: [],
-    } as any);
+    } as unknown as ReturnType<typeof useGetV1SettingsAiProviders>);
 
     mockUsePostV1AiConversations.mockReturnValue({
       mutateAsync: vi.fn().mockResolvedValue({ id: 'test-conversation-id' }),
       isPending: false,
       error: null,
-    } as any);
+    } as unknown as ReturnType<typeof usePostV1AiConversations>);
 
     mockUsePostV1AiConversationsConversationIdMessages.mockReturnValue({
       mutateAsync: vi.fn().mockResolvedValue({ id: 'test-message-id' }),
       isPending: false,
       error: null,
-    } as any);
+    } as unknown as ReturnType<
+      typeof usePostV1AiConversationsConversationIdMessages
+    >);
 
     // ✅ FIXED: Properly mock the streaming response
     const mockReader = {

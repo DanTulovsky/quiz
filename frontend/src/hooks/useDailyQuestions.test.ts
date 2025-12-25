@@ -18,7 +18,7 @@ global.Date = class extends OriginalDate {
       super(mockDate);
       return mockDate;
     }
-    return new (OriginalDate as any)(...args);
+    return new OriginalDate(...(args as []));
   }
 } as unknown as DateConstructor;
 
