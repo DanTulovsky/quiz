@@ -330,6 +330,9 @@ test.describe('Comprehensive API Tests', () => {
       path.includes('/clear-database') ||
       path.includes('/clear-user-data') ||
       path.includes('/test-email') ||
+      path.includes('/test-ios-notification') ||
+      path.includes('/ios/register-device') ||
+      path.includes('/ios/device-token') ||
       // Exclude AI-dependent translation practice endpoints
       path.includes('/v1/translation-practice/generate') ||
       path.includes('/v1/translation-practice/submit') ||
@@ -2376,8 +2379,15 @@ test.describe('Comprehensive API Tests', () => {
                 requestOptions.data.target_language = currentSnippet.target_language;
               }
               // Preserve context-related fields that are part of unique constraint
+              // (question_id, section_id, story_id)
               if (requestOptions.data.question_id !== undefined) {
                 requestOptions.data.question_id = currentSnippet.question_id;
+              }
+              if (requestOptions.data.section_id !== undefined) {
+                requestOptions.data.section_id = currentSnippet.section_id;
+              }
+              if (requestOptions.data.story_id !== undefined) {
+                requestOptions.data.story_id = currentSnippet.story_id;
               }
             }
           } catch (e) {
@@ -2575,7 +2585,8 @@ test.describe('Comprehensive API Tests', () => {
         }
 
         // Special handling for 409 conflict tests on snippet updates
-        // We need to update one snippet to match another snippet's unique key, causing a conflict
+        // We need to update one snippet to match another snippet's unique key fields
+        // (original_text, source_language, target_language, question_id, section_id, story_id), causing a conflict
         if (testCase.expectedStatusCodes.includes('409') &&
           testCase.method === 'PUT' &&
           testCase.path.includes('/snippets/') &&
