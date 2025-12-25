@@ -11,21 +11,25 @@ import {
   Paper,
   ScrollArea,
 } from '@mantine/core';
-import {
-  IconClock,
-} from '@tabler/icons-react';
+import { IconClock } from '@tabler/icons-react';
 import * as TablerIcons from '@tabler/icons-react';
 
 const tablerIconMap = TablerIcons as unknown as Record<
   string,
   React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
 >;
-const IconAlertTriangle: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconAlertTriangle || tablerIconMap.IconAlertCircle || (() => null);
-const IconCircleCheck: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconCircleCheck || tablerIconMap.IconCheck || (() => null);
-const IconPlayerPause: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconPlayerPause || tablerIconMap.IconPause || (() => null);
+const IconAlertTriangle: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> =
+  tablerIconMap.IconAlertTriangle ||
+  tablerIconMap.IconAlertCircle ||
+  (() => null);
+const IconCircleCheck: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconCircleCheck || tablerIconMap.IconCheck || (() => null);
+const IconPlayerPause: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconPlayerPause || tablerIconMap.IconPause || (() => null);
 
 interface WorkerStatusData {
   has_errors: boolean;

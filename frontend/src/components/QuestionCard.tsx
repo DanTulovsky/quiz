@@ -534,10 +534,14 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     // Fetch question history - only for daily questions
     const { data: historyData, isLoading: isHistoryLoading } =
       useGetV1DailyHistoryQuestionId(
-        question.user_total_responses !== undefined && question.id !== undefined ? question.id : 0,
+        question.user_total_responses !== undefined && question.id !== undefined
+          ? question.id
+          : 0,
         {
           query: {
-            enabled: question.user_total_responses !== undefined && question.id !== undefined,
+            enabled:
+              question.user_total_responses !== undefined &&
+              question.id !== undefined,
             queryKey: [`/v1/daily/history/${question.id}`, user?.id],
           },
         }
@@ -1000,7 +1004,11 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                         getVoice={() => {
                           // Prefer user setting to match story behavior; fall back to default voice
                           const saved = (
-                            (userLearningPrefs as { tts_voice?: string } | undefined)?.tts_voice || ''
+                            (
+                              userLearningPrefs as
+                                | { tts_voice?: string }
+                                | undefined
+                            )?.tts_voice || ''
                           ).trim();
                           if (saved) return saved;
                           const voice = defaultVoiceForLanguage(

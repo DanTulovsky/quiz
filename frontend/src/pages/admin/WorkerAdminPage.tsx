@@ -15,20 +15,25 @@ import {
   Card,
   LoadingOverlay,
 } from '@mantine/core';
-import {
-  IconRefresh,
-  IconTrash,
-} from '@tabler/icons-react';
+import { IconRefresh, IconTrash } from '@tabler/icons-react';
 import * as TablerIcons from '@tabler/icons-react';
 
 const tablerIconMap = TablerIcons as unknown as Record<
   string,
   React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
 >;
-const IconPlayerPlayFilled: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconPlayerPlayFilled || tablerIconMap.IconPlayerPlay || (() => null);
-const IconPlayerPauseFilled: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconPlayerPauseFilled || tablerIconMap.IconPlayerPause || (() => null);
+const IconPlayerPlayFilled: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> =
+  tablerIconMap.IconPlayerPlayFilled ||
+  tablerIconMap.IconPlayerPlay ||
+  (() => null);
+const IconPlayerPauseFilled: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> =
+  tablerIconMap.IconPlayerPauseFilled ||
+  tablerIconMap.IconPlayerPause ||
+  (() => null);
 import { useAuth } from '../../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';

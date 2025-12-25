@@ -59,7 +59,9 @@ describe('TranslationOverlay daily routing', () => {
     expect(last?.requireQuestionId).toBe(true);
     // With the new behavior, Daily prefers QuestionContext when available.
     // In this test, QuestionContext provides a quizQuestion (id 448), so it is used.
-    expect((last?.currentQuestion as { id?: number } | undefined)?.id).toBe(448);
+    expect((last?.currentQuestion as { id?: number } | undefined)?.id).toBe(
+      448
+    );
   });
 
   // Focus the regression: when daily question is not yet available, we should not

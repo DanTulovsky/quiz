@@ -260,11 +260,26 @@ const SnippetsPage: React.FC = () => {
         if (selectedSourceLang) {
           params.source_lang = selectedSourceLang;
         }
-        const responseData = await customInstance({
+        const responseData = (await customInstance({
           url: '/v1/snippets/search',
           method: 'GET',
           params,
-        }) as { snippets?: Array<{ id: number; original_text: string; translated_text: string; context: string | null; source_language: string; target_language: string; difficulty_level: string | null; created_at: string; question_id?: number; story_id?: number; section_id?: number }>; total?: number };
+        })) as {
+          snippets?: Array<{
+            id: number;
+            original_text: string;
+            translated_text: string;
+            context: string | null;
+            source_language: string;
+            target_language: string;
+            difficulty_level: string | null;
+            created_at: string;
+            question_id?: number;
+            story_id?: number;
+            section_id?: number;
+          }>;
+          total?: number;
+        };
         return {
           items: responseData.snippets || [],
           total: responseData.total || 0,
@@ -290,11 +305,26 @@ const SnippetsPage: React.FC = () => {
         if (selectedSourceLang) {
           params.source_lang = selectedSourceLang;
         }
-        const responseData = await customInstance({
+        const responseData = (await customInstance({
           url: '/v1/snippets',
           method: 'GET',
           params,
-        }) as { snippets?: Array<{ id: number; original_text: string; translated_text: string; context: string | null; source_language: string; target_language: string; difficulty_level: string | null; created_at: string; question_id?: number; story_id?: number; section_id?: number }>; total?: number };
+        })) as {
+          snippets?: Array<{
+            id: number;
+            original_text: string;
+            translated_text: string;
+            context: string | null;
+            source_language: string;
+            target_language: string;
+            difficulty_level: string | null;
+            created_at: string;
+            question_id?: number;
+            story_id?: number;
+            section_id?: number;
+          }>;
+          total?: number;
+        };
         return {
           items: responseData.snippets || [],
           total: responseData.total || 0,
@@ -647,131 +677,145 @@ const SnippetsPage: React.FC = () => {
         {/* Snippets List */}
         {snippets && snippets.length > 0 ? (
           <Stack gap='md'>
-            {snippets.map((snippet: { id: number; original_text: string; translated_text: string; context: string | null; source_language: string; target_language: string; difficulty_level: string | null; created_at: string; question_id?: number; story_id?: number; section_id?: number }) => (
-              <Card key={snippet.id} withBorder>
-                <Stack gap='sm'>
-                  <Group justify='space-between' align='flex-start'>
-                    <div style={{ flex: 1 }} data-allow-translate='true'>
-                      <Text size='lg' fw={500}>
-                        {snippet.original_text}
-                      </Text>
-                      <Text size='md' c='blue'>
-                        {snippet.translated_text}
-                      </Text>
-                    </div>
+            {snippets.map(
+              (snippet: {
+                id: number;
+                original_text: string;
+                translated_text: string;
+                context: string | null;
+                source_language: string;
+                target_language: string;
+                difficulty_level: string | null;
+                created_at: string;
+                question_id?: number;
+                story_id?: number;
+                section_id?: number;
+              }) => (
+                <Card key={snippet.id} withBorder>
+                  <Stack gap='sm'>
+                    <Group justify='space-between' align='flex-start'>
+                      <div style={{ flex: 1 }} data-allow-translate='true'>
+                        <Text size='lg' fw={500}>
+                          {snippet.original_text}
+                        </Text>
+                        <Text size='md' c='blue'>
+                          {snippet.translated_text}
+                        </Text>
+                      </div>
 
-                    <Group gap='xs'>
-                      {getSnippetLink(snippet) && (
-                        <Anchor
-                          href={getSnippetLink(snippet)!.href}
-                          size='sm'
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 4,
-                          }}
-                        >
-                          <IconExternalLink size={12} />
-                          {getSnippetLink(snippet)!.label}
-                        </Anchor>
-                      )}
-                      <Badge variant='light' color='gray'>
-                        {snippet.source_language.toUpperCase()} →{' '}
-                        {snippet.target_language.toUpperCase()}
-                      </Badge>
-                      {snippet.difficulty_level &&
-                        snippet.difficulty_level.toLowerCase() !==
-                          'unknown' && (
-                          <Badge variant='light' color='blue'>
-                            {snippet.difficulty_level}
-                          </Badge>
-                        )}
-                    </Group>
-                  </Group>
-
-                  {snippet.context && (
-                    <Stack gap='xs'>
-                      <Group gap='xs' align='flex-start'>
-                        <Tooltip label='Translate' position='top' withArrow>
-                          <ActionIcon
+                      <Group gap='xs'>
+                        {getSnippetLink(snippet) && (
+                          <Anchor
+                            href={getSnippetLink(snippet)!.href}
                             size='sm'
-                            variant='subtle'
-                            color='blue'
-                            onClick={() => {
-                              console.log(
-                                'Translate button clicked for snippet:',
-                                snippet.id,
-                                'context:',
-                                snippet.context
-                              );
-                              handleTranslateContext(
-                                snippet.id,
-                                snippet.context!
-                              );
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 4,
                             }}
-                            loading={translatingSnippetId === snippet.id}
                           >
-                            <IconLanguage size={14} />
-                          </ActionIcon>
-                        </Tooltip>
-                        <Text
-                          size='sm'
-                          c='dimmed'
-                          style={{
-                            fontStyle: 'italic',
-                            wordWrap: 'break-word',
-                            overflowWrap: 'break-word',
-                            whiteSpace: 'normal',
-                            flex: 1,
-                          }}
-                        >
-                          "{snippet.context}"
-                        </Text>
+                            <IconExternalLink size={12} />
+                            {getSnippetLink(snippet)!.label}
+                          </Anchor>
+                        )}
+                        <Badge variant='light' color='gray'>
+                          {snippet.source_language.toUpperCase()} →{' '}
+                          {snippet.target_language.toUpperCase()}
+                        </Badge>
+                        {snippet.difficulty_level &&
+                          snippet.difficulty_level.toLowerCase() !==
+                            'unknown' && (
+                            <Badge variant='light' color='blue'>
+                              {snippet.difficulty_level}
+                            </Badge>
+                          )}
                       </Group>
-                      {/* Show translation if available for this snippet */}
-                      {snippetTranslations.has(snippet.id) && (
-                        <Text
-                          size='sm'
-                          c='blue'
-                          style={{
-                            wordWrap: 'break-word',
-                            overflowWrap: 'break-word',
-                            whiteSpace: 'normal',
-                            paddingLeft: '32px',
-                          }}
-                        >
-                          "{snippetTranslations.get(snippet.id)}"
-                        </Text>
-                      )}
-                    </Stack>
-                  )}
-
-                  <Group justify='space-between' align='center'>
-                    <Text size='xs' c='dimmed'>
-                      Created:{' '}
-                      {new Date(snippet.created_at).toLocaleDateString()}
-                    </Text>
-
-                    <Group gap='xs'>
-                      <ActionIcon
-                        variant='light'
-                        color='blue'
-                        onClick={() => handleEdit(snippet)}
-                      >
-                        <IconEdit size={16} />
-                      </ActionIcon>
-                      <ActionIcon
-                        variant='light'
-                        color='red'
-                        onClick={() => handleDelete(snippet.id)}
-                      >
-                        <IconTrash size={16} />
-                      </ActionIcon>
                     </Group>
-                  </Group>
-                </Stack>
-              </Card>
-            ))}
+
+                    {snippet.context && (
+                      <Stack gap='xs'>
+                        <Group gap='xs' align='flex-start'>
+                          <Tooltip label='Translate' position='top' withArrow>
+                            <ActionIcon
+                              size='sm'
+                              variant='subtle'
+                              color='blue'
+                              onClick={() => {
+                                console.log(
+                                  'Translate button clicked for snippet:',
+                                  snippet.id,
+                                  'context:',
+                                  snippet.context
+                                );
+                                handleTranslateContext(
+                                  snippet.id,
+                                  snippet.context!
+                                );
+                              }}
+                              loading={translatingSnippetId === snippet.id}
+                            >
+                              <IconLanguage size={14} />
+                            </ActionIcon>
+                          </Tooltip>
+                          <Text
+                            size='sm'
+                            c='dimmed'
+                            style={{
+                              fontStyle: 'italic',
+                              wordWrap: 'break-word',
+                              overflowWrap: 'break-word',
+                              whiteSpace: 'normal',
+                              flex: 1,
+                            }}
+                          >
+                            "{snippet.context}"
+                          </Text>
+                        </Group>
+                        {/* Show translation if available for this snippet */}
+                        {snippetTranslations.has(snippet.id) && (
+                          <Text
+                            size='sm'
+                            c='blue'
+                            style={{
+                              wordWrap: 'break-word',
+                              overflowWrap: 'break-word',
+                              whiteSpace: 'normal',
+                              paddingLeft: '32px',
+                            }}
+                          >
+                            "{snippetTranslations.get(snippet.id)}"
+                          </Text>
+                        )}
+                      </Stack>
+                    )}
+
+                    <Group justify='space-between' align='center'>
+                      <Text size='xs' c='dimmed'>
+                        Created:{' '}
+                        {new Date(snippet.created_at).toLocaleDateString()}
+                      </Text>
+
+                      <Group gap='xs'>
+                        <ActionIcon
+                          variant='light'
+                          color='blue'
+                          onClick={() => handleEdit(snippet)}
+                        >
+                          <IconEdit size={16} />
+                        </ActionIcon>
+                        <ActionIcon
+                          variant='light'
+                          color='red'
+                          onClick={() => handleDelete(snippet.id)}
+                        >
+                          <IconTrash size={16} />
+                        </ActionIcon>
+                      </Group>
+                    </Group>
+                  </Stack>
+                </Card>
+              )
+            )}
 
             <PaginationControls
               pagination={snippetsPagination}

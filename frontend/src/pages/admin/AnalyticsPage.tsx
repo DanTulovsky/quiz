@@ -426,7 +426,7 @@ const AnalyticsPage: React.FC = () => {
                     label: u.username || 'Unknown User',
                   }))}
                 value={selectedUser}
-                onChange={(value) => setSelectedUser(value || '')}
+                onChange={value => setSelectedUser(value || '')}
                 searchable
                 clearable
                 style={{ minWidth: 200 }}
@@ -792,7 +792,7 @@ const AnalyticsPage: React.FC = () => {
                     label: u.username,
                   }))}
                 value={selectedUser}
-                onChange={(value) => setSelectedUser(value || '')}
+                onChange={value => setSelectedUser(value || '')}
                 style={{ minWidth: 200 }}
               />
               <Button

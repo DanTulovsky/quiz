@@ -45,7 +45,10 @@ describe('useVersionCheck', () => {
     const mockWaiting = {
       postMessage: vi.fn(),
       skipWaiting: vi.fn(),
-    } as { postMessage: ReturnType<typeof vi.fn>; skipWaiting: ReturnType<typeof vi.fn> };
+    } as {
+      postMessage: ReturnType<typeof vi.fn>;
+      skipWaiting: ReturnType<typeof vi.fn>;
+    };
     const mockReg = {
       waiting: mockWaiting,
       addEventListener: vi.fn(),

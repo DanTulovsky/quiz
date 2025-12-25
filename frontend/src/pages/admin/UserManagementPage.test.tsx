@@ -109,7 +109,15 @@ const mockUser: User = {
   ai_model: 'gpt-4',
   last_active: new Date().toISOString(),
   created_at: new Date().toISOString(),
-  roles: [{ id: 1, name: 'user', description: 'Regular user', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' }],
+  roles: [
+    {
+      id: 1,
+      name: 'user',
+      description: 'Regular user',
+      created_at: '2025-01-01T00:00:00Z',
+      updated_at: '2025-01-01T00:00:00Z',
+    },
+  ],
   is_paused: false, // Initially not paused
 };
 
@@ -154,8 +162,20 @@ const mockLevels = {
 };
 
 const mockRoles: Role[] = [
-  { id: 1, name: 'user', description: 'Regular user', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
-  { id: 2, name: 'admin', description: 'Administrator', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  {
+    id: 1,
+    name: 'user',
+    description: 'Regular user',
+    created_at: '2025-01-01T00:00:00Z',
+    updated_at: '2025-01-01T00:00:00Z',
+  },
+  {
+    id: 2,
+    name: 'admin',
+    description: 'Administrator',
+    created_at: '2025-01-01T00:00:00Z',
+    updated_at: '2025-01-01T00:00:00Z',
+  },
 ];
 
 const renderUserManagementPage = () => {
@@ -169,7 +189,15 @@ describe('UserManagementPage - Pause/Unpause Functionality', () => {
       user: {
         id: 1,
         username: 'admin',
-        roles: [{ id: 1, name: 'admin', description: 'Administrator', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }],
+        roles: [
+          {
+            id: 1,
+            name: 'admin',
+            description: 'Administrator',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          },
+        ],
       },
       isAuthenticated: true,
       login: vi.fn(),
@@ -689,7 +717,15 @@ describe('UserManagementPage - Pause/Unpause Functionality', () => {
         user: {
           id: 1,
           username: 'regular_user',
-          roles: [{ id: 1, name: 'user', description: 'Regular user', created_at: new Date().toISOString(), updated_at: new Date().toISOString() }],
+          roles: [
+            {
+              id: 1,
+              name: 'user',
+              description: 'Regular user',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            },
+          ],
         },
         isAuthenticated: true,
         login: vi.fn(),

@@ -25,8 +25,9 @@ const tablerIconMap = TablerIcons as unknown as Record<
   string,
   React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
 >;
-const IconFilterSearch: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconFilterSearch || tablerIconMap.IconSearch || (() => null);
+const IconFilterSearch: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconFilterSearch || tablerIconMap.IconSearch || (() => null);
 import { useAuth } from '../../hooks/useAuth';
 import {
   useAdminStories,
@@ -198,13 +199,14 @@ const StoryExplorerPage: React.FC = () => {
             onChange={v => setFilters({ ...filters, language: v || '' })}
             data={[
               { value: '', label: 'All Languages' },
-              ...(languagesData?.filter(lang => lang?.code).map(lang => ({
-                value: lang.code,
-                label: lang.name
-                  ? lang.name.charAt(0).toUpperCase() + lang.name.slice(1)
-                  : lang.code.charAt(0).toUpperCase() +
-                    lang.code.slice(1),
-              })) || []),
+              ...(languagesData
+                ?.filter(lang => lang?.code)
+                .map(lang => ({
+                  value: lang.code,
+                  label: lang.name
+                    ? lang.name.charAt(0).toUpperCase() + lang.name.slice(1)
+                    : lang.code.charAt(0).toUpperCase() + lang.code.slice(1),
+                })) || []),
             ]}
             clearable
             size='xs'

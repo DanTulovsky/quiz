@@ -28,8 +28,12 @@ const tablerIconMap = TablerIcons as unknown as Record<
   string,
   React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
 >;
-const IconRotateClockwise: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconRotateClockwise || tablerIconMap.IconRefresh || (() => null);
+const IconRotateClockwise: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> =
+  tablerIconMap.IconRotateClockwise ||
+  tablerIconMap.IconRefresh ||
+  (() => null);
 import { Story, StoryWithSections } from '../api/storyApi';
 
 interface ArchivedStoriesViewProps {
@@ -244,10 +248,11 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
                         index % 2 === 0 ? theme.colors.gray[0] : 'transparent',
                     }}
                     p='sm'
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = theme.colors.gray[1];
+                    onMouseEnter={e => {
+                      e.currentTarget.style.backgroundColor =
+                        theme.colors.gray[1];
                     }}
-                    onMouseLeave={(e) => {
+                    onMouseLeave={e => {
                       e.currentTarget.style.backgroundColor =
                         index % 2 === 0 ? theme.colors.gray[0] : 'transparent';
                     }}
@@ -273,7 +278,9 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
                         <Group gap='xs'>
                           <IconCalendar size={14} />
                           <Text size='sm' color='dimmed'>
-                            {story.created_at ? new Date(story.created_at).toLocaleDateString() : 'N/A'}
+                            {story.created_at
+                              ? new Date(story.created_at).toLocaleDateString()
+                              : 'N/A'}
                           </Text>
                         </Group>
 

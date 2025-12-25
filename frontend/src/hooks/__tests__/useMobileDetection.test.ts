@@ -26,12 +26,8 @@ import type { MockedFunction } from 'vitest';
 const mockIsMobileDevice = isMobileDevice as MockedFunction<
   typeof isMobileDevice
 >;
-const mockGetDeviceView = getDeviceView as MockedFunction<
-  typeof getDeviceView
->;
-const mockSupportsTouch = supportsTouch as MockedFunction<
-  typeof supportsTouch
->;
+const mockGetDeviceView = getDeviceView as MockedFunction<typeof getDeviceView>;
+const mockSupportsTouch = supportsTouch as MockedFunction<typeof supportsTouch>;
 
 // Mock window events
 const mockAddEventListener = vi.fn();

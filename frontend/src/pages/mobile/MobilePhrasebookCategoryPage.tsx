@@ -106,7 +106,10 @@ const MobilePhrasebookCategoryPage = () => {
         const wordsWithData = section.words.map((word, index) => ({
           ...word,
           originalIndex: index,
-          displayTerm: getTermForLanguage({ ...word, term: word.term || '' } as PhrasebookWordType, languageCode),
+          displayTerm: getTermForLanguage(
+            { ...word, term: word.term || '' } as PhrasebookWordType,
+            languageCode
+          ),
           translation: getTranslation(word),
         }));
 
@@ -356,8 +359,9 @@ const MobilePhrasebookCategoryPage = () => {
                           ).trim();
                           if (saved) return saved;
                           return (
-                            (user?.preferred_language ? defaultVoiceForLanguage(user.preferred_language) : undefined) ||
-                            undefined
+                            (user?.preferred_language
+                              ? defaultVoiceForLanguage(user.preferred_language)
+                              : undefined) || undefined
                           );
                         }}
                         size='sm'

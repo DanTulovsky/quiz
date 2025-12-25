@@ -45,18 +45,33 @@ const tablerIconMap = TablerIcons as unknown as Record<
   string,
   React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
 >;
-const IconAlertTriangle: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconAlertTriangle || tablerIconMap.IconAlertCircle || (() => null);
-const IconFilterSearch: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconFilterSearch || tablerIconMap.IconSearch || (() => null);
-const IconDots: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconDots || tablerIconMap.IconDotsVertical || (() => null);
-const IconActivity: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconActivity || (() => null);
-const IconPlayerPauseFilled: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconPlayerPauseFilled || tablerIconMap.IconPlayerPause || (() => null);
-const IconPlayerPlayFilled: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconPlayerPlayFilled || tablerIconMap.IconPlayerPlay || (() => null);
+const IconAlertTriangle: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> =
+  tablerIconMap.IconAlertTriangle ||
+  tablerIconMap.IconAlertCircle ||
+  (() => null);
+const IconFilterSearch: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconFilterSearch || tablerIconMap.IconSearch || (() => null);
+const IconDots: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconDots || tablerIconMap.IconDotsVertical || (() => null);
+const IconActivity: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconActivity || (() => null);
+const IconPlayerPauseFilled: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> =
+  tablerIconMap.IconPlayerPauseFilled ||
+  tablerIconMap.IconPlayerPause ||
+  (() => null);
+const IconPlayerPlayFilled: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> =
+  tablerIconMap.IconPlayerPlayFilled ||
+  tablerIconMap.IconPlayerPlay ||
+  (() => null);
 import { notifications } from '@mantine/notifications';
 import {
   useCreateUser,
@@ -450,13 +465,15 @@ const UserManagementPage: React.FC = () => {
                 }
                 data={[
                   { value: '', label: 'All Languages' },
-                  ...(languagesData?.filter(lang => lang?.code).map(lang => ({
-                    value: lang.code,
-                    label: lang.name
-                      ? lang.name.charAt(0).toUpperCase() + lang.name.slice(1)
-                      : lang.code.charAt(0).toUpperCase() +
-                        lang.code.slice(1),
-                  })) || []),
+                  ...(languagesData
+                    ?.filter(lang => lang?.code)
+                    .map(lang => ({
+                      value: lang.code,
+                      label: lang.name
+                        ? lang.name.charAt(0).toUpperCase() + lang.name.slice(1)
+                        : lang.code.charAt(0).toUpperCase() +
+                          lang.code.slice(1),
+                    })) || []),
                 ]}
                 clearable
               />
@@ -593,7 +610,8 @@ const UserManagementPage: React.FC = () => {
                           </Table.Td>
                           <Table.Td>
                             <Text size='sm'>
-                              {userData.question_stats?.total_answered || 0} answered
+                              {userData.question_stats?.total_answered || 0}{' '}
+                              answered
                             </Text>
                           </Table.Td>
                           <Table.Td>
@@ -607,7 +625,9 @@ const UserManagementPage: React.FC = () => {
                                 <Menu.Item
                                   leftSection={<IconEdit size={16} />}
                                   onClick={() => {
-                                    setSelectedUser(user ? { ...user } as User : null);
+                                    setSelectedUser(
+                                      user ? ({ ...user } as User) : null
+                                    );
                                     setEditForm({
                                       username: user?.username || '',
                                       email: user?.email || '',
@@ -629,7 +649,9 @@ const UserManagementPage: React.FC = () => {
                                 <Menu.Item
                                   leftSection={<IconLock size={16} />}
                                   onClick={() => {
-                                    setSelectedUser(user ? { ...user } as User : null);
+                                    setSelectedUser(
+                                      user ? ({ ...user } as User) : null
+                                    );
                                     setIsPasswordModalOpen(true);
                                   }}
                                 >
@@ -699,7 +721,9 @@ const UserManagementPage: React.FC = () => {
                                 <Menu.Item
                                   leftSection={<IconRefresh size={16} />}
                                   onClick={() => {
-                                    setSelectedUser(user ? { ...user } as User : null);
+                                    setSelectedUser(
+                                      user ? ({ ...user } as User) : null
+                                    );
                                     setIsClearDataModalOpen(true);
                                   }}
                                 >

@@ -1219,7 +1219,10 @@ const FeedbackManagementPage: React.FC = () => {
         >
           {errorDetails && (
             <Stack gap='md'>
-              <Alert color='red' icon={<IconAlertTriangle {...({ size: 16 } as any)} />}>
+              <Alert
+                color='red'
+                icon={<IconAlertTriangle {...({ size: 16 } as any)} />}
+              >
                 <Text fw={500} mb='xs'>
                   {errorDetails.message}
                 </Text>

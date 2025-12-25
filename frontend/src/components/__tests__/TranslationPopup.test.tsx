@@ -514,7 +514,9 @@ describe('TranslationPopup', () => {
     const user = userEvent.setup();
 
     // Set up the mock for this test
-    (apiModule.postV1Snippets as ReturnType<typeof vi.fn>).mockResolvedValue({});
+    (apiModule.postV1Snippets as ReturnType<typeof vi.fn>).mockResolvedValue(
+      {}
+    );
 
     const { unmount } = render(
       <TestWrapper>
@@ -600,7 +602,9 @@ describe('TranslationPopup', () => {
     const user = userEvent.setup();
 
     // Set up the mock for this test
-    (apiModule.postV1Snippets as ReturnType<typeof vi.fn>).mockResolvedValue({});
+    (apiModule.postV1Snippets as ReturnType<typeof vi.fn>).mockResolvedValue(
+      {}
+    );
 
     const { unmount } = render(
       <TestWrapper>
@@ -640,7 +644,9 @@ describe('TranslationPopup', () => {
     const user = userEvent.setup();
 
     // Set up the mock for this test
-    (apiModule.postV1Snippets as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('Save failed'));
+    (apiModule.postV1Snippets as ReturnType<typeof vi.fn>).mockRejectedValue(
+      new Error('Save failed')
+    );
 
     const { unmount } = render(
       <TestWrapper>
@@ -680,7 +686,9 @@ describe('TranslationPopup', () => {
   it.skip('should show save button even when no translation', async () => {
     // TODO: Fix this test - needs proper mock override for useTranslation
     // Mock translation context to return no translation
-    const translationContext = await import('../../contexts/TranslationContext');
+    const translationContext = await import(
+      '../../contexts/TranslationContext'
+    );
     const mockUseTranslation = vi.fn(() => ({
       translateText: vi.fn().mockResolvedValue({
         translatedText: '',

@@ -305,7 +305,9 @@ export default function MobileVerbConjugationPage() {
 
             <Accordion
               value={Array.isArray(accordionValue) ? accordionValue : []}
-              onChange={(value) => setAccordionValue(Array.isArray(value) ? value : null)}
+              onChange={value =>
+                setAccordionValue(Array.isArray(value) ? value : null)
+              }
               chevronPosition='right'
               multiple
             >

@@ -17,20 +17,19 @@ import {
   Modal,
   Button,
 } from '@mantine/core';
-import {
-  IconAlertCircle,
-  IconInfoCircle,
-} from '@tabler/icons-react';
+import { IconAlertCircle, IconInfoCircle } from '@tabler/icons-react';
 import * as TablerIcons from '@tabler/icons-react';
 
 const tablerIconMap = TablerIcons as unknown as Record<
   string,
   React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
 >;
-const IconArrowUp: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconArrowUp || (() => null);
-const IconChartLine: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconChartLine || (() => null);
+const IconArrowUp: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconArrowUp || (() => null);
+const IconChartLine: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconChartLine || (() => null);
 import {
   LineChart,
   Line,
@@ -197,7 +196,13 @@ const TranslationUsagePage: React.FC = () => {
           monthData['cache_hit_rate'] = cacheDataByMonth[month].cache_hit_rate;
         }
 
-        chartData.push(monthData as { [key: string]: number | string; month: string; monthKey: string });
+        chartData.push(
+          monthData as {
+            [key: string]: number | string;
+            month: string;
+            monthKey: string;
+          }
+        );
       });
 
     return chartData;

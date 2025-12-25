@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {useParams, useNavigate} from 'react-router-dom';
-import {useAuth} from '../hooks/useAuth';
-import {useDailyQuestions} from '../hooks/useDailyQuestions';
-import {useQuestion} from '../contexts/useQuestion';
-import {AnswerResponse as Feedback} from '../api/api';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { useDailyQuestions } from '../hooks/useDailyQuestions';
+import { useQuestion } from '../contexts/useQuestion';
+import { AnswerResponse as Feedback } from '../api/api';
 
-import {showNotificationWithClean} from '../notifications';
+import { showNotificationWithClean } from '../notifications';
 import {
   Container,
   Stack,
@@ -20,27 +20,27 @@ import {
   Progress,
   Grid,
 } from '@mantine/core';
-import {ChevronLeft, ChevronRight, Clock as HistoryIcon} from 'lucide-react';
+import { ChevronLeft, ChevronRight, Clock as HistoryIcon } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
-import QuestionCard, {QuestionCardHandle} from '../components/QuestionCard';
-import {Chat} from '../components/Chat';
+import QuestionCard, { QuestionCardHandle } from '../components/QuestionCard';
+import { Chat } from '../components/Chat';
 import KeyboardShortcuts from '../components/KeyboardShortcuts';
 
 import DailyDatePicker from '../components/DailyDatePicker';
 import DailyCompletionScreen from '../components/DailyCompletionScreen';
-import {QuestionHistoryModal} from '../components/QuestionHistoryModal';
-import {SUGGESTED_QUIZ_PROMPTS} from '../constants/prompts';
+import { QuestionHistoryModal } from '../components/QuestionHistoryModal';
+import { SUGGESTED_QUIZ_PROMPTS } from '../constants/prompts';
 import QuestionPanel from '../components/QuestionPanel';
 import QuestionHeader from '../components/QuestionHeader';
-import {useTTS} from '../hooks/useTTS';
+import { useTTS } from '../hooks/useTTS';
 
 // Reuse shared prompts
 const suggestedPrompts = SUGGESTED_QUIZ_PROMPTS;
 
 const DailyPage: React.FC = () => {
-  const {date} = useParams();
+  const { date } = useParams();
   const navigate = useNavigate();
-  const {user} = useAuth();
+  const { user } = useAuth();
   const chatActionsRef = useRef<{
     clear: () => void;
     toggleMaximize: () => void;
@@ -71,11 +71,11 @@ const DailyPage: React.FC = () => {
 
   // Share the currently visible question with global QuestionContext so
   // components like TranslationOverlay can read the exact on-screen question id.
-  const {setQuizQuestion} = useQuestion();
+  const { setQuizQuestion } = useQuestion();
   const [feedbackLocal, setFeedbackLocal] = useState<Feedback | null>(null);
 
   // TTS hook for stopping audio on next question
-  const {stopTTS} = useTTS();
+  const { stopTTS } = useTTS();
 
   // Local selection/UI state (isolated per-page)
   const [selectedAnswerLocal, setSelectedAnswerLocal] = useState<number | null>(
@@ -109,7 +109,7 @@ const DailyPage: React.FC = () => {
   // Update URL when date changes
   useEffect(() => {
     if (selectedDate !== date) {
-      navigate(`/daily/${selectedDate}`, {replace: true});
+      navigate(`/daily/${selectedDate}`, { replace: true });
     }
   }, [selectedDate, date, navigate]);
 
@@ -152,7 +152,7 @@ const DailyPage: React.FC = () => {
           currentQuestion.question.correct_answer,
         user_answer:
           currentQuestion.question.content?.options?.[
-          currentQuestion.user_answer_index!
+            currentQuestion.user_answer_index!
           ] || undefined,
         explanation: currentQuestion.question.explanation,
       };
@@ -327,10 +327,10 @@ const DailyPage: React.FC = () => {
             selectedDate={selectedDate}
             onDateSelect={handleDateSelect}
             availableDates={availableDates}
-            progressData={progress ? {[selectedDate]: progress} : {}}
+            progressData={progress ? { [selectedDate]: progress } : {}}
             maxDate={new Date()}
             size='sm'
-            style={{width: '250px'}}
+            style={{ width: '250px' }}
             clearable
             hideOutsideDates
             withCellSpacing={false}
@@ -346,21 +346,21 @@ const DailyPage: React.FC = () => {
   // Prefer per-assignment per-user stats for display in QuestionCard when available
   const questionForCard = currentQuestion?.question
     ? {
-      ...currentQuestion.question,
-      total_responses:
-        currentQuestion.user_total_responses ??
-        currentQuestion.question.total_responses,
-      correct_count:
-        currentQuestion.user_correct_count ??
-        currentQuestion.question.correct_count,
-      incorrect_count:
-        currentQuestion.user_incorrect_count ??
-        currentQuestion.question.incorrect_count,
-      user_total_responses: currentQuestion.user_total_responses,
-      user_correct_count: currentQuestion.user_correct_count,
-      user_incorrect_count: currentQuestion.user_incorrect_count,
-      user_shown_count: currentQuestion.user_shown_count,
-    }
+        ...currentQuestion.question,
+        total_responses:
+          currentQuestion.user_total_responses ??
+          currentQuestion.question.total_responses,
+        correct_count:
+          currentQuestion.user_correct_count ??
+          currentQuestion.question.correct_count,
+        incorrect_count:
+          currentQuestion.user_incorrect_count ??
+          currentQuestion.question.incorrect_count,
+        user_total_responses: currentQuestion.user_total_responses,
+        user_correct_count: currentQuestion.user_correct_count,
+        user_incorrect_count: currentQuestion.user_incorrect_count,
+        user_shown_count: currentQuestion.user_shown_count,
+      }
     : undefined;
 
   return (
@@ -368,13 +368,13 @@ const DailyPage: React.FC = () => {
       size='lg'
       py='xl'
       data-testid='daily-page-container'
-      style={{minHeight: '100vh', display: 'flex', flexDirection: 'column'}}
+      style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}
     >
-      <Stack gap='xl' style={{flex: 1, minHeight: 0}}>
+      <Stack gap='xl' style={{ flex: 1, minHeight: 0 }}>
         {/* Header with progress and navigation */}
         <Paper p='md' withBorder radius='md'>
           <Grid>
-            <Grid.Col span={{base: 12, md: 6}}>
+            <Grid.Col span={{ base: 12, md: 6 }}>
               <Stack gap='xs'>
                 <Group justify='space-between' align='center'>
                   <Title order={3}>Daily Questions</Title>
@@ -390,17 +390,17 @@ const DailyPage: React.FC = () => {
                 {/* progress moved below to span full header width */}
               </Stack>
             </Grid.Col>
-            <Grid.Col span={{base: 12, md: 6}}>
+            <Grid.Col span={{ base: 12, md: 6 }}>
               {/* Right side: date picker and history, aligned to the far right */}
               <Group justify='flex-end' align='center' mb='sm'>
                 <DailyDatePicker
                   selectedDate={selectedDate}
                   onDateSelect={handleDateSelect}
                   availableDates={availableDates}
-                  progressData={progress ? {[selectedDate]: progress} : {}}
+                  progressData={progress ? { [selectedDate]: progress } : {}}
                   maxDate={new Date()}
                   size='sm'
-                  style={{width: '200px'}}
+                  style={{ width: '200px' }}
                   clearable
                   hideOutsideDates
                   withCellSpacing={false}
@@ -440,7 +440,7 @@ const DailyPage: React.FC = () => {
 
           {/* Full-width progress bar inside header */}
           {progress && (
-            <Box style={{marginTop: 24, position: 'relative', zIndex: 1}}>
+            <Box style={{ marginTop: 24, position: 'relative', zIndex: 1 }}>
               <Progress
                 value={(progress.completed / progress.total) * 100}
                 size='md'
@@ -501,7 +501,7 @@ const DailyPage: React.FC = () => {
         )}
 
         {/* Question content */}
-        <Box style={{marginBottom: 0}}>
+        <Box style={{ marginBottom: 0 }}>
           {/* Question header with tags/timestamps/confidence */}
           {currentQuestion?.question && (
             <QuestionHeader
@@ -518,7 +518,7 @@ const DailyPage: React.FC = () => {
                 color='indigo'
                 variant='dot'
                 size='lg'
-                style={{textTransform: 'capitalize'}}
+                style={{ textTransform: 'capitalize' }}
               >
                 {currentQuestion.question.type.replace(/_/g, ' ')}
               </Badge>
@@ -544,7 +544,7 @@ const DailyPage: React.FC = () => {
                 selectedDate={selectedDate}
                 onDateSelect={handleDateSelect}
                 availableDates={availableDates}
-                progressData={progress ? {[selectedDate]: progress} : {}}
+                progressData={progress ? { [selectedDate]: progress } : {}}
               />
             ) : !currentQuestion ? (
               <Center w='100%' h='100%'>
@@ -590,8 +590,8 @@ const DailyPage: React.FC = () => {
               setShowSuggestions={setShowSuggestions}
               onInputFocus={() => setIsInputFocused(true)}
               onInputBlur={() => setIsInputFocused(false)}
-              onRegisterActions={({clear, toggleMaximize}) => {
-                chatActionsRef.current = {clear, toggleMaximize};
+              onRegisterActions={({ clear, toggleMaximize }) => {
+                chatActionsRef.current = { clear, toggleMaximize };
               }}
             />
           )}
@@ -604,7 +604,7 @@ const DailyPage: React.FC = () => {
               onAnswerSelect={handleAnswerSelect}
               onSubmit={handleSubmit}
               onNextQuestion={handleNext}
-              onNewQuestion={() => { }} // Not applicable for daily questions
+              onNewQuestion={() => {}} // Not applicable for daily questions
               onPreviousQuestion={handlePreviousQuestion}
               onToggleTTS={() => questionCardRef.current?.toggleTTS?.()}
               isSubmitted={isSubmittedLocal}

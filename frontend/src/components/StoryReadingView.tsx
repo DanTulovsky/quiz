@@ -92,7 +92,9 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
       <Paper p='lg' radius='md' style={{ position: 'relative' }}>
         <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
           <TTSButton
-            getText={() => (story.sections ?? []).map(s => s.content).join('\n\n')}
+            getText={() =>
+              (story.sections ?? []).map(s => s.content).join('\n\n')
+            }
             getVoice={() => {
               const saved = (userLearningPrefs?.tts_voice || '').trim();
               if (saved) return saved;
@@ -154,7 +156,9 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
                         // Space for the TTS icon so text doesn't overlap
                         paddingRight: '4px',
                         marginBottom:
-                          index < (story.sections?.length ?? 0) - 1 ? '1.5rem' : '1rem',
+                          index < (story.sections?.length ?? 0) - 1
+                            ? '1.5rem'
+                            : '1rem',
                       },
                     }}
                   />

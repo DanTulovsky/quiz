@@ -935,13 +935,14 @@ const DataExplorerPage: React.FC = () => {
               }
               data={[
                 { value: '', label: 'All Languages' },
-                ...(languagesData?.filter(lang => lang?.code).map(lang => ({
-                  value: lang.code,
-                  label: lang.name
-                    ? lang.name.charAt(0).toUpperCase() + lang.name.slice(1)
-                    : lang.code.charAt(0).toUpperCase() +
-                      lang.code.slice(1),
-                })) || []),
+                ...(languagesData
+                  ?.filter(lang => lang?.code)
+                  .map(lang => ({
+                    value: lang.code,
+                    label: lang.name
+                      ? lang.name.charAt(0).toUpperCase() + lang.name.slice(1)
+                      : lang.code.charAt(0).toUpperCase() + lang.code.slice(1),
+                  })) || []),
               ]}
               clearable
               size='xs'

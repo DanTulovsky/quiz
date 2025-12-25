@@ -10,7 +10,7 @@ import {
   Stack,
   Divider,
 } from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import {
   IconSun,
   IconMoon,
@@ -29,37 +29,40 @@ import * as TablerIcons from '@tabler/icons-react';
 
 const tablerIconMap = TablerIcons as unknown as Record<
   string,
-  React.ComponentType<React.SVGProps<SVGSVGElement> & {size?: number}>
+  React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
 >;
-const IconNote: React.ComponentType<React.SVGProps<SVGSVGElement> & {size?: number}> =
-  tablerIconMap.IconNote || tablerIconMap.IconFileText || (() => null);
-const IconAdjustments: React.ComponentType<React.SVGProps<SVGSVGElement> & {size?: number}> =
-  tablerIconMap.IconAdjustments || (() => null);
-const IconStars: React.ComponentType<React.SVGProps<SVGSVGElement> & {size?: number}> =
-  tablerIconMap.IconStars || tablerIconMap.IconStar || (() => null);
-import {useAuth} from '../hooks/useAuth';
+const IconNote: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconNote || tablerIconMap.IconFileText || (() => null);
+const IconAdjustments: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconAdjustments || (() => null);
+const IconStars: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconStars || tablerIconMap.IconStar || (() => null);
+import { useAuth } from '../hooks/useAuth';
 import FeedbackModal from './FeedbackModal';
-import {useMobileDetection} from '../hooks/useMobileDetection';
-import {useTheme} from '../contexts/ThemeContext';
-import {useNavigate, useLocation} from 'react-router-dom';
+import { useMobileDetection } from '../hooks/useMobileDetection';
+import { useTheme } from '../contexts/ThemeContext';
+import { useNavigate, useLocation } from 'react-router-dom';
 import VersionDisplay from './VersionDisplay';
-import {TranslationOverlay} from './TranslationOverlay';
+import { TranslationOverlay } from './TranslationOverlay';
 
 interface MobileLayoutProps {
   children: React.ReactNode;
 }
 
-const MobileLayout: React.FC<MobileLayoutProps> = ({children}) => {
+const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
   const theme = useMantineTheme();
-  const [opened, {toggle}] = useDisclosure(false);
-  const {user, logout} = useAuth();
-  const {setDesktopView} = useMobileDetection();
-  const {colorScheme, setColorScheme} = useTheme();
+  const [opened, { toggle }] = useDisclosure(false);
+  const { user, logout } = useAuth();
+  const { setDesktopView } = useMobileDetection();
+  const { colorScheme, setColorScheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [
     feedbackModalOpened,
-    {open: openFeedbackModal, close: closeFeedbackModal},
+    { open: openFeedbackModal, close: closeFeedbackModal },
   ] = useDisclosure(false);
 
   const isDark = colorScheme === 'dark';
@@ -97,7 +100,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({children}) => {
   const activeTab = getActiveTab();
 
   const navItems = [
-    {key: 'quiz', label: 'Quiz', icon: IconBook2, path: '/m/quiz'},
+    { key: 'quiz', label: 'Quiz', icon: IconBook2, path: '/m/quiz' },
     {
       key: 'vocabulary',
       label: 'Vocabulary',
@@ -110,8 +113,8 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({children}) => {
       icon: IconMessage,
       path: '/m/reading-comprehension',
     },
-    {key: 'story', label: 'Story', icon: IconBook, path: '/m/story'},
-    {key: 'daily', label: 'Daily', icon: IconCalendar, path: '/m/daily'},
+    { key: 'story', label: 'Story', icon: IconBook, path: '/m/story' },
+    { key: 'daily', label: 'Daily', icon: IconCalendar, path: '/m/daily' },
     {
       key: 'word-of-day',
       label: 'Word of the Day',
@@ -165,17 +168,17 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({children}) => {
       }}
       padding='md'
       navbar={{
-        width: {sm: 200, lg: 300},
+        width: { sm: 200, lg: 300 },
         breakpoint: 'sm',
-        collapsed: {mobile: !opened},
+        collapsed: { mobile: !opened },
       }}
-      header={{height: {base: 50, md: 70}}}
+      header={{ height: { base: 50, md: 70 } }}
     >
       <AppShell.Navbar
         p='sm'
-        style={{display: 'flex', flexDirection: 'column'}}
+        style={{ display: 'flex', flexDirection: 'column' }}
       >
-        <AppShell.Section grow style={{overflow: 'auto'}}>
+        <AppShell.Section grow style={{ overflow: 'auto' }}>
           <Stack gap='xs'>
             <Text fw={500}>Menu</Text>
             {/* Primary navigation moved from footer */}
@@ -250,7 +253,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({children}) => {
           </Stack>
         </AppShell.Section>
         {/* Spacer pushes version to bottom */}
-        <div style={{flexGrow: 1}} />
+        <div style={{ flexGrow: 1 }} />
         <VersionDisplay copyOnClick={false} position='static' />
       </AppShell.Navbar>
 

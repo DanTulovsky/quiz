@@ -208,7 +208,8 @@ export const useStory = (options?: {
       (currentStory &&
         typeof currentStory === 'object' &&
         'sections' in currentStory &&
-        (!(currentStory as StoryWithSections).sections || (currentStory as StoryWithSections).sections?.length === 0));
+        (!(currentStory as StoryWithSections).sections ||
+          (currentStory as StoryWithSections).sections?.length === 0));
 
     if (isGeneratingState) {
       setIsGenerating(true);

@@ -1,7 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import {
-  useInfiniteQuery,
-} from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 export interface PaginationOptions {
   initialLimit?: number;

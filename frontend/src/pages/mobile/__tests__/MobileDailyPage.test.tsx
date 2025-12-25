@@ -402,7 +402,8 @@ describe('MobileDailyPage', () => {
       },
     };
 
-    mockDailyQuestionsState.currentQuestion = readingQuestion as unknown as typeof stableCurrentQuestion;
+    mockDailyQuestionsState.currentQuestion =
+      readingQuestion as unknown as typeof stableCurrentQuestion;
     mockDailyQuestionsState.questions = [readingQuestion];
 
     renderComponent();

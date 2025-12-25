@@ -24,14 +24,18 @@ const tablerIconMap = TablerIcons as unknown as Record<
   string,
   React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }>
 >;
-const IconChartLine: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconChartLine || (() => null);
-const IconAdjustments: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconAdjustments || (() => null);
-const IconDatabase: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconDatabase || (() => null);
-const IconArrowUp: React.ComponentType<React.SVGProps<SVGSVGElement> & { size?: number }> =
-  tablerIconMap.IconArrowUp || (() => null);
+const IconChartLine: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconChartLine || (() => null);
+const IconAdjustments: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconAdjustments || (() => null);
+const IconDatabase: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconDatabase || (() => null);
+const IconArrowUp: React.ComponentType<
+  React.SVGProps<SVGSVGElement> & { size?: number }
+> = tablerIconMap.IconArrowUp || (() => null);
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import FeedbackModal from './FeedbackModal';

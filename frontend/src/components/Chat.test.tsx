@@ -66,10 +66,9 @@ const mockUseGetV1SettingsAiProviders =
     typeof useGetV1SettingsAiProviders
   >;
 
-const mockUsePostV1AiConversations =
-  usePostV1AiConversations as MockedFunction<
-    typeof usePostV1AiConversations
-  >;
+const mockUsePostV1AiConversations = usePostV1AiConversations as MockedFunction<
+  typeof usePostV1AiConversations
+>;
 
 const mockUsePostV1AiConversationsConversationIdMessages =
   usePostV1AiConversationsConversationIdMessages as MockedFunction<

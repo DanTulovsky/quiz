@@ -385,11 +385,11 @@ export const BookmarkedMessagesPage: React.FC = () => {
         params.q = activeSearchQuery.trim();
       }
 
-      const responseData = await customInstance({
+      const responseData = (await customInstance({
         url: '/v1/ai/bookmarks',
         method: 'GET',
         params,
-      }) as { messages?: ChatMessage[]; total?: number };
+      })) as { messages?: ChatMessage[]; total?: number };
 
       return {
         items: responseData.messages || [],

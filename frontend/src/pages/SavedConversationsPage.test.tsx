@@ -210,24 +210,28 @@ describe('SavedConversationsPage', () => {
     vi.clearAllMocks();
 
     // Mock axios responses for pagination hook
-    vi.mocked(axiosModule.customInstance).mockImplementation(<T,>(config: unknown) => {
-      let promise: Promise<T>;
-      const configTyped = config as { url?: string };
-      if (configTyped.url === '/v1/ai/conversations') {
-        promise = Promise.resolve({
-          data: mockConversationsData,
-        } as T);
-      } else if (configTyped.url === '/v1/ai/search') {
-        promise = Promise.resolve({
-          data: { conversations: [], total: 0 },
-        } as T);
-      } else {
-        promise = Promise.resolve({ data: {} } as T);
+    vi.mocked(axiosModule.customInstance).mockImplementation(
+      <T,>(config: unknown) => {
+        let promise: Promise<T>;
+        const configTyped = config as { url?: string };
+        if (configTyped.url === '/v1/ai/conversations') {
+          promise = Promise.resolve({
+            data: mockConversationsData,
+          } as T);
+        } else if (configTyped.url === '/v1/ai/search') {
+          promise = Promise.resolve({
+            data: { conversations: [], total: 0 },
+          } as T);
+        } else {
+          promise = Promise.resolve({ data: {} } as T);
+        }
+        const cancelablePromise = promise as Promise<T> & {
+          cancel: () => void;
+        };
+        cancelablePromise.cancel = vi.fn();
+        return cancelablePromise;
       }
-      const cancelablePromise = promise as Promise<T> & { cancel: () => void };
-      cancelablePromise.cancel = vi.fn();
-      return cancelablePromise;
-    });
+    );
 
     // Setup mock return values for each hook
     vi.mocked(apiModule.useGetV1AiConversationsId).mockReturnValue({
@@ -456,18 +460,22 @@ describe('SavedConversationsPage', () => {
       total: 50, // More than one page
     };
 
-    vi.mocked(axiosModule.customInstance).mockImplementation(<T,>(config: unknown) => {
-      let promise: Promise<T>;
-      const configTyped = config as { url?: string };
-      if (configTyped.url === '/v1/ai/conversations') {
-        promise = Promise.resolve({ data: largeMockData } as T);
-      } else {
-        promise = Promise.resolve({ data: {} } as T);
+    vi.mocked(axiosModule.customInstance).mockImplementation(
+      <T,>(config: unknown) => {
+        let promise: Promise<T>;
+        const configTyped = config as { url?: string };
+        if (configTyped.url === '/v1/ai/conversations') {
+          promise = Promise.resolve({ data: largeMockData } as T);
+        } else {
+          promise = Promise.resolve({ data: {} } as T);
+        }
+        const cancelablePromise = promise as Promise<T> & {
+          cancel: () => void;
+        };
+        cancelablePromise.cancel = vi.fn();
+        return cancelablePromise;
       }
-      const cancelablePromise = promise as Promise<T> & { cancel: () => void };
-      cancelablePromise.cancel = vi.fn();
-      return cancelablePromise;
-    });
+    );
 
     act(() => {
       render(

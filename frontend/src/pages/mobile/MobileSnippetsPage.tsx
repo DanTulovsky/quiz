@@ -262,11 +262,26 @@ const MobileSnippetsPage: React.FC = () => {
         if (selectedSourceLang) {
           params.source_lang = selectedSourceLang;
         }
-        const responseData = await customInstance({
+        const responseData = (await customInstance({
           url: '/v1/snippets/search',
           method: 'GET',
           params,
-        }) as { snippets?: Array<{ id: number; original_text: string; translated_text: string; context: string | null; source_language: string; target_language: string; difficulty_level: string | null; created_at: string; question_id?: number; story_id?: number; section_id?: number }>; total?: number };
+        })) as {
+          snippets?: Array<{
+            id: number;
+            original_text: string;
+            translated_text: string;
+            context: string | null;
+            source_language: string;
+            target_language: string;
+            difficulty_level: string | null;
+            created_at: string;
+            question_id?: number;
+            story_id?: number;
+            section_id?: number;
+          }>;
+          total?: number;
+        };
         return {
           items: responseData.snippets || [],
           total: responseData.total || 0,
@@ -292,11 +307,26 @@ const MobileSnippetsPage: React.FC = () => {
         if (selectedSourceLang) {
           params.source_lang = selectedSourceLang;
         }
-        const responseData = await customInstance({
+        const responseData = (await customInstance({
           url: '/v1/snippets',
           method: 'GET',
           params,
-        }) as { snippets?: Array<{ id: number; original_text: string; translated_text: string; context: string | null; source_language: string; target_language: string; difficulty_level: string | null; created_at: string; question_id?: number; story_id?: number; section_id?: number }>; total?: number };
+        })) as {
+          snippets?: Array<{
+            id: number;
+            original_text: string;
+            translated_text: string;
+            context: string | null;
+            source_language: string;
+            target_language: string;
+            difficulty_level: string | null;
+            created_at: string;
+            question_id?: number;
+            story_id?: number;
+            section_id?: number;
+          }>;
+          total?: number;
+        };
         return {
           items: responseData.snippets || [],
           total: responseData.total || 0,
@@ -657,149 +687,163 @@ const MobileSnippetsPage: React.FC = () => {
         {/* Snippets List */}
         {snippets && snippets.length > 0 ? (
           <Stack gap='sm'>
-            {snippets.map((snippet: { id: number; original_text: string; translated_text: string; context: string | null; source_language: string; target_language: string; difficulty_level: string | null; created_at: string; question_id?: number; story_id?: number; section_id?: number }) => (
-              <Paper
-                key={snippet.id}
-                withBorder
-                p='sm'
-                radius='md'
-                style={{
-                  transition: 'all 0.2s',
-                }}
-                data-allow-translate='true'
-              >
-                <Stack gap='xs'>
-                  <Group
-                    justify='space-between'
-                    align='flex-start'
-                    wrap='nowrap'
-                  >
-                    <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-                      <Text
-                        size='md'
-                        fw={500}
-                        style={{ wordBreak: 'break-word' }}
-                      >
-                        {snippet.original_text}
-                      </Text>
-                      <Text
-                        size='sm'
-                        c='blue'
-                        style={{ wordBreak: 'break-word' }}
-                      >
-                        {snippet.translated_text}
-                      </Text>
-                    </Stack>
-                  </Group>
-
-                  {snippet.context && (
-                    <Stack gap='xs'>
-                      <Group gap='xs' align='flex-start'>
-                        <Tooltip
-                          label='Translate'
-                          position='top'
-                          withArrow
-                          arrowSize={6}
+            {snippets.map(
+              (snippet: {
+                id: number;
+                original_text: string;
+                translated_text: string;
+                context: string | null;
+                source_language: string;
+                target_language: string;
+                difficulty_level: string | null;
+                created_at: string;
+                question_id?: number;
+                story_id?: number;
+                section_id?: number;
+              }) => (
+                <Paper
+                  key={snippet.id}
+                  withBorder
+                  p='sm'
+                  radius='md'
+                  style={{
+                    transition: 'all 0.2s',
+                  }}
+                  data-allow-translate='true'
+                >
+                  <Stack gap='xs'>
+                    <Group
+                      justify='space-between'
+                      align='flex-start'
+                      wrap='nowrap'
+                    >
+                      <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
+                        <Text
+                          size='md'
+                          fw={500}
+                          style={{ wordBreak: 'break-word' }}
                         >
-                          <ActionIcon
-                            size='sm'
-                            variant='subtle'
-                            color='blue'
-                            onClick={() =>
-                              handleTranslateContext(
-                                snippet.id,
-                                snippet.context!
-                              )
-                            }
-                            loading={translatingSnippetId === snippet.id}
+                          {snippet.original_text}
+                        </Text>
+                        <Text
+                          size='sm'
+                          c='blue'
+                          style={{ wordBreak: 'break-word' }}
+                        >
+                          {snippet.translated_text}
+                        </Text>
+                      </Stack>
+                    </Group>
+
+                    {snippet.context && (
+                      <Stack gap='xs'>
+                        <Group gap='xs' align='flex-start'>
+                          <Tooltip
+                            label='Translate'
+                            position='top'
+                            withArrow
+                            arrowSize={6}
                           >
-                            <IconLanguage size={14} />
-                          </ActionIcon>
-                        </Tooltip>
-                        <Text
-                          size='xs'
-                          c='dimmed'
-                          style={{
-                            fontStyle: 'italic',
-                            wordWrap: 'break-word',
-                            overflowWrap: 'break-word',
-                            whiteSpace: 'normal',
-                            flex: 1,
-                          }}
-                        >
-                          "{snippet.context}"
-                        </Text>
-                      </Group>
-                      {/* Show translation if available for this snippet */}
-                      {snippetTranslations.has(snippet.id) && (
-                        <Text
-                          size='xs'
-                          c='blue'
-                          style={{
-                            wordWrap: 'break-word',
-                            overflowWrap: 'break-word',
-                            whiteSpace: 'normal',
-                            paddingLeft: '32px',
-                          }}
-                        >
-                          "{snippetTranslations.get(snippet.id)}"
-                        </Text>
-                      )}
-                    </Stack>
-                  )}
-
-                  <Group justify='space-between' align='center' wrap='wrap'>
-                    <Group gap='xs' wrap='wrap'>
-                      <Badge variant='light' color='gray' size='sm'>
-                        {snippet.source_language.toUpperCase()} →{' '}
-                        {snippet.target_language.toUpperCase()}
-                      </Badge>
-                      {snippet.difficulty_level &&
-                        snippet.difficulty_level.toLowerCase() !==
-                          'unknown' && (
-                          <Badge variant='light' color='blue' size='sm'>
-                            {snippet.difficulty_level}
-                          </Badge>
+                            <ActionIcon
+                              size='sm'
+                              variant='subtle'
+                              color='blue'
+                              onClick={() =>
+                                handleTranslateContext(
+                                  snippet.id,
+                                  snippet.context!
+                                )
+                              }
+                              loading={translatingSnippetId === snippet.id}
+                            >
+                              <IconLanguage size={14} />
+                            </ActionIcon>
+                          </Tooltip>
+                          <Text
+                            size='xs'
+                            c='dimmed'
+                            style={{
+                              fontStyle: 'italic',
+                              wordWrap: 'break-word',
+                              overflowWrap: 'break-word',
+                              whiteSpace: 'normal',
+                              flex: 1,
+                            }}
+                          >
+                            "{snippet.context}"
+                          </Text>
+                        </Group>
+                        {/* Show translation if available for this snippet */}
+                        {snippetTranslations.has(snippet.id) && (
+                          <Text
+                            size='xs'
+                            c='blue'
+                            style={{
+                              wordWrap: 'break-word',
+                              overflowWrap: 'break-word',
+                              whiteSpace: 'normal',
+                              paddingLeft: '32px',
+                            }}
+                          >
+                            "{snippetTranslations.get(snippet.id)}"
+                          </Text>
                         )}
-                      {getSnippetLink(snippet) && (
-                        <Anchor
-                          href={getSnippetLink(snippet)?.href}
-                          size='xs'
-                          c='blue'
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 4,
-                          }}
-                        >
-                          <IconExternalLink size={12} />
-                          {getSnippetLink(snippet)?.label}
-                        </Anchor>
-                      )}
-                    </Group>
+                      </Stack>
+                    )}
 
-                    <Group gap={4}>
-                      <ActionIcon
-                        variant='light'
-                        color='blue'
-                        size='sm'
-                        onClick={() => handleEdit(snippet)}
-                      >
-                        <IconEdit size={14} />
-                      </ActionIcon>
-                      <ActionIcon
-                        variant='light'
-                        color='red'
-                        size='sm'
-                        onClick={() => handleDelete(snippet.id)}
-                      >
-                        <IconTrash size={14} />
-                      </ActionIcon>
+                    <Group justify='space-between' align='center' wrap='wrap'>
+                      <Group gap='xs' wrap='wrap'>
+                        <Badge variant='light' color='gray' size='sm'>
+                          {snippet.source_language.toUpperCase()} →{' '}
+                          {snippet.target_language.toUpperCase()}
+                        </Badge>
+                        {snippet.difficulty_level &&
+                          snippet.difficulty_level.toLowerCase() !==
+                            'unknown' && (
+                            <Badge variant='light' color='blue' size='sm'>
+                              {snippet.difficulty_level}
+                            </Badge>
+                          )}
+                        {getSnippetLink(snippet) && (
+                          <Anchor
+                            href={getSnippetLink(snippet)?.href}
+                            size='xs'
+                            c='blue'
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 4,
+                            }}
+                          >
+                            <IconExternalLink size={12} />
+                            {getSnippetLink(snippet)?.label}
+                          </Anchor>
+                        )}
+                      </Group>
+
+                      <Group gap={4}>
+                        <ActionIcon
+                          variant='light'
+                          color='blue'
+                          size='sm'
+                          onClick={() => handleEdit(snippet)}
+                        >
+                          <IconEdit size={14} />
+                        </ActionIcon>
+                        <ActionIcon
+                          variant='light'
+                          color='red'
+                          size='sm'
+                          onClick={() => handleDelete(snippet.id)}
+                        >
+                          <IconTrash size={14} />
+                        </ActionIcon>
+                      </Group>
                     </Group>
-                  </Group>
-                </Stack>
-              </Paper>
-            ))}
+                  </Stack>
+                </Paper>
+              )
+            )}
 
             <PaginationControls
               pagination={snippetsPagination}
