@@ -8,3 +8,4 @@ CREATE UNIQUE INDEX IF NOT EXISTS snippets_user_id_original_text_source_language
 ON snippets (user_id, original_text, source_language, target_language)
 WHERE original_text IS NOT NULL;
 
+

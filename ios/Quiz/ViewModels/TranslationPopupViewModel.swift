@@ -90,3 +90,4 @@ class TranslationPopupViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 }
+
