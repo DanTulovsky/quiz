@@ -38,7 +38,7 @@ import {
 import {
   useGetV1SettingsLanguages,
   type Story,
-  type GetV1AdminBackendUserzPaginated200UsersItem,
+  type DashboardUser,
 } from '../../api/api';
 import StoryReadingView from '../../components/StoryReadingView';
 import StorySectionView from '../../components/StorySectionView';
@@ -76,8 +76,8 @@ const StoryExplorerPage: React.FC = () => {
   const userOptions = useMemo(() => {
     const users = usersData?.users || [];
     return users
-      .filter((u: GetV1AdminBackendUserzPaginated200UsersItem) => u?.user?.id)
-      .map((u: GetV1AdminBackendUserzPaginated200UsersItem) => ({
+      .filter((u: DashboardUser) => u?.user?.id)
+      .map((u: DashboardUser) => ({
         value: String(u.user!.id),
         label: u.user!.username || `user-${u.user!.id}`,
       }));
@@ -198,12 +198,12 @@ const StoryExplorerPage: React.FC = () => {
             onChange={v => setFilters({ ...filters, language: v || '' })}
             data={[
               { value: '', label: 'All Languages' },
-              ...(languagesData?.map(lang => ({
-                value: lang.code || lang,
+              ...(languagesData?.filter(lang => lang?.code).map(lang => ({
+                value: lang.code,
                 label: lang.name
                   ? lang.name.charAt(0).toUpperCase() + lang.name.slice(1)
-                  : (lang.code || lang).charAt(0).toUpperCase() +
-                    (lang.code || lang).slice(1),
+                  : lang.code.charAt(0).toUpperCase() +
+                    lang.code.slice(1),
               })) || []),
             ]}
             clearable

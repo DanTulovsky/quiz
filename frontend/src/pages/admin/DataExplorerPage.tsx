@@ -627,12 +627,12 @@ const DataExplorerPage: React.FC = () => {
                           data={[
                             { value: '', label: 'All Languages' },
                             ...(languagesData?.map(lang => ({
-                              value: lang.code || lang,
+                              value: lang.code,
                               label: lang.name
                                 ? lang.name.charAt(0).toUpperCase() +
                                   lang.name.slice(1)
-                                : (lang.code || lang).charAt(0).toUpperCase() +
-                                  (lang.code || lang).slice(1),
+                                : lang.code.charAt(0).toUpperCase() +
+                                  lang.code.slice(1),
                             })) || []),
                           ]}
                           style={{ marginTop: '4px' }}
@@ -935,12 +935,12 @@ const DataExplorerPage: React.FC = () => {
               }
               data={[
                 { value: '', label: 'All Languages' },
-                ...(languagesData?.map(lang => ({
-                  value: lang.code || lang,
+                ...(languagesData?.filter(lang => lang?.code).map(lang => ({
+                  value: lang.code,
                   label: lang.name
                     ? lang.name.charAt(0).toUpperCase() + lang.name.slice(1)
-                    : (lang.code || lang).charAt(0).toUpperCase() +
-                      (lang.code || lang).slice(1),
+                    : lang.code.charAt(0).toUpperCase() +
+                      lang.code.slice(1),
                 })) || []),
               ]}
               clearable
@@ -1101,7 +1101,6 @@ const DataExplorerPage: React.FC = () => {
                             title='Invalid Content'
                             color='red'
                             variant='light'
-                            size='sm'
                             styles={{
                               root: { padding: '4px 8px' },
                               title: { fontSize: '12px', marginBottom: '2px' },

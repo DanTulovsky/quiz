@@ -180,7 +180,7 @@ const TranslationUsagePage: React.FC = () => {
     Object.entries(usageStats.monthly_totals)
       .sort(([a], [b]) => a.localeCompare(b))
       .forEach(([month, services]) => {
-        const monthData = {
+        const monthData: Record<string, number | string> = {
           month: formatMonth(month),
           monthKey: month, // Keep original for reference
         };
@@ -197,7 +197,7 @@ const TranslationUsagePage: React.FC = () => {
           monthData['cache_hit_rate'] = cacheDataByMonth[month].cache_hit_rate;
         }
 
-        chartData.push(monthData);
+        chartData.push(monthData as { [key: string]: number | string; month: string; monthKey: string });
       });
 
     return chartData;

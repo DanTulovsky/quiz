@@ -1047,7 +1047,7 @@ const FeedbackManagementPage: React.FC = () => {
                   Close
                 </Button>
                 <Button
-                  onClick={handleCreateLinearIssue}
+                  onClick={() => handleCreateLinearIssue()}
                   loading={isCreatingLinearIssue}
                   disabled={isUpdating}
                   leftSection={<IconExternalLink size={16} />}
@@ -1219,7 +1219,7 @@ const FeedbackManagementPage: React.FC = () => {
         >
           {errorDetails && (
             <Stack gap='md'>
-              <Alert color='red' icon={<IconAlertTriangle size={16} />}>
+              <Alert color='red' icon={<IconAlertTriangle {...({ size: 16 } as any)} />}>
                 <Text fw={500} mb='xs'>
                   {errorDetails.message}
                 </Text>

@@ -521,7 +521,7 @@ export const BookmarkedMessagesPage: React.FC = () => {
             <Text ta='center' py='xl' c='dimmed'>
               Loading bookmarked messages...
             </Text>
-          ) : messages.length === 0 ? (
+          ) : !messages || messages.length === 0 ? (
             <Text ta='center' py='xl' c='dimmed'>
               {activeSearchQuery
                 ? 'No bookmarked messages found matching your search.'

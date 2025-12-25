@@ -18,7 +18,7 @@ global.Date = class extends OriginalDate {
       super(mockDate);
       return mockDate;
     }
-    return new OriginalDate(...(Array.isArray(args) ? args : [args]));
+    return new (OriginalDate as any)(...args);
   }
 } as unknown as DateConstructor;
 
@@ -311,7 +311,7 @@ describe('useDailyQuestions', () => {
       mutateAsync: vi.fn(),
       isPending: false,
     } as unknown as ReturnType<
-      typeof usePostV1DailyQuestionsDateCompleteQuestionId
+      typeof usePostV1DailyQuestionsDateAnswerQuestionId
     >);
 
     // Provide a default mock for the history hook used by the implementation
@@ -544,7 +544,7 @@ describe('useDailyQuestions', () => {
         mutateAsync: mockSubmitAnswerMutation,
         isPending: false,
       } as unknown as ReturnType<
-        typeof usePostV1DailyQuestionsDateCompleteQuestionId
+        typeof usePostV1DailyQuestionsDateAnswerQuestionId
       >);
 
       const mockQueryClient: MockQueryClient = {
@@ -728,7 +728,7 @@ describe('useDailyQuestions', () => {
         mutateAsync: mockSubmitAnswerMutation,
         isPending: false,
       } as unknown as ReturnType<
-        typeof usePostV1DailyQuestionsDateCompleteQuestionId
+        typeof usePostV1DailyQuestionsDateAnswerQuestionId
       >);
 
       const mockQueryClient: MockQueryClient = {

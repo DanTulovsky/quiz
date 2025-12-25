@@ -5,20 +5,21 @@ import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import MobileStoryPage from '../MobileStoryPage';
 import { StoryWithSections, StorySection } from '../../../api/storyApi';
+import type { ViewMode } from '../../../hooks/useStory';
 import { ThemeProvider } from '../../../contexts/ThemeContext';
 
 // Mock the story hook
 const mockUseStory = {
-  currentStory: null,
-  archivedStories: [],
-  sections: [],
+  currentStory: null as StoryWithSections | null,
+  archivedStories: [] as StoryWithSections[],
+  sections: [] as StorySection[],
   currentSectionIndex: 0,
-  viewMode: 'section' as const,
+  viewMode: 'section' as ViewMode,
   isLoading: false,
   isLoadingArchivedStories: false,
   error: null,
   hasCurrentStory: false,
-  currentSection: null,
+  currentSection: null as StorySection | null,
   currentSectionWithQuestions: null,
   canGenerateToday: true,
   isGenerating: false,
@@ -147,7 +148,6 @@ describe('MobileStoryPage', () => {
     title: 'Test Story',
     language: 'en',
     status: 'active',
-    is_current: true,
     sections: [mockSection],
   };
 
@@ -243,8 +243,8 @@ describe('MobileStoryPage', () => {
 
       // Set up initial playing state
       mockTTS.isPlaying = true;
-      mockTTS.currentPlayingText = mockSection.content.trim();
-      mockTTS.currentKey = mockSection.content.trim();
+      mockTTS.currentPlayingText = mockSection.content?.trim() || '';
+      mockTTS.currentKey = mockSection.content?.trim() || '';
       mockTTS.isLoading = false;
 
       // Re-render with playing state
@@ -388,7 +388,7 @@ describe('MobileStoryPage', () => {
 
   describe('MobileStoryReadingView TTS Functionality', () => {
     beforeEach(() => {
-      mockUseStory.viewMode = 'reading';
+      mockUseStory.viewMode = 'reading' as ViewMode;
     });
 
     it('displays TTS button in header for mobile story reading view', () => {
@@ -458,7 +458,7 @@ describe('MobileStoryPage', () => {
 
       // Get the actual text that will be played (all sections joined)
       const expectedContent =
-        mockStory.sections.map(s => s.content).join('\n\n') || '';
+        mockStory.sections?.map(s => s.content).join('\n\n') || '';
 
       // Set up initial playing state
       mockTTS.isPlaying = true;

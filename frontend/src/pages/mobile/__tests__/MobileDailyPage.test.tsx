@@ -11,7 +11,7 @@ type MockSnippetProps = {
   [key: string]: unknown;
 };
 
-const snippetMock = vi.fn<[MockSnippetProps], void>();
+const snippetMock = vi.fn<(props: MockSnippetProps) => void>();
 const mockMarkKnownMutate = vi.fn();
 
 vi.mock('../../../components/SnippetHighlighter', () => ({
@@ -392,7 +392,7 @@ describe('MobileDailyPage', () => {
         id: 303,
         language: 'Italian',
         level: 'A2',
-        type: 'reading_comprehension',
+        type: 'reading_comprehension' as const,
         content: {
           question: 'Qual è il tema principale del testo?',
           passage:
@@ -402,7 +402,7 @@ describe('MobileDailyPage', () => {
       },
     };
 
-    mockDailyQuestionsState.currentQuestion = readingQuestion;
+    mockDailyQuestionsState.currentQuestion = readingQuestion as unknown as typeof stableCurrentQuestion;
     mockDailyQuestionsState.questions = [readingQuestion];
 
     renderComponent();

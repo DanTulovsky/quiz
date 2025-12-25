@@ -1,8 +1,8 @@
-import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
+import { IconCalendar } from '@tabler/icons-react';
 import MobilePhrasebookIndexPage from '../MobilePhrasebookIndexPage';
 import { ThemeProvider } from '../../../contexts/ThemeContext';
 import * as phrasebookUtils from '../../../utils/phrasebook';
@@ -16,18 +16,21 @@ const mockCategories = [
   {
     id: 'greetings',
     name: 'Greetings',
+    icon: IconCalendar,
     emoji: '👋',
     description: 'Common greetings and salutations',
   },
   {
     id: 'food',
     name: 'Food & Dining',
+    icon: IconCalendar,
     emoji: '🍽️',
     description: 'Food related vocabulary',
   },
   {
     id: 'travel',
     name: 'Travel',
+    icon: IconCalendar,
     emoji: '✈️',
     description: 'Travel related phrases',
   },

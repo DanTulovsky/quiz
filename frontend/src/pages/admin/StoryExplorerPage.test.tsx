@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -38,7 +37,11 @@ vi.mock('../../api/api', () => ({
     isPending: false,
   }),
   useGetV1SettingsLanguages: () => ({
-    data: ['italian', 'spanish', 'french'],
+    data: [
+      { code: 'italian', name: 'Italian' },
+      { code: 'spanish', name: 'Spanish' },
+      { code: 'french', name: 'French' },
+    ],
     isLoading: false,
     error: null,
   }),

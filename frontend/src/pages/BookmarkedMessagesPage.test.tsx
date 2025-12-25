@@ -72,25 +72,38 @@ const mockPaginationData = {
       conversation_id: 'conv-1',
     },
   ],
+  allData: [
+    {
+      id: '1',
+      content: { text: 'Test message content' },
+      created_at: '2023-01-01T00:00:00Z',
+      conversation_title: 'Test Conversation',
+      conversation_id: 'conv-1',
+    },
+  ],
   isLoading: false,
   isFetching: false,
+  isError: false,
+  error: null,
   pagination: {
+    limit: 20,
+    offset: 0,
     currentPage: 1,
     totalPages: 1,
     totalItems: 1,
     hasNextPage: false,
     hasPreviousPage: false,
   },
+  loadMore: vi.fn(),
   goToPage: vi.fn(),
   goToNextPage: vi.fn(),
   goToPreviousPage: vi.fn(),
   reset: vi.fn(),
+  loadMoreRef: vi.fn(),
 };
 
-const mockUseAuth = useAuth as vi.MockedFunction<typeof useAuth>;
-const mockUsePagination = usePagination as vi.MockedFunction<
-  typeof usePagination
->;
+const mockUseAuth = vi.mocked(useAuth);
+const mockUsePagination = vi.mocked(usePagination);
 
 describe('BookmarkedMessagesPage', () => {
   beforeEach(() => {
@@ -99,8 +112,12 @@ describe('BookmarkedMessagesPage', () => {
     // Setup default mocks
     mockUseAuth.mockReturnValue({
       user: mockAuthStatusData.user,
+      isAuthenticated: true,
       login: vi.fn(),
+      loginWithUser: vi.fn(),
       logout: vi.fn(),
+      updateSettings: vi.fn(),
+      refreshUser: vi.fn(),
       isLoading: false,
     });
 
@@ -227,6 +244,11 @@ describe('BookmarkedMessagesPage', () => {
     mockUsePagination.mockReturnValue({
       ...mockPaginationData,
       isLoading: true,
+      allData: [],
+      isError: false,
+      error: null,
+      loadMore: vi.fn(),
+      loadMoreRef: vi.fn(),
     });
 
     renderWithProviders(<BookmarkedMessagesPage />);
@@ -240,6 +262,11 @@ describe('BookmarkedMessagesPage', () => {
     mockUsePagination.mockReturnValue({
       ...mockPaginationData,
       data: [],
+      allData: [],
+      isError: false,
+      error: null,
+      loadMore: vi.fn(),
+      loadMoreRef: vi.fn(),
     });
 
     renderWithProviders(<BookmarkedMessagesPage />);
@@ -255,6 +282,11 @@ describe('BookmarkedMessagesPage', () => {
     mockUsePagination.mockReturnValue({
       ...mockPaginationData,
       data: [],
+      allData: [],
+      isError: false,
+      error: null,
+      loadMore: vi.fn(),
+      loadMoreRef: vi.fn(),
     });
 
     renderWithProviders(<BookmarkedMessagesPage />);
@@ -277,6 +309,8 @@ describe('BookmarkedMessagesPage', () => {
     mockUsePagination.mockReturnValue({
       ...mockPaginationData,
       pagination: {
+        limit: 20,
+        offset: 0,
         currentPage: 1,
         totalPages: 3,
         totalItems: 60,
@@ -312,6 +346,11 @@ describe('BookmarkedMessagesPage', () => {
     mockUsePagination.mockReturnValue({
       ...mockPaginationData,
       data: [messageWithContent],
+      allData: [messageWithContent],
+      isError: false,
+      error: null,
+      loadMore: vi.fn(),
+      loadMoreRef: vi.fn(),
     });
 
     renderWithProviders(<BookmarkedMessagesPage />);
@@ -337,6 +376,11 @@ describe('BookmarkedMessagesPage', () => {
     mockUsePagination.mockReturnValue({
       ...mockPaginationData,
       data: [messageWithCode],
+      allData: [messageWithCode],
+      isError: false,
+      error: null,
+      loadMore: vi.fn(),
+      loadMoreRef: vi.fn(),
     });
 
     // Mock console to capture any errors that would occur if className was undefined
@@ -359,6 +403,11 @@ describe('BookmarkedMessagesPage', () => {
     mockUsePagination.mockReturnValue({
       ...mockPaginationData,
       data: [messageWithMalformedCode],
+      allData: [messageWithMalformedCode],
+      isError: false,
+      error: null,
+      loadMore: vi.fn(),
+      loadMoreRef: vi.fn(),
     });
 
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});

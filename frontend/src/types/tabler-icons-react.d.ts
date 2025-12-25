@@ -53,4 +53,8 @@ declare module '@tabler/icons-react' {
   export const IconArchive: React.ComponentType<any>;
   export const IconEye: React.ComponentType<any>;
   export const IconLayoutList: React.ComponentType<any>;
+  export const IconUsers: React.ComponentType<any>;
+  export const IconDatabase: React.ComponentType<any>;
+  export const IconActivity: React.ComponentType<any>;
+  export const IconAlertTriangle: React.ComponentType<any>;
 }

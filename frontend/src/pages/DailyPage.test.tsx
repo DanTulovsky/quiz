@@ -67,9 +67,10 @@ describe('DailyPage', () => {
       completed_at: '2025-08-04T10:00:00Z',
       user_answer_index: 2,
       submitted_at: '2025-08-04T10:00:00Z',
+      created_at: '2025-08-04T00:00:00Z',
       question: {
         id: 1,
-        type: 'multiple_choice',
+        type: 'vocabulary' as const,
         language: 'en',
         level: 'beginner',
         difficulty_score: 1,
@@ -80,14 +81,14 @@ describe('DailyPage', () => {
         correct_answer: 1,
         explanation: '2 + 2 = 4',
         created_at: '2025-08-04T00:00:00Z',
-        status: 'active',
+        status: 'active' as const,
         topic_category: 'math',
-        grammar_focus: null,
-        vocabulary_domain: null,
-        scenario: null,
-        style_modifier: null,
-        difficulty_modifier: null,
-        time_context: null,
+        grammar_focus: undefined,
+        vocabulary_domain: undefined,
+        scenario: undefined,
+        style_modifier: undefined,
+        difficulty_modifier: undefined,
+        time_context: undefined,
       },
     },
     {
@@ -99,9 +100,10 @@ describe('DailyPage', () => {
       completed_at: '2025-08-04T10:00:00Z',
       user_answer_index: 0,
       submitted_at: '2025-08-04T10:00:00Z',
+      created_at: '2025-08-04T00:00:00Z',
       question: {
         id: 2,
-        type: 'multiple_choice',
+        type: 'vocabulary' as const,
         language: 'en',
         level: 'beginner',
         difficulty_score: 1,
@@ -112,22 +114,22 @@ describe('DailyPage', () => {
         correct_answer: 1,
         explanation: '3 + 3 = 6',
         created_at: '2025-08-04T00:00:00Z',
-        status: 'active',
+        status: 'active' as const,
         topic_category: 'math',
-        grammar_focus: null,
-        vocabulary_domain: null,
-        scenario: null,
-        style_modifier: null,
-        difficulty_modifier: null,
-        time_context: null,
+        grammar_focus: undefined,
+        vocabulary_domain: undefined,
+        scenario: undefined,
+        style_modifier: undefined,
+        difficulty_modifier: undefined,
+        time_context: undefined,
       },
     },
   ];
 
   const mockProgress = {
-    total_questions: 2,
-    completed_questions: 2,
-    completion_percentage: 100,
+    date: '2025-08-04',
+    completed: 2,
+    total: 2,
   };
 
   beforeEach(() => {
@@ -136,8 +138,12 @@ describe('DailyPage', () => {
     // Default mock setup
     mockUseAuth.mockReturnValue({
       user: mockUser,
+      isAuthenticated: true,
       login: vi.fn(),
+      loginWithUser: vi.fn(),
       logout: vi.fn(),
+      updateSettings: vi.fn(),
+      refreshUser: vi.fn(),
       isLoading: false,
     });
 
@@ -165,6 +171,9 @@ describe('DailyPage', () => {
       isAllCompleted: true,
       getNextUnansweredIndex: vi.fn(),
       getFirstUnansweredIndex: vi.fn(),
+      isHistoryLoading: false,
+      getQuestionHistory: vi.fn(),
+      questionHistory: [],
     });
   });
 
@@ -179,8 +188,12 @@ describe('DailyPage', () => {
     it('should show login message when user is not authenticated', () => {
       mockUseAuth.mockReturnValue({
         user: null,
+        isAuthenticated: false,
         login: vi.fn(),
+        loginWithUser: vi.fn(),
         logout: vi.fn(),
+        updateSettings: vi.fn(),
+        refreshUser: vi.fn(),
         isLoading: false,
       });
 
@@ -254,7 +267,7 @@ describe('DailyPage', () => {
           ...mockQuestions[0].question,
           content: {
             question: 'What is 2 + 2?',
-            options: undefined, // Missing options
+            options: [], // Empty options array instead of undefined
           },
         },
       };

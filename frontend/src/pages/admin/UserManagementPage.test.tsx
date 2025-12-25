@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -49,7 +48,13 @@ vi.mock('../../api/api', () => ({
     isPending: false,
   }),
   useGetV1SettingsLanguages: () => ({
-    data: ['english', 'spanish', 'french', 'german', 'italian'],
+    data: [
+      { code: 'english', name: 'English' },
+      { code: 'spanish', name: 'Spanish' },
+      { code: 'french', name: 'French' },
+      { code: 'german', name: 'German' },
+      { code: 'italian', name: 'Italian' },
+    ],
     isLoading: false,
     error: null,
   }),
@@ -104,7 +109,7 @@ const mockUser: User = {
   ai_model: 'gpt-4',
   last_active: new Date().toISOString(),
   created_at: new Date().toISOString(),
-  roles: [{ id: 1, name: 'user', description: 'Regular user' }],
+  roles: [{ id: 1, name: 'user', description: 'Regular user', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' }],
   is_paused: false, // Initially not paused
 };
 
@@ -149,8 +154,8 @@ const mockLevels = {
 };
 
 const mockRoles: Role[] = [
-  { id: 1, name: 'user', description: 'Regular user' },
-  { id: 2, name: 'admin', description: 'Administrator' },
+  { id: 1, name: 'user', description: 'Regular user', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
+  { id: 2, name: 'admin', description: 'Administrator', created_at: '2025-01-01T00:00:00Z', updated_at: '2025-01-01T00:00:00Z' },
 ];
 
 const renderUserManagementPage = () => {

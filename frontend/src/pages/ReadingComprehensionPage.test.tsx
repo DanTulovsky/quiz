@@ -119,6 +119,6 @@ describe('ReadingComprehensionPage - lifecycle safety', () => {
       unmount = renderResult.unmount;
     });
 
-    expect(() => unmount()).not.toThrow();
+    expect(() => unmount?.()).not.toThrow();
   });
 });

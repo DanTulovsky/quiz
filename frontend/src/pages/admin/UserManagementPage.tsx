@@ -25,7 +25,6 @@ import {
   Paper,
   SimpleGrid,
   ThemeIcon,
-  Progress,
 } from '@mantine/core';
 import {
   IconTrash,
@@ -70,7 +69,7 @@ import {
   usePauseUser,
   useResumeUser,
 } from '../../api/admin';
-import { User, Role } from '../../api/api';
+import { User, Role, DashboardUser } from '../../api/api';
 import {
   useGetV1SettingsLanguages,
   useGetV1SettingsLevels,
@@ -451,12 +450,12 @@ const UserManagementPage: React.FC = () => {
                 }
                 data={[
                   { value: '', label: 'All Languages' },
-                  ...(languagesData?.map(lang => ({
-                    value: lang.code || lang,
+                  ...(languagesData?.filter(lang => lang?.code).map(lang => ({
+                    value: lang.code,
                     label: lang.name
                       ? lang.name.charAt(0).toUpperCase() + lang.name.slice(1)
-                      : (lang.code || lang).charAt(0).toUpperCase() +
-                        (lang.code || lang).slice(1),
+                      : lang.code.charAt(0).toUpperCase() +
+                        lang.code.slice(1),
                   })) || []),
                 ]}
                 clearable
@@ -537,29 +536,23 @@ const UserManagementPage: React.FC = () => {
                 </Table.Thead>
                 <Table.Tbody>
                   {usersData.users
-                    .filter(userData => userData?.user?.id)
-                    .map(userData => {
+                    .filter((userData: DashboardUser) => userData?.user?.id)
+                    .map((userData: DashboardUser) => {
                       const user = userData.user;
+                      if (!user) return null;
                       return (
                         <Table.Tr key={user.id}>
                           <Table.Td>
                             <Stack gap='xs'>
-                              <Text fw={500}>{user?.username}</Text>
+                              <Text fw={500}>{user.username}</Text>
                               <Text size='sm' c='dimmed'>
-                                {user?.email}
+                                {user.email}
                               </Text>
-                              <Group gap='xs'>
-                                {user?.roles?.map((role: Role) => (
-                                  <Badge key={role.id} color='green' size='xs'>
-                                    {role.name}
-                                  </Badge>
-                                ))}
-                              </Group>
                             </Stack>
                           </Table.Td>
                           <Table.Td>
                             <Badge color='gray' size='sm'>
-                              {user?.current_level || 'A1'}
+                              {user.current_level || 'A1'}
                             </Badge>
                           </Table.Td>
                           <Table.Td>
@@ -599,20 +592,8 @@ const UserManagementPage: React.FC = () => {
                             </Text>
                           </Table.Td>
                           <Table.Td>
-                            <Progress
-                              value={
-                                user?.question_stats?.total > 0
-                                  ? (user.question_stats.correct /
-                                      user.question_stats.total) *
-                                    100
-                                  : 0
-                              }
-                              size='sm'
-                              w={80}
-                            />
-                            <Text size='xs' c='dimmed' mt='xs'>
-                              {user?.question_stats?.correct || 0}/
-                              {user?.question_stats?.total || 0}
+                            <Text size='sm'>
+                              {userData.question_stats?.total_answered || 0} answered
                             </Text>
                           </Table.Td>
                           <Table.Td>
@@ -626,7 +607,7 @@ const UserManagementPage: React.FC = () => {
                                 <Menu.Item
                                   leftSection={<IconEdit size={16} />}
                                   onClick={() => {
-                                    setSelectedUser(user);
+                                    setSelectedUser(user ? { ...user } as User : null);
                                     setEditForm({
                                       username: user?.username || '',
                                       email: user?.email || '',
@@ -635,13 +616,10 @@ const UserManagementPage: React.FC = () => {
                                         user?.preferred_language || '',
                                       current_level: user?.current_level || '',
                                       ai_enabled: user?.ai_enabled || false,
-                                      ai_provider: user?.ai_provider || '',
-                                      ai_model: user?.ai_model || '',
+                                      ai_provider: '',
+                                      ai_model: '',
                                       api_key: '',
-                                      selectedRoles:
-                                        user?.roles?.map(
-                                          (role: Role) => role.name
-                                        ) || [],
+                                      selectedRoles: [],
                                     });
                                     setIsEditModalOpen(true);
                                   }}
@@ -651,7 +629,7 @@ const UserManagementPage: React.FC = () => {
                                 <Menu.Item
                                   leftSection={<IconLock size={16} />}
                                   onClick={() => {
-                                    setSelectedUser(user);
+                                    setSelectedUser(user ? { ...user } as User : null);
                                     setIsPasswordModalOpen(true);
                                   }}
                                 >
@@ -721,7 +699,7 @@ const UserManagementPage: React.FC = () => {
                                 <Menu.Item
                                   leftSection={<IconRefresh size={16} />}
                                   onClick={() => {
-                                    setSelectedUser(user);
+                                    setSelectedUser(user ? { ...user } as User : null);
                                     setIsClearDataModalOpen(true);
                                   }}
                                 >

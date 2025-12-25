@@ -258,7 +258,7 @@ const BackendAdminPage: React.FC = () => {
                           <Text size='sm' c='dimmed'>
                             {lang}:
                           </Text>
-                          <Badge size='sm'>{count}</Badge>
+                          <Badge size='sm'>{String(count)}</Badge>
                         </Group>
                       )
                     )}
@@ -276,7 +276,7 @@ const BackendAdminPage: React.FC = () => {
                           <Text size='sm' c='dimmed'>
                             {level}:
                           </Text>
-                          <Badge size='sm'>{count}</Badge>
+                          <Badge size='sm'>{String(count)}</Badge>
                         </Group>
                       )
                     )}
@@ -297,7 +297,7 @@ const BackendAdminPage: React.FC = () => {
                           <Text size='sm' c='dimmed'>
                             {provider}:
                           </Text>
-                          <Badge size='sm'>{count}</Badge>
+                          <Badge size='sm'>{String(count)}</Badge>
                         </Group>
                       )
                     )}
@@ -315,7 +315,7 @@ const BackendAdminPage: React.FC = () => {
                           <Text size='sm' c='dimmed'>
                             {model}:
                           </Text>
-                          <Badge size='sm'>{count}</Badge>
+                          <Badge size='sm'>{String(count)}</Badge>
                         </Group>
                       )
                     )}

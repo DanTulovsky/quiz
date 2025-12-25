@@ -1,4 +1,3 @@
-import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderWithProviders } from '../../../test-utils';
@@ -25,21 +24,23 @@ vi.mock('../../../hooks/useAuth', () => ({
 vi.mock('../../../contexts/ThemeContext', async importOriginal => {
   const actual = (await importOriginal()) as Awaited<typeof importOriginal>;
   const mockTheme = { primaryColor: 'blue' };
+  const themeNames = (actual as { themeNames?: Record<string, string> })?.themeNames || {
+    blue: 'Blue',
+    green: 'Green',
+    red: 'Red',
+  };
+  const themes = (actual as { themes?: Record<string, unknown> })?.themes || {
+    blue: mockTheme,
+    green: mockTheme,
+    red: mockTheme,
+  };
   return {
     ...actual,
     useTheme: () => ({
       currentTheme: 'blue',
       setTheme: vi.fn(),
-      themeNames: actual.themeNames || {
-        blue: 'Blue',
-        green: 'Green',
-        red: 'Red',
-      },
-      themes: actual.themes || {
-        blue: mockTheme,
-        green: mockTheme,
-        red: mockTheme,
-      },
+      themeNames,
+      themes,
       colorScheme: 'light',
       setColorScheme: vi.fn(),
       fontSize: 'medium',

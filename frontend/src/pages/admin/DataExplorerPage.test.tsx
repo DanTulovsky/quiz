@@ -44,7 +44,13 @@ vi.mock('../../api/api', () => ({
     isPending: false,
   }),
   useGetV1SettingsLanguages: () => ({
-    data: ['english', 'spanish', 'french', 'german', 'italian'],
+    data: [
+      { code: 'english', name: 'English' },
+      { code: 'spanish', name: 'Spanish' },
+      { code: 'french', name: 'French' },
+      { code: 'german', name: 'German' },
+      { code: 'italian', name: 'Italian' },
+    ],
     isLoading: false,
     error: null,
   }),

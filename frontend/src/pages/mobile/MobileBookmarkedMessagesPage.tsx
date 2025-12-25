@@ -397,7 +397,7 @@ export const MobileBookmarkedMessagesPage: React.FC = () => {
           <Text ta='center' py='xl' c='dimmed' size='sm'>
             Loading bookmarked messages...
           </Text>
-        ) : messages.length === 0 ? (
+        ) : !messages || messages.length === 0 ? (
           <Paper p='xl' radius='md' withBorder>
             <Text ta='center' c='dimmed' size='sm'>
               {activeSearchQuery

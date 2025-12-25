@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
   Container,
   Title,
@@ -42,6 +42,7 @@ import {
   getPreviousCategory,
   type PhrasebookData,
   type CategoryInfo,
+  type PhrasebookWord as PhrasebookWordType,
 } from '../../utils/phrasebook';
 
 type PhrasebookWord = {
@@ -105,7 +106,7 @@ const MobilePhrasebookCategoryPage = () => {
         const wordsWithData = section.words.map((word, index) => ({
           ...word,
           originalIndex: index,
-          displayTerm: getTermForLanguage(word as PhrasebookWord, languageCode),
+          displayTerm: getTermForLanguage({ ...word, term: word.term || '' } as PhrasebookWordType, languageCode),
           translation: getTranslation(word),
         }));
 
@@ -355,7 +356,7 @@ const MobilePhrasebookCategoryPage = () => {
                           ).trim();
                           if (saved) return saved;
                           return (
-                            defaultVoiceForLanguage(user?.preferred_language) ||
+                            (user?.preferred_language ? defaultVoiceForLanguage(user.preferred_language) : undefined) ||
                             undefined
                           );
                         }}
