@@ -58,6 +58,7 @@ struct MainView: View {
     @State private var selectedTab: Int = 0
     @State private var navigateToDaily = false
     @State private var navigateToWordOfDay = false
+    @State private var pendingNavigation: String?
 
     private var colorScheme: ColorScheme? {
         switch appTheme {
@@ -210,6 +211,28 @@ struct MainView: View {
                     userLanguage: authViewModel.user?.preferredLanguage
                 )
             }
+
+            if isAuthenticated, let pending = pendingNavigation {
+                pendingNavigation = nil
+                DispatchQueue.main.async {
+                    executeNavigation(pending)
+                }
+            }
+        }
+        .onChange(of: selectedTab) { oldValue, newValue in
+            if newValue == 1, let pending = pendingNavigation {
+                pendingNavigation = nil
+                DispatchQueue.main.async {
+                    switch pending {
+                    case "daily":
+                        navigateToDaily = true
+                    case "word-of-day":
+                        navigateToWordOfDay = true
+                    default:
+                        break
+                    }
+                }
+            }
         }
         .onAppear {
             if authViewModel.isAuthenticated && !ttsInitManager.isInitialized {
@@ -236,16 +259,36 @@ struct MainView: View {
     }
 
     private func handleDeepLink(_ deepLink: String) {
+        guard authViewModel.isAuthenticated else {
+            pendingNavigation = deepLink
+            return
+        }
+
+        executeNavigation(deepLink)
+    }
+
+    private func executeNavigation(_ deepLink: String) {
+        guard authViewModel.isAuthenticated else {
+            pendingNavigation = deepLink
+            return
+        }
+
         switch deepLink {
-        case "daily":
-            selectedTab = 1
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                navigateToDaily = true
-            }
-        case "word-of-day":
-            selectedTab = 1
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                navigateToWordOfDay = true
+        case "daily", "word-of-day":
+            if selectedTab == 1 {
+                DispatchQueue.main.async {
+                    switch deepLink {
+                    case "daily":
+                        navigateToDaily = true
+                    case "word-of-day":
+                        navigateToWordOfDay = true
+                    default:
+                        break
+                    }
+                }
+            } else {
+                pendingNavigation = deepLink
+                selectedTab = 1
             }
         default:
             break

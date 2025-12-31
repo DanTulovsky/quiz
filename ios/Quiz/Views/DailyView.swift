@@ -104,8 +104,10 @@ struct DailyView: View {
                     }
                     .onChange(of: viewModel.answerResponse) { _, response in
                         if response != nil {
-                            withAnimation {
-                                proxy.scrollTo("bottom", anchor: .bottom)
+                            DispatchQueue.main.async {
+                                withAnimation {
+                                    proxy.scrollTo("bottom", anchor: .bottom)
+                                }
                             }
                         }
                     }
