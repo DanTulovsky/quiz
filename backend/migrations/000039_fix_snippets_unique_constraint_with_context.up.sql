@@ -14,3 +14,4 @@ ON snippets (user_id, original_text, source_language, target_language, question_
 WHERE original_text IS NOT NULL;
 
 
+
