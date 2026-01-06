@@ -134,6 +134,22 @@ struct MainView: View {
                         .navigationDestination(isPresented: $navigateToWordOfDay) {
                             WordOfTheDayView()
                         }
+                        .onAppear {
+                            if selectedTab == 1, let pending = pendingNavigation {
+                                DispatchQueue.main.async {
+                                    switch pending {
+                                    case "daily":
+                                        pendingNavigation = nil
+                                        navigateToDaily = true
+                                    case "word-of-day":
+                                        pendingNavigation = nil
+                                        navigateToWordOfDay = true
+                                    default:
+                                        break
+                                    }
+                                }
+                            }
+                        }
                     }
                     .tag(1)
                     .tabItem {
@@ -213,20 +229,20 @@ struct MainView: View {
             }
 
             if isAuthenticated, let pending = pendingNavigation {
-                pendingNavigation = nil
-                DispatchQueue.main.async {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     executeNavigation(pending)
                 }
             }
         }
         .onChange(of: selectedTab) { oldValue, newValue in
             if newValue == 1, let pending = pendingNavigation {
-                pendingNavigation = nil
                 DispatchQueue.main.async {
                     switch pending {
                     case "daily":
+                        pendingNavigation = nil
                         navigateToDaily = true
                     case "word-of-day":
+                        pendingNavigation = nil
                         navigateToWordOfDay = true
                     default:
                         break
@@ -279,15 +295,19 @@ struct MainView: View {
                 DispatchQueue.main.async {
                     switch deepLink {
                     case "daily":
+                        pendingNavigation = nil
                         navigateToDaily = true
                     case "word-of-day":
+                        pendingNavigation = nil
                         navigateToWordOfDay = true
                     default:
                         break
                     }
                 }
             } else {
-                pendingNavigation = deepLink
+                if pendingNavigation == nil {
+                    pendingNavigation = deepLink
+                }
                 selectedTab = 1
             }
         default:

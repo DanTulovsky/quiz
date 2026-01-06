@@ -17,6 +17,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
     @Published var isReported = false
     @Published var isSubmittingAction = false
 
+    @Published var lastLoadedDate: String?
     private var lastLoadedQuestionId: Int?
 
     var currentQuestion: DailyQuestionWithDetails? {
@@ -55,6 +56,17 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
         super.init(apiService: apiService)
     }
 
+    func shouldRefresh() -> Bool {
+        let today = Date().iso8601String
+        return lastLoadedDate != today
+    }
+
+    func refreshIfNeeded() {
+        if shouldRefresh() {
+            fetchDaily()
+        }
+    }
+
     func fetchDaily() {
         let today = Date().iso8601String
 
@@ -69,6 +81,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
                 guard let self = self else { return }
 
                 self.dailyQuestions = response.questions
+                self.lastLoadedDate = today
 
                 // Always position on the first incomplete question when questions are loaded
                 // This ensures users never start on a completed question

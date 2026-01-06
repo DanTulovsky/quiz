@@ -23,44 +23,47 @@ extension DailyView {
 
     @ViewBuilder
     func actionButtons() -> some View {
-        if viewModel.isAllCompleted {
-            HStack(spacing: 12) {
-                Button("Previous") {
-                    viewModel.previousQuestion()
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
-                .disabled(!viewModel.hasPreviousQuestion)
-                .frame(maxWidth: .infinity)
+        Group {
+            if viewModel.isAllCompleted {
+                HStack(spacing: 12) {
+                    Button("Previous") {
+                        viewModel.previousQuestion()
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .disabled(!viewModel.hasPreviousQuestion)
+                    .frame(maxWidth: .infinity)
 
-                Button("Next") {
+                    Button("Next") {
+                        viewModel.nextQuestion()
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .disabled(!viewModel.hasNextQuestion)
+                    .frame(maxWidth: .infinity)
+                }
+            } else if viewModel.answerResponse != nil {
+                Button("Next Question") {
                     viewModel.nextQuestion()
                 }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
-                .disabled(!viewModel.hasNextQuestion)
-                .frame(maxWidth: .infinity)
-            }
-        } else if viewModel.answerResponse != nil {
-            Button("Next Question") {
-                viewModel.nextQuestion()
-            }
-            .buttonStyle(PrimaryButtonStyle())
-        } else if let question = viewModel.currentQuestion, question.isCompleted {
-            Button("Next Question") {
-                viewModel.nextQuestion()
-            }
-            .buttonStyle(PrimaryButtonStyle())
-        } else {
-            Button("Submit Answer") {
-                if let idx = viewModel.selectedAnswerIndex {
-                    viewModel.submitAnswer(index: idx)
+                .buttonStyle(PrimaryButtonStyle())
+            } else if let question = viewModel.currentQuestion, question.isCompleted {
+                Button("Next Question") {
+                    viewModel.nextQuestion()
                 }
+                .buttonStyle(PrimaryButtonStyle())
+            } else {
+                Button("Submit Answer") {
+                    if let idx = viewModel.selectedAnswerIndex {
+                        viewModel.submitAnswer(index: idx)
+                    }
+                }
+                .buttonStyle(
+                    PrimaryButtonStyle(
+                        isDisabled: viewModel.selectedAnswerIndex == nil || viewModel.isSubmitting))
             }
-            .buttonStyle(
-                PrimaryButtonStyle(
-                    isDisabled: viewModel.selectedAnswerIndex == nil || viewModel.isSubmitting))
         }
+        .id("actionButtons")
     }
 
     var questionCardId: String {
@@ -143,6 +146,7 @@ struct DailyQuestionContentView: View {
     let onSnippetTapped: (Snippet) -> Void
     let stringValue: (JSONValue?) -> String?
     let actionButtons: () -> AnyView
+    let onScrollToActionButtons: () -> Void
 
     var body: some View {
         VStack(spacing: 20) {
@@ -195,6 +199,13 @@ struct DailyQuestionContentView: View {
             }
 
             actionButtons()
+                .id("actionButtons")
+                .onAppear {
+                    // Scroll to action buttons when they appear (after answer is submitted)
+                    if viewModel.answerResponse != nil {
+                        onScrollToActionButtons()
+                    }
+                }
 
             QuestionActionButtons(
                 isReported: viewModel.isReported,

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DailyView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject var viewModel = DailyViewModel()
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var reportReason = ""
@@ -63,7 +64,12 @@ struct DailyView: View {
                                         showingSnippet = snippet
                                     },
                                     stringValue: stringValue,
-                                    actionButtons: { AnyView(actionButtons()) }
+                                    actionButtons: { AnyView(actionButtons()) },
+                                    onScrollToActionButtons: {
+                                        withAnimation {
+                                            proxy.scrollTo("actionButtons", anchor: .center)
+                                        }
+                                    }
                                 )
                             }
                         } else {
@@ -84,7 +90,12 @@ struct DailyView: View {
                                     showingSnippet = snippet
                                 },
                                 stringValue: stringValue,
-                                actionButtons: { AnyView(actionButtons()) }
+                                actionButtons: { AnyView(actionButtons()) },
+                                onScrollToActionButtons: {
+                                    withAnimation {
+                                        proxy.scrollTo("actionButtons", anchor: .center)
+                                    }
+                                }
                             )
                         }
                     } else if !viewModel.dailyQuestions.isEmpty {
@@ -104,11 +115,8 @@ struct DailyView: View {
                     }
                     .onChange(of: viewModel.answerResponse) { _, response in
                         if response != nil {
-                            DispatchQueue.main.async {
-                                withAnimation {
-                                    proxy.scrollTo("bottom", anchor: .bottom)
-                                }
-                            }
+                            // Scroll will be triggered by .onAppear on the action buttons
+                            // This ensures the view is fully laid out before scrolling
                         }
                     }
                     .onChange(of: viewModel.currentQuestionIndex) { old, new in
@@ -205,7 +213,7 @@ struct DailyView: View {
             }
         )
         .onAppear {
-            viewModel.fetchDaily()
+            viewModel.refreshIfNeeded()
             // Also check positioning after a delay to catch any edge cases
             Task { @MainActor in
                 try? await Task.sleep(nanoseconds: 200_000_000)  // 0.2 seconds
@@ -219,6 +227,11 @@ struct DailyView: View {
                         }
                     }
                 }
+            }
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                viewModel.refreshIfNeeded()
             }
         }
         .onChange(of: viewModel.dailyQuestions.count) { _, new in
