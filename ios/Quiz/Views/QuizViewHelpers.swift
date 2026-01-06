@@ -50,8 +50,3 @@ extension QuizView {
         }
     }
 }
-
-
-
-
-

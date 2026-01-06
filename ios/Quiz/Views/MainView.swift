@@ -234,7 +234,7 @@ struct MainView: View {
                 }
             }
         }
-        .onChange(of: selectedTab) { oldValue, newValue in
+        .onChange(of: selectedTab) { _, newValue in
             if newValue == 1, let pending = pendingNavigation {
                 DispatchQueue.main.async {
                     switch pending {

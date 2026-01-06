@@ -121,8 +121,3 @@ extension SnippetListView {
         }
     }
 }
-
-
-
-
-

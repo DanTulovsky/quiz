@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 protocol Refreshable: BaseViewModel {
     func refresh()
@@ -15,8 +15,3 @@ extension Refreshable {
         // Subclasses implement this
     }
 }
-
-
-
-
-

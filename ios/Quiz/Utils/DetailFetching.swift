@@ -18,8 +18,3 @@ extension DetailFetching {
             .store(in: &cancellables)
     }
 }
-
-
-
-
-
