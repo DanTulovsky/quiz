@@ -53,12 +53,14 @@ class TTSInitializationManager: ObservableObject {
 struct MainView: View {
     @AppStorage("app_theme") private var appTheme: String = "system"
     @AppStorage("app_font_size") private var appFontSize: String = "M"
+    @AppStorage("pending_navigation") private var pendingNavigation: String?
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject private var ttsInitManager = TTSInitializationManager()
     @State private var selectedTab: Int = 0
     @State private var navigateToDaily = false
     @State private var navigateToWordOfDay = false
-    @State private var pendingNavigation: String?
+    @State private var isTabViewReady = false
+    @State private var isNavigationStackReady = false
 
     private var colorScheme: ColorScheme? {
         switch appTheme {
@@ -135,20 +137,8 @@ struct MainView: View {
                             WordOfTheDayView()
                         }
                         .onAppear {
-                            if selectedTab == 1, let pending = pendingNavigation {
-                                DispatchQueue.main.async {
-                                    switch pending {
-                                    case "daily":
-                                        pendingNavigation = nil
-                                        navigateToDaily = true
-                                    case "word-of-day":
-                                        pendingNavigation = nil
-                                        navigateToWordOfDay = true
-                                    default:
-                                        break
-                                    }
-                                }
-                            }
+                            isNavigationStackReady = true
+                            tryExecutePendingNavigation()
                         }
                     }
                     .tag(1)
@@ -212,6 +202,10 @@ struct MainView: View {
                     }
                 }
                 .environmentObject(authViewModel)
+                .onAppear {
+                    isTabViewReady = true
+                    tryExecutePendingNavigation()
+                }
             } else {
                 LoginView()
                     .environmentObject(authViewModel)
@@ -228,26 +222,13 @@ struct MainView: View {
                 )
             }
 
-            if isAuthenticated, let pending = pendingNavigation {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    executeNavigation(pending)
-                }
+            if isAuthenticated {
+                tryExecutePendingNavigation()
             }
         }
         .onChange(of: selectedTab) { _, newValue in
-            if newValue == 1, let pending = pendingNavigation {
-                DispatchQueue.main.async {
-                    switch pending {
-                    case "daily":
-                        pendingNavigation = nil
-                        navigateToDaily = true
-                    case "word-of-day":
-                        pendingNavigation = nil
-                        navigateToWordOfDay = true
-                    default:
-                        break
-                    }
-                }
+            if newValue == 1 {
+                tryExecutePendingNavigation()
             }
         }
         .onAppear {
@@ -291,25 +272,44 @@ struct MainView: View {
 
         switch deepLink {
         case "daily", "word-of-day":
-            if selectedTab == 1 {
-                DispatchQueue.main.async {
-                    switch deepLink {
-                    case "daily":
-                        pendingNavigation = nil
-                        navigateToDaily = true
-                    case "word-of-day":
-                        pendingNavigation = nil
-                        navigateToWordOfDay = true
-                    default:
-                        break
-                    }
+            if selectedTab == 1 && isTabViewReady && isNavigationStackReady {
+                switch deepLink {
+                case "daily":
+                    pendingNavigation = nil
+                    navigateToDaily = true
+                case "word-of-day":
+                    pendingNavigation = nil
+                    navigateToWordOfDay = true
+                default:
+                    break
                 }
             } else {
-                if pendingNavigation == nil {
-                    pendingNavigation = deepLink
+                pendingNavigation = deepLink
+                if selectedTab != 1 {
+                    selectedTab = 1
                 }
-                selectedTab = 1
             }
+        default:
+            break
+        }
+    }
+
+    private func tryExecutePendingNavigation() {
+        guard authViewModel.isAuthenticated,
+              let pending = pendingNavigation,
+              selectedTab == 1,
+              isTabViewReady,
+              isNavigationStackReady else {
+            return
+        }
+
+        switch pending {
+        case "daily":
+            pendingNavigation = nil
+            navigateToDaily = true
+        case "word-of-day":
+            pendingNavigation = nil
+            navigateToWordOfDay = true
         default:
             break
         }
